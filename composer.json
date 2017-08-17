@@ -17,8 +17,7 @@
     "homepage": "https://github.com/jianyan74/rageframe-basics",
     "require": {
         "php": ">=5.5.9",
-        "yiisoft/yii2": ">=2.0.6",
-        "jianyan74/rageframe-basics": "dev-master"
+        "yiisoft/yii2": ">=2.0.6"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
@@ -26,16 +25,9 @@
         "yiisoft/yii2-gii": "*",
         "yiisoft/yii2-faker": "*"
     },
-    "config": {
-        "process-timeout": 1800
-    },
-    "extra": {
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
+    "autoload": {
+        "psr-4": {
+            "jianyan\\basics\\": ""
         }
-    },
-    "scripts": {
-        "post-install-cmd": "php init --env=Development --overwrite=n"
     }
 }

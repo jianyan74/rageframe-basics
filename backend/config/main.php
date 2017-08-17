@@ -4,7 +4,7 @@ $config = [
     'modules'              => [
         /* 会员 modules */
         'member' => [
-            'class' => 'jianyan\backend\modules\member\index',
+            'class' => 'jianyan\basics\backend\modules\member\index',
         ],
     ],
     'components' => [
