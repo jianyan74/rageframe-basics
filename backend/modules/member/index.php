@@ -1,6 +1,6 @@
 <?php
 
-namespace jianyan\backend\modules\member;
+namespace jianyan\basics\backend\modules\member;
 
 /**
  * member module definition class
@@ -10,7 +10,7 @@ class index extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    public $controllerNamespace = 'jianyan\backend\modules\member\controllers';
+    public $controllerNamespace = 'jianyan\basics\backend\modules\member\controllers';
 
     /**
      * @inheritdoc

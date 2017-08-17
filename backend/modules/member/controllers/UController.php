@@ -1,5 +1,5 @@
 <?php
-namespace jianyan\backend\modules\member\controllers;
+namespace jianyan\basics\backend\modules\member\controllers;
 
 use yii;
 use backend\controllers\MController;
