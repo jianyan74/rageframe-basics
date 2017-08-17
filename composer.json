@@ -1,0 +1,41 @@
+{
+    "name": "jianyan74/rageframe-basics",
+    "description": "RageFrame核心包",
+    "keywords": [
+        "yii2",
+        "rageframe",
+        "jianyan74"
+    ],
+    "authors": [
+        {
+            "name": "简言",
+            "email": "751393839@qq.com"
+        }
+    ],
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/jianyan74/rageframe-basics",
+    "require": {
+        "php": ">=5.5.9",
+        "yiisoft/yii2": ">=2.0.6",
+        "jianyan74/rageframe-basics": "dev-master"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-faker": "*"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "php init --env=Development --overwrite=n"
+    }
+}
