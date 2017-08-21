@@ -4,13 +4,13 @@ return [
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
     'exploitVersions'          => '1.1.0',
-    'exploitSysName'           => 'RageFrame管理框架',
+    'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',
     'exploitGit@OSC'           => '<a href="https://git.oschina.net/jianyan94/rageframe.git" target="_blank">git.oschina.net/jianyan94/rageframe.git</a>',
 
     /**-------------------后台网站基础配置-------------------**/
-    'siteTitle'              => "RageFrame管理框架",//后台系统名称
+    'siteTitle'              => "RageFrame应用开发引擎",//后台系统名称
     'abbreviation'           => "让开发变得更简单！",//缩写
     'acronym'                => "RF",//拼音缩写
 
