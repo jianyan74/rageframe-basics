@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\wechat\Rule;
-use common\models\wechat\RuleKeyword;
+use jianyan\basics\common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\RuleKeyword;
 
 /**
  * 规则控制器

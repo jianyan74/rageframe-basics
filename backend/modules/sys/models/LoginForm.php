@@ -2,14 +2,14 @@
 namespace jianyan\basics\backend\modules\sys\models;
 
 use Yii;
-use common\models\sys\Manager;
-use common\models\sys\ActionLog;
+use jianyan\basics\common\models\sys\Manager;
+use jianyan\basics\common\models\sys\ActionLog;
 
 /**
  * Class LoginForm
- * @package common\models\sys
+ * @package jianyan\basics\common\models\sys
  */
-class LoginForm extends \common\models\base\LoginForm
+class LoginForm extends \jianyan\basics\common\models\base\LoginForm
 {
     public $verifyCode;
     /**
@@ -40,9 +40,9 @@ class LoginForm extends \common\models\base\LoginForm
     public function attributeLabels()
     {
         return [
-            'username'   => '登录帐号',
+            'username'   => '用户名',
             'rememberMe' => '记住我',
-            'password'   => '登录密码',
+            'password'   => '密码',
             'verifyCode' => '验证码',
         ];
     }
@@ -68,7 +68,6 @@ class LoginForm extends \common\models\base\LoginForm
             }
         }
     }
-
 
     /**
      * @return null|static

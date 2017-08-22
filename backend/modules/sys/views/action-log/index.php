@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use common\models\sys\ActionLog;
+use jianyan\basics\common\models\sys\ActionLog;
 
 $this->title = '日志管理';
 $this->params['breadcrumbs'][] = ['label' => '系统', 'url' => ['/sys/system/index']];

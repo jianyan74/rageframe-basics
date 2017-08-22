@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use common\models\sys\NotifyCate;
+use jianyan\basics\common\models\sys\NotifyCate;
 
 $this->title = '全部公告';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];

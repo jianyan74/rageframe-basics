@@ -5,7 +5,7 @@ use yii;
 use common\helpers\SysArrayHelper;
 use yii\web\NotFoundHttpException;
 use jianyan\basics\backend\modules\sys\models\AuthItem;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * RBAC权限控制器

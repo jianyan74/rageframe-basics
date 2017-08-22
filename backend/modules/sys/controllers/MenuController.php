@@ -3,7 +3,7 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use common\helpers\SysArrayHelper;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 use jianyan\basics\backend\modules\sys\models\Menu;
 
 /**

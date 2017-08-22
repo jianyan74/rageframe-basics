@@ -4,7 +4,7 @@ namespace jianyan\basics\common\controllers;
 use Yii;
 use yii\web\NotFoundHttpException;
 use common\controllers\BaseController;
-use common\models\sys\Addons;
+use jianyan\basics\common\models\sys\Addons;
 use common\helpers\AddonsHelp;
 
 /**

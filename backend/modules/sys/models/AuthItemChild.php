@@ -13,7 +13,7 @@ use Yii;
  * @property AuthItem $parent0
  * @property AuthItem $child0
  */
-class AuthItemChild extends \common\models\base\AuthItemChild
+class AuthItemChild extends \jianyan\basics\common\models\base\AuthItemChild
 {
     /**
      * 规则类名

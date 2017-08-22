@@ -5,8 +5,8 @@ use yii;
 use yii\data\Pagination;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
-use common\models\wechat\Fans;
-use common\models\wechat\FansGroups;
+use jianyan\basics\common\models\wechat\Fans;
+use jianyan\basics\common\models\wechat\FansGroups;
 
 /**
  * 粉丝管理

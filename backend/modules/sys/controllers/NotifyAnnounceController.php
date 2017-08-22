@@ -3,9 +3,9 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\sys\Notify;
-use common\models\sys\NotifyManager;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\Notify;
+use jianyan\basics\common\models\sys\NotifyManager;
+use backend\controllers\MController;
 
 /**
  * 消息公告控制器

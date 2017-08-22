@@ -3,7 +3,7 @@
 namespace jianyan\basics\backend\modules\sys\models;
 
 
-class Menu extends \common\models\base\Menu
+class Menu extends \jianyan\basics\common\models\base\Menu
 {
 
 }

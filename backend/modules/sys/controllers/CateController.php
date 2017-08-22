@@ -4,9 +4,9 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use Yii;
 use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
-use common\models\sys\Cate;
+use jianyan\basics\common\models\sys\Cate;
 use common\helpers\SysArrayHelper;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * 分类控制器

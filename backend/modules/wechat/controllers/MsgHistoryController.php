@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\wechat\MsgHistory;
-use common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\MsgHistory;
+use jianyan\basics\common\models\wechat\Rule;
 
 /**
  * 历史消息控制器

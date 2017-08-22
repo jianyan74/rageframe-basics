@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use \kucha\ueditor\UEditor;
-use common\models\sys\Config;
+use jianyan\basics\common\models\sys\Config;
 
 $this->title = '系统配置';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];

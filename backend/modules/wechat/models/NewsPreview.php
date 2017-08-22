@@ -6,7 +6,7 @@ use yii\base\Model;
 
 /**
  * Class LoginForm
- * @package common\models\sys
+ * @package jianyan\basics\common\models\sys
  */
 class NewsPreview extends Model
 {

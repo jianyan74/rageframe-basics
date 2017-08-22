@@ -3,7 +3,7 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\wechat\Qrcode;
+use jianyan\basics\common\models\wechat\Qrcode;
 use dosamigos\qrcode\QrCode as DosQrCode;
 /**
  * Class QrController

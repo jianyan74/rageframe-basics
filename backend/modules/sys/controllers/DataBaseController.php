@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\web\Response;
-use common\models\sys\Database;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\Database;
+use backend\controllers\MController;
 
 /**
  * 数据库备份还原控制器

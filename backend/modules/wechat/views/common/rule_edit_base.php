@@ -1,5 +1,5 @@
 <?php
-use common\models\wechat\RuleKeyword;
+use jianyan\basics\common\models\wechat\RuleKeyword;
 ?>
 <div class="col-sm-12">
     <div class="panel panel-default">

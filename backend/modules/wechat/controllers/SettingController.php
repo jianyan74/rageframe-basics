@@ -2,7 +2,7 @@
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
-use common\models\wechat\Setting;
+use jianyan\basics\common\models\wechat\Setting;
 
 /**
  * 参数设置控制器

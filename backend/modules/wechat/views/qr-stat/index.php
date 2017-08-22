@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
 use kartik\daterange\DateRangePicker;
-use common\models\wechat\QrcodeStat;
+use jianyan\basics\common\models\wechat\QrcodeStat;
 
 $addon = <<< HTML
 <span class="input-group-addon">

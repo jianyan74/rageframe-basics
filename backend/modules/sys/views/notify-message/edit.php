@@ -1,7 +1,7 @@
 <?php
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
-use common\models\sys\Manager;
+use jianyan\basics\common\models\sys\Manager;
 use kartik\select2\Select2;
 
 $this->title = $model->isNewRecord ? '创建' : '编辑';

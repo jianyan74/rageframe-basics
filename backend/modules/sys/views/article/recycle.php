@@ -2,8 +2,8 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
-use common\models\sys\Cate;
-use common\models\sys\Article;
+use jianyan\basics\common\models\sys\Cate;
+use jianyan\basics\common\models\sys\Article;
 
 $this->title = '回收站';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];

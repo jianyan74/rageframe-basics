@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use common\models\wechat\Qrcode;
+use jianyan\basics\common\models\wechat\Qrcode;
 
 $this->title = '二维码管理';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];

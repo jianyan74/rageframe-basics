@@ -1,8 +1,8 @@
 <?php
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
-use common\models\wechat\Rule;
-use common\models\wechat\ReplyBasic;
+use jianyan\basics\common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\ReplyBasic;
 
 /**
  * 文字回复控制器

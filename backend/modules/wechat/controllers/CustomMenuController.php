@@ -3,7 +3,7 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\wechat\CustomMenu;
+use jianyan\basics\common\models\wechat\CustomMenu;
 
 /**
  * 自定义菜单

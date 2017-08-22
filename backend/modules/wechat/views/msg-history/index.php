@@ -2,8 +2,8 @@
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
 use kartik\daterange\DateRangePicker;
-use common\models\wechat\MsgHistory;
-use common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\MsgHistory;
+use jianyan\basics\common\models\wechat\Rule;
 
 $addon = <<< HTML
 <span class="input-group-addon">

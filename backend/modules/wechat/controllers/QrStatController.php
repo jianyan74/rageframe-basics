@@ -3,7 +3,7 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\wechat\QrcodeStat;
+use jianyan\basics\common\models\wechat\QrcodeStat;
 
 /**
  * 二维码扫描统计

@@ -1,7 +1,7 @@
 <?php
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
-use common\models\sys\Provinces;
+use jianyan\basics\common\models\sys\Provinces;
 
 $this->title = '个人中心';
 if($admin == true)
@@ -191,7 +191,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         data.jid = $('#jid').val();
         $.ajax({
             url     : "<?= Url::to(['/file/upload-base64-img'])?>",
-            type    : "POST",
+            type    : "post",
             dataType: 'json',
             data    : data,
             success : function(data) {

@@ -2,9 +2,9 @@
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use Yii;
-use common\models\wechat\Attachment;
-use common\models\wechat\MassRecord;
-use common\models\wechat\FansGroups;
+use jianyan\basics\common\models\wechat\Attachment;
+use jianyan\basics\common\models\wechat\MassRecord;
+use jianyan\basics\common\models\wechat\FansGroups;
 
 /**
  * 群发记录控制器

@@ -2,7 +2,7 @@
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use Yii;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 use jianyan\basics\backend\modules\sys\models\Menu;
 
 /**

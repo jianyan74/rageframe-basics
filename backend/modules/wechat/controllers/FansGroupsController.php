@@ -2,7 +2,7 @@
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
-use common\models\wechat\FansGroups;
+use jianyan\basics\common\models\wechat\FansGroups;
 use yii\web\NotFoundHttpException;
 
 /**

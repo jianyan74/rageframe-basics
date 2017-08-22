@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\sys\ActionLog;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\ActionLog;
+use backend\controllers\MController;
 
 /**
  * 系统日志控制器控制器

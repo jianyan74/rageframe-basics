@@ -1,8 +1,8 @@
 <?php
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
-use common\models\wechat\Rule;
-use common\models\wechat\ReplyVideo;
+use jianyan\basics\common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\ReplyVideo;
 
 /**
  * 视频回复控制器

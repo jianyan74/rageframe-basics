@@ -2,7 +2,7 @@
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * 微信基类控制器

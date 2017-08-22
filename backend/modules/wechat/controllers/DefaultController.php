@@ -4,11 +4,11 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 use yii;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
-use common\models\wechat\Account;
-use common\models\wechat\Fans;
-use common\models\wechat\ReplyDefault;
-use common\models\wechat\MsgHistory;
-use common\models\wechat\QrcodeStat;
+use jianyan\basics\common\models\wechat\Account;
+use jianyan\basics\common\models\wechat\Fans;
+use jianyan\basics\common\models\wechat\ReplyDefault;
+use jianyan\basics\common\models\wechat\MsgHistory;
+use jianyan\basics\common\models\wechat\QrcodeStat;
 
 /**
  * 微信请求处理控制器

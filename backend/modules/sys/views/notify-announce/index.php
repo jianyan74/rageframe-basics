@@ -1,8 +1,8 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use common\models\sys\Notify;
-use common\models\sys\NotifyCate;
+use jianyan\basics\common\models\sys\Notify;
+use jianyan\basics\common\models\sys\NotifyCate;
 
 $this->title = '公告管理';
 $this->params['breadcrumbs'][] = ['label' => '系统', 'url' => ['/sys/system/index']];

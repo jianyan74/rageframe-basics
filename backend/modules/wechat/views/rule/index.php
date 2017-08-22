@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
-use common\models\wechat\Rule;
-use common\models\wechat\RuleKeyword;
+use jianyan\basics\common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\RuleKeyword;
 use yii\widgets\LinkPager;
 
 $this->title = '自动回复';

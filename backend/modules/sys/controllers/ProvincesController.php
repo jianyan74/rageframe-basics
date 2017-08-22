@@ -4,8 +4,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use yii;
 use yii\helpers\Html;
 use yii\web\Response;
-use common\models\sys\Provinces;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\Provinces;
+use backend\controllers\MController;
 
 /**
  * 省市区联动控制器

@@ -1,8 +1,8 @@
 <?php
 use yii\helpers\Url;
 use common\helpers\AddonsUrl;
-use common\models\sys\Addons;
-use common\models\sys\AddonsBinding;
+use jianyan\basics\common\models\sys\Addons;
+use jianyan\basics\common\models\sys\AddonsBinding;
 
 if(Yii::$app->params['addon']['info']['type'] != 'plug')
 {

@@ -14,7 +14,7 @@ use Yii;
  *
  * @property AuthItem[] $authItems
  */
-class AuthRule extends \common\models\base\AuthRule
+class AuthRule extends \jianyan\basics\common\models\base\AuthRule
 {
     /**
      * 规则类名

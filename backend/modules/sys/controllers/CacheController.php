@@ -2,7 +2,7 @@
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * Class CacheController

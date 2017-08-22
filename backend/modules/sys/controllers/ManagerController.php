@@ -4,8 +4,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
-use common\models\sys\Manager;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\Manager;
+use backend\controllers\MController;
 use jianyan\basics\backend\modules\sys\models\PasswdForm;
 use jianyan\basics\backend\modules\sys\models\AuthItem;
 use jianyan\basics\backend\modules\sys\models\AuthAssignment;
@@ -60,29 +60,35 @@ class ManagerController extends MController
            'type'    => $type,
            'keyword' => $keyword,
        ]);
-
     }
 
     /**
-     * 编辑/新增
-     * @return string|\yii\web\Response
+     * 编辑
+     * @return array|mixed|string|\yii\web\Response
      */
     public function actionEdit()
     {
         $request  = Yii::$app->request;
         $id       = $request->get('id');
-
-        //总管理员权限验证
-        $this->auth($id);
         $model    = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if ($model->load(Yii::$app->request->post()))
         {
-            return $this->redirect(['index']);
+            if($request->isAjax)
+            {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return \yii\widgets\ActiveForm::validate($model);
+            }
+            else
+            {
+                return $model->save()
+                    ? $this->redirect(['index'])
+                    : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
+            }
         }
 
-        return $this->render('edit', [
-            'model' => $model,
+        return $this->renderAjax('edit', [
+            'model'         => $model,
         ]);
     }
 

@@ -1,7 +1,7 @@
 <?php
 use yii\widgets\ActiveForm;
-use common\models\sys\Article;
-use common\models\sys\Cate;
+use jianyan\basics\common\models\sys\Article;
+use jianyan\basics\common\models\sys\Cate;
 
 $this->title = $model->isNewRecord ? '创建' : '编辑';
 $this->params['breadcrumbs'][] = ['label' => '文章管理', 'url' => ['index']];

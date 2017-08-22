@@ -3,9 +3,9 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use Yii;
 use yii\web\NotFoundHttpException;
-use common\models\sys\DeskMenu;
+use jianyan\basics\common\models\sys\DeskMenu;
 use common\helpers\SysArrayHelper;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * 前台导航控制器

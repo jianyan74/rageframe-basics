@@ -4,10 +4,10 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
-use common\models\sys\Config;
-use common\models\sys\ConfigCate;
+use jianyan\basics\common\models\sys\Config;
+use jianyan\basics\common\models\sys\ConfigCate;
 use common\helpers\SysArrayHelper;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * 系统配置控制器

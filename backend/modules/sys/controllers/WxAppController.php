@@ -3,10 +3,10 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\wxapp\Account;
-use common\models\wxapp\Versions;
-use common\models\sys\Addons;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\wxapp\Account;
+use jianyan\basics\common\models\wxapp\Versions;
+use jianyan\basics\common\models\sys\Addons;
+use backend\controllers\MController;
 
 /**
  * 小程序控制器

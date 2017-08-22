@@ -7,8 +7,8 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Response;
 use EasyWeChat\Message\Article;
-use common\models\wechat\Attachment;
-use common\models\wechat\News;
+use jianyan\basics\common\models\wechat\Attachment;
+use jianyan\basics\common\models\wechat\News;
 use jianyan\basics\backend\modules\wechat\models\NewsPreview;
 
 /**

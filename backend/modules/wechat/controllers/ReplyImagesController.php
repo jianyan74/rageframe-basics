@@ -1,8 +1,8 @@
 <?php
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
-use common\models\wechat\Rule;
-use common\models\wechat\ReplyImages;
+use jianyan\basics\common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\ReplyImages;
 
 /**
  * 图片回复控制器

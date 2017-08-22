@@ -2,7 +2,7 @@
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
-use common\models\wechat\ReplyDefault;
+use jianyan\basics\common\models\wechat\ReplyDefault;
 
 /**
  * 系统回复控制器

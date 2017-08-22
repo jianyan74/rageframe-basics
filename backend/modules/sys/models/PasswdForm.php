@@ -3,7 +3,7 @@ namespace jianyan\basics\backend\modules\sys\models;
 
 use Yii;
 use yii\base\Model;
-use common\models\sys\Manager;
+use jianyan\basics\common\models\sys\Manager;
 
 /**
  * 修改密码

@@ -5,10 +5,10 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
-use common\models\sys\Article;
-use common\models\sys\Tag;
-use common\models\sys\TagMap;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\Article;
+use jianyan\basics\common\models\sys\Tag;
+use jianyan\basics\common\models\sys\TagMap;
+use backend\controllers\MController;
 
 /**
  * 文章管理控制器

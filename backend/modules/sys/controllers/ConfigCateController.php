@@ -4,8 +4,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use yii;
 use yii\helpers\Html;
 use common\helpers\SysArrayHelper;
-use jianyan\basics\backend\controllers\MController;
-use common\models\sys\ConfigCate;
+use backend\controllers\MController;
+use jianyan\basics\common\models\sys\ConfigCate;
 
 /**
  * 配置分类控制器

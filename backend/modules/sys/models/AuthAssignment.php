@@ -11,7 +11,7 @@ use Yii;
  *
  * @property AuthItem $itemName
  */
-class AuthAssignment extends \common\models\base\AuthAssignment
+class AuthAssignment extends \jianyan\basics\common\models\base\AuthAssignment
 {
     /**
      * 规则类名

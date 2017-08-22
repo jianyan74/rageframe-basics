@@ -1,6 +1,6 @@
 <?php
 use yii\widgets\ActiveForm;
-use common\models\sys\NotifyCate;
+use jianyan\basics\common\models\sys\NotifyCate;
 
 $this->title = $model->isNewRecord ? '创建' : '编辑';
 $this->params['breadcrumbs'][] = ['label' => '系统', 'url' => ['/sys/system/index']];

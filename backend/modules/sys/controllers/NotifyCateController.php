@@ -4,8 +4,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 use yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
-use common\models\sys\NotifyCate;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\NotifyCate;
+use backend\controllers\MController;
 
 /**
  * 公告分类控制器

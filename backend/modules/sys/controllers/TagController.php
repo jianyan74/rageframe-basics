@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\data\Pagination;
-use common\models\sys\Tag;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\Tag;
+use backend\controllers\MController;
 
 /**
  * 标签管理控制器

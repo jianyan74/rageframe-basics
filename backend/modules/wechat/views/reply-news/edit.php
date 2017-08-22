@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
-use common\models\wechat\News;
+use jianyan\basics\common\models\wechat\News;
 
 $this->title = $model->isNewRecord ? '创建' : '编辑';
 $this->params['breadcrumbs'][] = ['label' => '自动回复', 'url' => ['reply/index']];

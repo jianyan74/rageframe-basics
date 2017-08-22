@@ -1,8 +1,8 @@
 <?php
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
-use common\models\wechat\Rule;
-use common\models\wechat\ReplyNews;
+use jianyan\basics\common\models\wechat\Rule;
+use jianyan\basics\common\models\wechat\ReplyNews;
 
 /**
  * 图文回复控制器

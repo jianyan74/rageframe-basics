@@ -6,8 +6,8 @@ use yii\web\Response;
 use yii\helpers\ArrayHelper;
 use EasyWeChat\Foundation\Application;
 use common\controllers\BaseController;
-use common\models\wxapp\Account;
-use common\models\wechat\Fans;
+use jianyan\basics\common\models\wxapp\Account;
+use jianyan\basics\common\models\wechat\Fans;
 
 /**
  * 微信小程序基类

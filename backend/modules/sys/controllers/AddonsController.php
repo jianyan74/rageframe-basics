@@ -6,11 +6,11 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use common\enums\StatusEnum;
-use common\models\sys\Addons;
-use common\models\sys\AddonsBinding;
+use jianyan\basics\common\models\sys\Addons;
+use jianyan\basics\common\models\sys\AddonsBinding;
 use common\helpers\AddonsHelp;
 use common\helpers\StringHelper;
-use jianyan\basics\backend\controllers\MController;
+use backend\controllers\MController;
 
 /**
  * 插件控制器
@@ -106,8 +106,8 @@ class AddonsController extends MController
                 $model->type = $addons->type ? $addons->type : 'other';
                 $model->setting = $addons->setting ? Addons::SETTING_TRUE : Addons::SETTING_FALSE;
                 $model->hook = $addons->hook ? Addons::HOOK_TRUE : Addons::HOOK_FALSE;
-                $model->wxapp_support = $addons->wxapp_support ? StatusEnum::ENABLED : StatusEnum::DISABLED;
-                $model->wechat_message = serialize($addons->wechatMessage);
+                $model->wxapp_support = isset($addons->wxapp_support) ? StatusEnum::ENABLED : StatusEnum::DISABLED;
+                $model->wechat_message = isset($addons->wechatMessage) ? serialize($addons->wechatMessage) : '' ;
 
                 if($model->save())
                 {

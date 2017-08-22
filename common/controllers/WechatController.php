@@ -2,7 +2,6 @@
 namespace jianyan\basics\common\controllers;
 
 use yii;
-use common\controllers\BaseController;
 use EasyWeChat\Payment\Order;
 
 /**
@@ -10,7 +9,7 @@ use EasyWeChat\Payment\Order;
  * Class WechatController
  * @package common\controllers
  */
-class WechatController extends BaseController
+class WechatController extends \common\controllers\BaseController
 {
     /**
      * 微信二维码支付链接

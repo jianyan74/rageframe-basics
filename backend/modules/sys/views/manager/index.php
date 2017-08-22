@@ -52,8 +52,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 <div class="ibox-title">
                     <h5>后台用户</h5>
                     <div class="ibox-tools">
-                        <a class="btn btn-primary btn-xs" href="<?= Url::to(['edit'])?>">
-                            <i class="fa fa-plus"></i>  创建用户
+                        <a class="btn btn-primary btn-xs" href="<?= Url::to(['edit'])?>" data-toggle='modal' data-target='#ajaxModal'>
+                            <i class="fa fa-plus"></i>  创建账号
                         </a>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td><?= Yii::$app->formatter->asDatetime($model->last_time)?></td>
                                 <td>
                                     <a href="<?= Url::to(['edit-personal','id'=>$model->id])?>"><span class="btn btn-info btn-sm">个人中心</span></a>&nbsp
-                                    <a href="<?= Url::to(['edit','id'=>$model->id])?>"><span class="btn btn-info btn-sm">账号管理</span></a>&nbsp
+                                    <a href="<?= Url::to(['edit','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">账号管理</span></a>&nbsp
                                     <?php if($model->id != Yii::$app->params['adminAccount']){ ?>
                                         <a href="<?= Url::to(['auth-role','user_id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">授权角色</span></a>&nbsp
                                         <a href="<?= Url::to(['delete','id'=>$model->id])?>"  onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp

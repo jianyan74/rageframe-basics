@@ -7,7 +7,7 @@ use common\helpers\AddonsHelp;
 use common\helpers\StringHelper;
 use common\helpers\AddonsUrl;
 use common\controllers\WechatController;
-use common\models\sys\Addons as AddonsModel;
+use jianyan\basics\common\models\sys\Addons as AddonsModel;
 
 /**
  * 插件基类

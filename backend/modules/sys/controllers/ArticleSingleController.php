@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\web\NotFoundHttpException;
-use common\models\sys\ArticleSingle;
-use jianyan\basics\backend\controllers\MController;
+use jianyan\basics\common\models\sys\ArticleSingle;
+use backend\controllers\MController;
 
 /**
  * 单页管理控制器
