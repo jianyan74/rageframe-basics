@@ -5,7 +5,7 @@ namespace jianyan\basics\common\models\wechat;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
-use jianyan\basics\common\models\member\Member;
+use common\models\member\Member;
 use yii\helpers\ArrayHelper;
 
 /**
