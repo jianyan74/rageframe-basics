@@ -19,12 +19,6 @@
         "php": ">=5.5.9",
         "yiisoft/yii2": ">=2.0.6"
     },
-    "require-dev": {
-        "yiisoft/yii2-codeception": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*",
-        "yiisoft/yii2-faker": "*"
-    },
     "autoload": {
         "psr-4": {
             "jianyan\\basics\\": ""

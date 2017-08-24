@@ -43,11 +43,11 @@ class MenuController extends MController
     {
         $request  = Yii::$app->request;
         $id  = $request->get('id');
-        $level    = $request->get('level');
-        $pid      = $request->get('pid');
+        $level = $request->get('level');
+        $pid = $request->get('pid');
         $parent_title = $request->get('parent_title','无');
         $type = $request->get('type');
-        $model        = $this->findModel($id);
+        $model = $this->findModel($id);
         $model->type = $type;
 
         //等级
@@ -64,7 +64,9 @@ class MenuController extends MController
             }
             else
             {
-                return $model->save() ? $this->redirect(['index','type'=>$type]) : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index','type'=>$type]),'error');
+                return $model->save()
+                    ? $this->redirect(['index','type' => $type])
+                    : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index','type' => $type]),'error');
             }
         }
 

@@ -32,7 +32,7 @@ use jianyan\basics\backend\modules\sys\models\AuthAssignment;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class Manager extends \jianyan\basics\common\models\base\User
+class Manager extends \common\models\base\User
 {
 
     /**

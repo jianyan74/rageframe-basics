@@ -9,7 +9,7 @@ use jianyan\basics\common\models\sys\ActionLog;
  * Class LoginForm
  * @package jianyan\basics\common\models\sys
  */
-class LoginForm extends \jianyan\basics\common\models\base\LoginForm
+class LoginForm extends \common\models\base\LoginForm
 {
     public $verifyCode;
     /**
@@ -91,6 +91,7 @@ class LoginForm extends \jianyan\basics\common\models\base\LoginForm
         if ($this->validate() && Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0))
         {
             Yii::$app->session->remove('loginCaptchaRequired');
+
             return true;
         }
         else
@@ -101,6 +102,7 @@ class LoginForm extends \jianyan\basics\common\models\base\LoginForm
             {
                 $this->setScenario("captchaRequired");
             }
+
             return false;
         }
     }

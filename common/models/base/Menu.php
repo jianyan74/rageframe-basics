@@ -6,7 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use common\helpers\SysArrayHelper;
-use backend\modules\sys\models\AuthAssignment as SysAuthAssignment;
+use jianyan\basics\backend\modules\sys\models\AuthAssignment as SysAuthAssignment;
 
 /**
  * This is the model class for table "{{%menu}}".
@@ -92,7 +92,6 @@ class Menu extends ActiveRecord
             'updated'  => '修改时间',
         ];
     }
-
 
     /**
      * @param $type

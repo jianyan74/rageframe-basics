@@ -20,8 +20,8 @@ class CacheController extends MController
         Yii::$app->cache->flush();
 
         //删除备份缓存
-        $path   = Yii::$app->params['dataBackupPath'];
-        $lock   = realpath($path) . DIRECTORY_SEPARATOR.Yii::$app->params['dataBackLock'];
+        $path = Yii::$app->params['dataBackupPath'];
+        $lock = realpath($path) . DIRECTORY_SEPARATOR . Yii::$app->params['dataBackLock'];
         array_map("unlink", glob($lock));
 
         return $this->render('clear',[

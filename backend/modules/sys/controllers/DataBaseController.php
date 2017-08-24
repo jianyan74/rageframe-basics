@@ -42,14 +42,13 @@ class DataBaseController extends MController
      */
     public function actionBackups()
     {
-        $Db      = \Yii::$app->db;
-        $models  = $Db->createCommand('SHOW TABLE STATUS')->queryAll();
+        $db      = \Yii::$app->db;
+        $models  = $db->createCommand('SHOW TABLE STATUS')->queryAll();
         $models  = array_map('array_change_key_case', $models);
 
         return $this->render('backups', [
             'models' => $models
         ]);
-
     }
 
     /**
@@ -193,8 +192,6 @@ class DataBaseController extends MController
 
             return $result;
         }
-
-
     }
 
     /**

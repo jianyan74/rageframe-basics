@@ -22,7 +22,7 @@ class AddonsBaseController extends BaseController
     /**
      * 前台和微信插件页面实现
      */
-    public function actionExecute($route,$addon)
+    public function actionExecute($route, $addon)
     {
         return $this->skip(AddonsHelp::analysisBusinessRoute($route,$addon,self::$skipPath));
     }

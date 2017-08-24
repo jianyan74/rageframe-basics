@@ -51,7 +51,9 @@ class NotifyCateController extends MController
             }
             else
             {
-                return $model->save() ? $this->redirect(['index']) : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
+                return $model->save()
+                    ? $this->redirect(['index'])
+                    : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
             }
         }
 

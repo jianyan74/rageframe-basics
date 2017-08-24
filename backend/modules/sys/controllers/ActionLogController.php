@@ -73,7 +73,8 @@ class ActionLogController extends MController
     {
         if (empty($id))
         {
-            return new ActionLog;
+            $model = new ActionLog;
+            return $model->loadDefaultValues();
         }
 
         if (empty(($model = ActionLog::findOne($id))))

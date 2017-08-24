@@ -2,7 +2,6 @@
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use Yii;
-use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\sys\DeskMenu;
 use common\helpers\SysArrayHelper;
 use backend\controllers\MController;
@@ -29,30 +28,40 @@ class DeskMenuController extends MController
     }
 
     /**
-     * 编辑/新增
-     * @return string|\yii\web\Response
+     * 编辑
+     * @return array|mixed|string|\yii\web\Response
      */
     public function actionEdit()
     {
         $request  = Yii::$app->request;
-        $id  = $request->get('id');
+        $id       = $request->get('id');
         $level    = $request->get('level');
         $pid      = $request->get('pid');
         $parent_title = $request->get('parent_title','无');
         $model        = $this->findModel($id);
 
         !empty($level) && $model->level = $level;//等级
-        !empty($pid)   && $model->pid   = $pid;//上级id
+        !empty($pid) && $model->pid   = $pid;//上级id
 
         //设置状态默认值
         !$model->status && $model->status = DeskMenu::STATUS_ON;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if ($model->load(Yii::$app->request->post()))
         {
-            return $this->redirect(['index']);
+            if($request->isAjax)
+            {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return \yii\widgets\ActiveForm::validate($model);
+            }
+            else
+            {
+                return $model->save()
+                    ? $this->redirect(['index'])
+                    : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
+            }
         }
 
-        return $this->render('edit', [
+        return $this->renderAjax('edit', [
             'model'         => $model,
             'parent_title'  => $parent_title,
         ]);

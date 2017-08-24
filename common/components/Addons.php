@@ -71,7 +71,7 @@ class Addons extends WechatController
     {
         $viewPath = $this->renderBase($view);
 
-        /**直接渲染前台视图**/
+        /** 直接渲染前台视图 **/
         if(AddonsHelp::$skipPath != Yii::$app->params['addon']['skipPath'])
         {
             $this->layout = '@frontend/views/layouts/main';

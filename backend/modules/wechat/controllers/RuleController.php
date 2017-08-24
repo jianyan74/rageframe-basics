@@ -107,14 +107,14 @@ class RuleController extends WController
                     if($model->save() && $resultKeywords)
                     {
                         $transaction->commit();
-                        return $this->redirect(['reply/index','module'=>$rule->module]);
+                        return $this->redirect(['rule/index','module'=>$rule->module]);
                     }
                 }
             }
             catch (\Exception $e)
             {
                 $transaction->rollBack();
-                return $this->message($e->getMessage(),$this->redirect(['reply/index']),'error');
+                return $this->message($e->getMessage(),$this->redirect(['rule/index']),'error');
             }
         }
 

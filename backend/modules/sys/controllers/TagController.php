@@ -69,7 +69,7 @@ class TagController extends MController
      */
     public function actionDelete($id)
     {
-        if($this->findModel($id)->delete())
+        if ($this->findModel($id)->delete())
         {
             return $this->message("删除成功",$this->redirect(['index']));
         }

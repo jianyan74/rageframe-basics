@@ -140,7 +140,7 @@ class FileBaseController extends BaseController
         $file = $_FILES['file'];
 
         $qiniu = new Qiniu($ak, $sk,$domain, $bucket);
-        $key = 'yl_'.time().substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);;
+        $key = 'yl_'.time().StringHelper::randomNum();
         $qiniu->uploadFile($file['tmp_name'],$key);
         $url = $qiniu->getLink($key);
 

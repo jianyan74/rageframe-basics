@@ -166,7 +166,7 @@ class MController extends BaseController
      * @param $closeTime
      * @return string
      */
-    public function hintText($msg,$closeTime)
+    public function hintText($msg, $closeTime)
     {
         $text = $msg." <span class='closeTimeYl'>".$closeTime."</span>秒后自动关闭...";
         return $text;

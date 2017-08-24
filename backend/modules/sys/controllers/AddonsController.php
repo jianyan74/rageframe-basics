@@ -603,6 +603,7 @@ class WechatMessage extends Addons
             $res['list'] = $list;
 
             echo json_encode($res);
+            return false;
         }
         else
         {
@@ -677,7 +678,7 @@ class WechatMessage extends Addons
     /**
      * 后台插件页面实现
      */
-    public function actionExecute($route,$addon)
+    public function actionExecute($route, $addon)
     {
         return $this->skip(AddonsHelp::analysisBusinessRoute($route,$addon));
     }
@@ -685,7 +686,7 @@ class WechatMessage extends Addons
     /**
      * 后台插件设置实现
      */
-    public function actionCentre($route,$addon)
+    public function actionCentre($route, $addon)
     {
         return $this->skip(AddonsHelp::analysisBaseRoute($route,$addon));
     }

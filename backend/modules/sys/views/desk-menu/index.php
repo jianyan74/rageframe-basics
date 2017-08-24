@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 <div class="ibox-title">
                     <h5>前台导航</h5>
                     <div class="ibox-tools">
-                        <a class="btn btn-primary btn-xs" href="<?= Url::to(['edit'])?>">
+                        <a class="btn btn-primary btn-xs" href="<?= Url::to(['edit'])?>" data-toggle='modal' data-target='#ajaxModal'>
                             <i class="fa fa-plus"></i>  创建导航
                         </a>
                     </div>
