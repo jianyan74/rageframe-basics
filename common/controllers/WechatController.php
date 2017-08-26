@@ -12,11 +12,6 @@ use EasyWeChat\Payment\Order;
 class WechatController extends \common\controllers\BaseController
 {
     /**
-     * 微信二维码支付链接
-     */
-    const QR_PAY_URL = 'weixin://wxpay/bizpayurl?';
-
-    /**
      * 实例化SDK
      * @var
      */
@@ -132,8 +127,10 @@ class WechatController extends \common\controllers\BaseController
      */
     protected function wechatPay($attributes)
     {
-        $order = new Order($attributes);
+        $attributes['trade_type'] = Order::JSAPI;
         $payment = $this->_app->payment;
+
+        $order = new Order($attributes);
         $result = $payment->prepare($order);
 
         $config = [];
@@ -147,21 +144,24 @@ class WechatController extends \common\controllers\BaseController
     }
 
     /**
-     * 扫码支付
+     * 二维码支付
      * @param $attributes
      */
-    protected function getQrPayUrl($attributes)
+    protected function wechatQrPay($attributes)
     {
-        $config = $this->wechatPay($attributes);
+        $attributes['trade_type'] = Order::NATIVE;
+        $payment = $this->_app->payment;
 
-        $url = self::QR_PAY_URL;
-        $url .= "sign=" . $config['paySign'];
-        $url .= "&appid=" . Yii::$app->config->info('WECHAT_APPID');
-        $url .= "&mch_id=" . Yii::$app->config->info('WECHAT_MCHID');
-        $url .= "&product_id=" . $attributes['out_trade_no'];
-        $url .= "&time_stamp=" . $config['timestamp'];
-        $url .= "&nonce_str=" . $config['nonceStr'];
+        $order = new Order($attributes);
+        $result = $payment->prepare($order);
 
-        return $url;
+        $codeUrl = [];
+        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS')
+        {
+            $prepayId = $result->prepay_id;
+            $codeUrl = $result->code_url;
+        }
+
+        return $codeUrl;
     }
 }

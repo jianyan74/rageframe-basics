@@ -2,6 +2,7 @@
 namespace jianyan\basics\backend\controllers;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use yii\filters\AccessControl;
 use yii\web\UnauthorizedHttpException;
@@ -91,8 +92,13 @@ class MController extends BaseController
             $permissionName = Yii::$app->controller->module->id.'/'.$permissionName;
         }
 
-        //验证不需要RBAC判断的控制器
-        if(in_array($permissionName,Yii::$app->params['noAuthRoute']) || in_array(Yii::$app->controller->action->id,Yii::$app->params['noAuthAction']) )
+        //不需要RBAC判断的路由全称
+        $noAuthRoute = ArrayHelper::merge(Yii::$app->params['basicsNoAuthRoute'],Yii::$app->params['noAuthRoute']);
+
+        //不需要RBAC判断的方法
+        $noAuthAction = ArrayHelper::merge(Yii::$app->params['basicsNoAuthAction'],Yii::$app->params['noAuthAction']);
+
+        if(in_array($permissionName,$noAuthRoute) || in_array(Yii::$app->controller->action->id,$noAuthAction) )
         {
             return true;
         }

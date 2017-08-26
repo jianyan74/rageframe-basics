@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <div class="m-b-md">
                     <img class="img-circle circle-border" alt="image" src="<?php echo !empty($model->head_portrait) ? $model->head_portrait : '/resource/backend/img/profile.jpg' ?>">
                 </div>
-                <p class="font-bold"><h3><i class="fa <?php echo $model->sex == 0 ? 'fa-mars': 'fa-venus'; ?>"></i> <?= $model->realname?></h3></p>
+                <p class="font-bold"><h3><i class="fa <?php echo $model->sex == 1 ? 'fa-mars': 'fa-venus'; ?>"></i> <?= $model->realname?></h3></p>
                 <div class="text-center">
                     <a class="btn btn-xs btn-primary" data-toggle="modal" data-target="#avatar-modal"> <i class="fa fa-upload"></i>  头像上传</a>
                 </div>
@@ -37,7 +37,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                 <p><?= $model->address?></p>
             </div>
         </div>
-
         <div class="col-sm-9">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -49,9 +48,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             <?= $form->field($model, 'head_portrait')->hiddenInput()->label(false) ?>
                         </div>
                         <?= $form->field($model, 'realname')->textInput() ?>
+                        <?= $form->field($model, 'sex')->radioList(['1' => '男','2' => '女']) ?>
                         <?= $form->field($model, 'mobile_phone')->textInput() ?>
-                        <?= $form->field($model, 'email')->textInput() ?>
-                        <?= $form->field($model, 'sex')->radioList(['0'=>'男','1'=>'女']) ?>
                         <?= $form->field($model, 'email')->textInput() ?>
                         <?= $form->field($model,'birthday')->widget('kartik\date\DatePicker',[
                             'language'  => 'zh-CN',
