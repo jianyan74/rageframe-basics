@@ -82,6 +82,7 @@ class Addons extends ActiveRecord
             [['cover','wechat_message'], 'string', 'max' => 1000],
             [['group'], 'safe'],
             [['install','uninstall','upgrade'], 'string', 'max' => 100],
+            [['brief_introduction'], 'string', 'max' => 140],
         ];
     }
 
@@ -97,6 +98,7 @@ class Addons extends ActiveRecord
             'cover'     => '封面',
             'group'     => '组别',
             'type'      => '类别',
+            'brief_introduction' => '简单说明',
             'description' => '模块说明',
             'status'    => '状态',
             'config'    => '配置信息',
@@ -127,7 +129,10 @@ class Addons extends ActiveRecord
 
         $addons = [];
         $where = ['in','name',$dirs];
-        $list =	$this->find()->where($where)->asArray()->all();
+        $list =	$this->find()
+            ->where($where)
+            ->asArray()
+            ->all();
 
         foreach($list as $addon)
         {

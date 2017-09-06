@@ -12,7 +12,10 @@ $config = [
         ],
     ],
     'components' => [
-
+        /**-------------------后台操作日志-------------------**/
+        'actionlog' => [
+            'class' => 'jianyan\basics\common\models\sys\ActionLog',
+        ],
     ],
 ];
 

@@ -3,7 +3,7 @@ return [
     /**-------------------开发者信息-------------------**/
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
-    'exploitVersions'          => '1.1.0',
+    'exploitVersions'          => '1.1.21',
     'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',

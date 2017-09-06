@@ -32,8 +32,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <h3><?php echo $vo['title'] ?></h3>
-                                                ( 标识：<?php echo $vo['name'] ?> 版本：<?php echo $vo['version'] ?> 作者：<?php echo $vo['author'] ?> )
+                                                <h4><?php echo $vo['title'] ?><small>( 标识：<?php echo $vo['name'] ?> 版本：<?php echo $vo['version'] ?> 作者：<?php echo $vo['author'] ?> )</small></h4>
+                                                <?php echo isset($vo['brief_introduction']) ? $vo['brief_introduction'] : '' ?>
                                             </td>
                                             <td>
                                                 <a href="<?php echo Url::to(['install','name' => $vo['name']])?>" data-method="post"><span class="btn btn-info btn-sm">安装插件</span></a>&nbsp

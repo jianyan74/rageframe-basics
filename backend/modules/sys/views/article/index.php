@@ -5,7 +5,6 @@ use yii\widgets\LinkPager;
 use jianyan\basics\common\models\sys\Cate;
 use jianyan\basics\common\models\sys\Article;
 
-
 $this->title = '文章管理';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 ?>

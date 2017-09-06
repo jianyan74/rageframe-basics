@@ -1,7 +1,6 @@
 <?php
 namespace jianyan\basics\common\components;
 
-
 use yii;
 use common\helpers\AddonsHelp;
 use common\helpers\StringHelper;
@@ -19,7 +18,7 @@ class Addons extends WechatController
     /**
      * @var string
      */
-    public $layout = '@backend/views/layouts/main';
+    public $layout = '@vendor/jianyan74/rageframe-basics/backend/views/layouts/main';
 
     /**
      * 获取当前插件根目录

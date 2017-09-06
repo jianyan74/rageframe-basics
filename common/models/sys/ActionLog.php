@@ -1,5 +1,4 @@
 <?php
-
 namespace jianyan\basics\common\models\sys;
 
 use Yii;
@@ -98,12 +97,16 @@ class ActionLog extends \yii\db\ActiveRecord
         $logModel->record_id    = $record_id;
         $logModel->log_url      = Yii::$app->request->getUrl();
         $logModel->remark       = $remark;
+
         //IP地址信息来源
         $ipInfo = \common\helpers\ApiHelper::IpInfoSina(Yii::$app->request->userIP);
-        $logModel->country = $ipInfo['country'];
-        $logModel->province = $ipInfo['province'];
-        $logModel->city = $ipInfo['city'];
-        $logModel->district = $ipInfo['district'];
+        if($ipInfo)
+        {
+            $logModel->country = $ipInfo['country'];
+            $logModel->province = $ipInfo['province'];
+            $logModel->city = $ipInfo['city'];
+            $logModel->district = $ipInfo['district'];
+        }
 
         $logModel->save();
     }

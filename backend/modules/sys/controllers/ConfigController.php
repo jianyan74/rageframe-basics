@@ -85,6 +85,7 @@ class ConfigController extends MController
     {
         //所有的配置信息
         $list = Config::find()
+            ->where(['status' => 1])
             ->orderBy('sort asc')
             ->asArray()
             ->all();

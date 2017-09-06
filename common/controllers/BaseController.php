@@ -2,6 +2,7 @@
 namespace jianyan\basics\common\controllers;
 
 use Yii;
+use yii\web\Response;
 use yii\web\Controller;
 use yii\helpers\ArrayHelper;
 use common\helpers\ResultDataHelper;
@@ -14,16 +15,16 @@ use common\helpers\ResultDataHelper;
 class BaseController extends Controller
 {
     /**
-     * ajax信息返回
-     * @var
-     */
-    protected $result;
-
-    /**
      * 默认分页大小
      * @var int
      */
-    public $_pageSize = 20;
+    protected $_pageSize = 20;
+
+    /**
+     * ajax信息返回
+     * @var
+     */
+    protected $_result;
 
     /**
      * 解析Yii2错误信息
@@ -42,7 +43,7 @@ class BaseController extends Controller
      */
     public function setResult()
     {
-        return $this->result ? $this->result : new ResultDataHelper();
+        return $this->_result = new ResultDataHelper();
     }
 
     /**
@@ -51,16 +52,21 @@ class BaseController extends Controller
      */
     public function getResult()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
         $result = [
-            'code' => strval($this->result->code),
-            'message' => trim($this->result->message),
-            'data' => $this->result->data ? $this->result->data : [],
+            'code' => strval($this->_result->code),
+            'message' => trim($this->_result->message),
+            'data' => $this->_result->data ? ArrayHelper::toArray($this->_result->data) : [],
         ];
 
         // 测试环境显示处理时间信息 方便优化
-        //$result['use_time'] = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+        if (!YII_ENV_TEST)
+        {
+            $result['use_time'] = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+        }
 
-         return ArrayHelper::toArray($result);
+        return $result;
     }
 
     /**

@@ -30,11 +30,3 @@ use yii\helpers\Url;
     <button class="btn btn-primary" type="submit">保存内容</button>
 </div>
 <?php ActiveForm::end(); ?>
-
-
-
-
-
-
-
-

@@ -18,8 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-content">
                     <?php $form = ActiveForm::begin([]); ?>
                     <div class="col-sm-12">
-                        <?= $form->field($model, 'name')->textInput() ?>
                         <?= $form->field($model, 'title')->textInput() ?>
+                        <?= $form->field($model, 'name')->textInput() ?>
                         <?= $form->field($model, 'sort')->textInput()?>
                         <?= $form->field($model, 'type')->dropDownList($configTypeList)?>
                         <div class="row">
@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'extra')->textarea()->hint('如果是枚举型 需要配置该项')?>
                         <?= $form->field($model, 'remark')->textarea()?>
                         <?= $form->field($model, 'is_hide_remark')->checkbox() ?>
+                        <?= $form->field($model, 'status')->radioList(['1'=>'启用','-1'=>'禁用']) ?>
                         <div class="hr-line-dashed"></div>
                     </div>
                     <div class="form-group">

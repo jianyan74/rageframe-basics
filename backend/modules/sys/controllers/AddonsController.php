@@ -64,7 +64,7 @@ class AddonsController extends MController
         }
 
         return $this->render('uninstall',[
-            'list' => Addons::find()->all(),
+            'list' => Addons::find()->orderBy('append asc')->all(),
         ]);
     }
 
@@ -368,9 +368,10 @@ class {$model->name}Addon
     public \$info = [
         'name' => '{$model->name}',
         'title' => '{$model->title}',
+        'brief_introduction' => '{$model->brief_introduction}',
         'description' => '{$model->description}',
         'author' => '{$model->author}',
-        'version' => '{$model->version}'
+        'version' => '{$model->version}',
     ];
     
     /**
@@ -562,12 +563,22 @@ class WechatMessage extends Addons
     }
 
     /**
+     * ajax修改
+     * @return array
+     */
+    public function actionUpdateAjax()
+    {
+        $id = Yii::$app->request->get('id');
+        return $this->updateModelData(Addons::findOne($id));
+    }
+
+    /**
      * 插件首页
      * @return string
      */
     public function actionIndex()
     {
-        $request  = Yii::$app->request;
+        $request = Yii::$app->request;
         if($request->isAjax)
         {
             $keyword = $request->get('keyword');
@@ -589,7 +600,7 @@ class WechatMessage extends Addons
                 }
                 else
                 {
-                    $vo['cover'] = "/resource/jianyan\basics\backend/img/icon.jpg";
+                    $vo['cover'] = "/resource/backend/img/icon.jpg";
                 }
 
                 $vo['link'] = Url::to(['binding','addons'=>$vo['name']]);
@@ -631,18 +642,34 @@ class WechatMessage extends Addons
     {
         $request  = Yii::$app->request;
         $addonName = $request->get('addon');
+
         if(!($model = Addons::getAddon($addonName)))
         {
             return $this->message('插件不存在',$this->redirect(['index']),'error');
         }
 
+        $list = AddonsBinding::getList($addonName);
+
         /**插件信息加入公共配置**/
         Yii::$app->params['addon']['info'] = ArrayHelper::toArray($model);
+        Yii::$app->params['addon']['binding'] = $list;
 
-        return $this->render('binding',[
-            'model' => $model,
-            'list' => AddonsBinding::getList($addonName)
-        ]);
+        if(!$list)
+        {
+            return $this->message('插件菜单未配置',$this->redirect(['index']),'error');
+        }
+
+        //优先跳转到业务功能菜单
+        if(isset($list['menu'][0]))
+        {
+            return $this->redirect(['execute','route' => $list['menu'][0]['route'],'addon' => $addonName]);
+        }
+
+        //跳转到参数配置
+
+        //跳转到文档入口
+
+        return true;
     }
 
     /**
@@ -660,6 +687,9 @@ class WechatMessage extends Addons
         }
 
         Yii::$app->params['addon'] = $model['addon'];
+        /**插件信息加入公共配置**/
+        Yii::$app->params['addon']['info'] = $model['addon'];
+        Yii::$app->params['addon']['binding'] = AddonsBinding::getList($model['addon']['name']);
 
         return $this->render('cover',[
             'model' => $model,
@@ -718,7 +748,9 @@ class WechatMessage extends Addons
             throw new NotFoundHttpException($through['controller'].'/' . $actionName . '方法未找到');
         }
 
+        /**插件信息加入公共配置**/
         Yii::$app->params['addon']['info'] = ArrayHelper::toArray($model);
+        Yii::$app->params['addon']['binding'] = AddonsBinding::getList($through['addon']);
 
         return $list->$actionName();
     }

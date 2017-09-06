@@ -22,6 +22,11 @@ class MController extends BaseController
     public $enableCsrfValidation = true;
 
     /**
+     * 默认自动加载地址
+     */
+    public $layout = '@basics/backend/views/layouts/main';
+
+    /**
      * 自动运行
      */
     public function init()
@@ -188,6 +193,8 @@ class MController extends BaseController
         Yii::$app->response->format = Response::FORMAT_JSON;
         $result = [];
         $model->attributes = Yii::$app->request->get();
+
+
         if(!$model->save())
         {
             $result['flg'] = 2;

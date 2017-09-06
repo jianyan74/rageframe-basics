@@ -58,19 +58,18 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 <script type="text/javascript">
     //status => 1:启用;-1禁用;
     function status(obj){
-        var status = "";
+
+        var status = -1;
         var id = $(obj).parent().parent().attr('id');
         var self = $(obj);
 
         if(self.hasClass("btn-primary")){
             status = 1;
-        } else {
-            status = -1;
         }
 
         $.ajax({
-            type     :"get",
-            url      :"<?= Url::to(['update-ajax'])?>",
+            type     : "get",
+            url      : "<?= Url::to(['update-ajax'])?>",
             dataType : "json",
             data     : {id:id,status:status},
             success: function(data){

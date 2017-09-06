@@ -107,7 +107,7 @@ class Config extends ActiveRecord
         $info = Yii::$app->cache->get($key);
         if(!$info)
         {
-            $config = Config::find()->all();
+            $config = Config::find()->where(['status' => 1])->all();
             $info = [];
             foreach ($config as $row)
             {

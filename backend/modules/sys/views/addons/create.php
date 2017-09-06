@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             </div>
                                         </div>
                                         <?= $form->field($model, 'version')->textInput()->hint('模块当前版本, 此版本号用于模块的版本更新')?>
+                                        <?= $form->field($model, 'brief_introduction')->textInput() ?>
                                         <?= $form->field($model, 'description')->textarea()->hint('模块详细描述, 详细介绍模块的功能和使用方法 ')?>
                                         <?= $form->field($model, 'author')->textInput()?>
                                         <?= $form->field($model, 'wxapp_support')->checkbox()->hint('此模块是否支持小程序') ?>
