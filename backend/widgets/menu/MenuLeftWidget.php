@@ -14,7 +14,7 @@ class MenuLeftWidget extends Widget
 {
     public function run()
     {
-        return $this->render('index', [
+        return $this->render('menu-left', [
             'models'=> Menu::getMenus(Menu::TYPE_MENU,Menu::STATUS_ON),
             'plug' => Addons::getPlugList()
         ]);

@@ -665,11 +665,9 @@ class WechatMessage extends Addons
             return $this->redirect(['execute','route' => $list['menu'][0]['route'],'addon' => $addonName]);
         }
 
-        //跳转到参数配置
+        return $this->render('binding',[
 
-        //跳转到文档入口
-
-        return true;
+        ]);
     }
 
     /**
