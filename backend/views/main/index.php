@@ -119,7 +119,7 @@ AppAsset::register($this);
                 </nav>
                 <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i></button>
                 <div class="btn-group roll-nav roll-right">
-                    <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span></button>
+                    <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作</button>
                     <ul role="menu" class="dropdown-menu dropdown-menu-right">
                         <li class="J_tabShowActive"><a>定位当前选项卡</a></li>
                         <li class="divider"></li>

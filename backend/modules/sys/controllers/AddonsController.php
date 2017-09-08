@@ -743,7 +743,7 @@ class WechatMessage extends Addons
         $list = new $class($through['controller'],Yii::$app->module);
         if(!method_exists($list,$actionName))
         {
-            throw new NotFoundHttpException($through['controller'].'/' . $actionName . '方法未找到');
+            throw new NotFoundHttpException($through['controllerName'].'/' . $actionName . '方法未找到');
         }
 
         /**插件信息加入公共配置**/

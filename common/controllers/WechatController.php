@@ -2,6 +2,7 @@
 namespace jianyan\basics\common\controllers;
 
 use yii;
+use yii\web\BadRequestHttpException;
 use EasyWeChat\Payment\Order;
 
 /**
@@ -139,6 +140,10 @@ class WechatController extends \common\controllers\BaseController
             $prepayId = $result->prepay_id;
             $config = $payment->configForJSSDKPayment($prepayId); // 返回数组
         }
+        else
+        {
+            throw new BadRequestHttpException($result['return_msg']);
+        }
 
         return $config;
     }
@@ -161,7 +166,11 @@ class WechatController extends \common\controllers\BaseController
             $prepayId = $result->prepay_id;
             $codeUrl = $result->code_url;
         }
-
+        else
+        {
+            throw new BadRequestHttpException($result['return_msg']);
+        }
+        
         return $codeUrl;
     }
 }
