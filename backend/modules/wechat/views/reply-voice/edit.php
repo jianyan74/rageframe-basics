@@ -3,7 +3,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 $this->title = $model->isNewRecord ? '创建' : '编辑';
-$this->params['breadcrumbs'][] = ['label' => '自动回复', 'url' => ['reply/index']];
+$this->params['breadcrumbs'][] = ['label' => '自动回复', 'url' => ['rule/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

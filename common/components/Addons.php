@@ -18,7 +18,7 @@ class Addons extends WechatController
     /**
      * @var string
      */
-    public $layout = '@vendor/jianyan74/rageframe-basics/backend/views/layouts/main';
+    public $layout = '@basics/backend/views/layouts/main';
 
     /**
      * 获取当前插件根目录

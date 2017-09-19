@@ -134,7 +134,6 @@ class WechatController extends \common\controllers\BaseController
         $order = new Order($attributes);
         $result = $payment->prepare($order);
 
-        $config = [];
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS')
         {
             $prepayId = $result->prepay_id;
@@ -160,7 +159,6 @@ class WechatController extends \common\controllers\BaseController
         $order = new Order($attributes);
         $result = $payment->prepare($order);
 
-        $codeUrl = [];
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS')
         {
             $prepayId = $result->prepay_id;

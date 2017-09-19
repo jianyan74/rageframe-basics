@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th width="42">折叠</th>
+                            <th width="50">折叠</th>
                             <th>分类名称</th>
                             <th>排序</th>
                             <th>操作</th>
