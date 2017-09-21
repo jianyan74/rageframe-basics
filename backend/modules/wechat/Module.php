@@ -3,22 +3,19 @@
 namespace jianyan\basics\backend\modules\wechat;
 
 /**
- * wechat module definition class
+ * 微信模块
+ * Class Module
+ * @package jianyan\basics\backend\modules\wechat
  */
-class index extends \yii\base\Module
+class Module extends \yii\base\Module
 {
     /**
-     * @inheritdoc
+     * @var string
      */
     public $controllerNamespace = 'jianyan\basics\backend\modules\wechat\controllers';
 
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 }

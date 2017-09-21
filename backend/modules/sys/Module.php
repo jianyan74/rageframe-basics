@@ -4,10 +4,10 @@ namespace jianyan\basics\backend\modules\sys;
 
 /**
  * 系统模块定义类
- * Class index
+ * Class Module
  * @package jianyan\basics\backend\modules\sys
  */
-class index extends \yii\base\Module
+class Module extends \yii\base\Module
 {
     /**
      * @inheritdoc

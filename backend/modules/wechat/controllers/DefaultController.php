@@ -36,6 +36,29 @@ class DefaultController extends WController
     protected $_msg_history;
 
     /**
+     * 行为控制
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],//登录
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['?'],//游客
+                        'actions' => ['index'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * @return array|mixed
      * @throws NotFoundHttpException
      * subscribe 订阅关注事件
