@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ]
                                     ]); ?>
                                     <div class="col-sm-12">
-                                        <?= $form->field($model, 'title')->textInput()->hint('模块的名称, 由于显示在用户的模块列表中. 不要超过10个字符 ') ?>
+                                        <?= $form->field($model, 'title')->textInput()->hint('模块的名称, 由于显示在用户的模块列表中. 不要超过20个字符 ') ?>
                                         <?= $form->field($model, 'name')->textInput()->hint('模块标识符, 应对应模块文件夹的名称, 系统系统按照此标识符查找模块定义, 只能英文和下划线组成 ') ?>
                                         <div class="row">
                                             <div class="col-md-4">
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= $form->field($model, 'setting')->checkbox()->hint('此模块是否存在全局的配置参数') ?>
                                         <?= $form->field($model, 'hook')->checkbox()->hint('此模块是否存在钩子') ?>
                                         <div class="hr-line-dashed"></div>
-                                        <?= $form->field($model, 'wechatMessage')->checkboxList(\jianyan\basics\common\models\wechat\Account::$mtype)->hint('当前模块能够直接处理的消息类型(没有上下文的对话语境, 能直接处理消息并返回数据). 如果公众平台传递过来的消息类型不在设定的类型列表中, 那么系统将不会把此消息路由至此模块')?>
+                                        <?= $form->field($model, 'wechat_message')->checkboxList(\jianyan\basics\common\models\wechat\Account::$mtype)->hint('当前模块能够直接处理的消息类型(没有上下文的对话语境, 能直接处理消息并返回数据). 如果公众平台传递过来的消息类型不在设定的类型列表中, 那么系统将不会把此消息路由至此模块')?>
                                         <div class="alert-warning alert">
                                             注意: 关键字路由只能针对文本消息有效, 文本消息最为重要. 其他类型的消息并不能被直接理解, 多数情况需要使用文本消息来进行语境分析, 再处理其他相关消息类型<br>
                                             注意: 上下文锁定的模块不受此限制, 上下文锁定期间, 任何类型的消息都会路由至锁定模块
@@ -59,19 +59,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="margin-left:-15px;margin-bottom:10px">
                                                         <span class="input-group-addon">菜单名称</span>
-                                                        <input class="form-control" name="bindings[cover][title][]" placeholder="请输入菜单名称 例如:测试" type="text">
+                                                        <input class="form-control" name="bindings[cover][title][]" placeholder="例如:首页入口" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="margin-left:-15px;margin-bottom:10px">
                                                         <span class="input-group-addon">菜单路由</span>
-                                                        <input class="form-control" name="bindings[cover][route][]" placeholder="请输入菜单路由 例如:首页导航" type="text">
+                                                        <input class="form-control" name="bindings[cover][route][]" placeholder="例如:test/index" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="margin-left:-15px;margin-bottom:10px">
                                                         <span class="input-group-addon">菜单图标</span>
-                                                        <input class="form-control" name="bindings[cover][icon][]" placeholder="请输入菜单图标 例如:fa fa-wechat" type="text">
+                                                        <input class="form-control" name="bindings[cover][icon][]" placeholder="例如:fa fa-wechat" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -93,19 +93,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="margin-left:-15px;margin-bottom:10px">
                                                         <span class="input-group-addon">菜单名称</span>
-                                                        <input class="form-control" name="bindings[menu][title][]" placeholder="请输入菜单名称 例如:首页管理" type="text">
+                                                        <input class="form-control" name="bindings[menu][title][]" placeholder="例如:首页管理" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="margin-left:-15px;margin-bottom:10px">
                                                         <span class="input-group-addon">菜单路由</span>
-                                                        <input class="form-control" name="bindings[menu][route][]" placeholder="请输入菜单路由 例如:test/index" type="text">
+                                                        <input class="form-control" name="bindings[menu][route][]" placeholder="例如:test/index" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group" style="margin-left:-15px;margin-bottom:10px">
                                                         <span class="input-group-addon">菜单图标</span>
-                                                        <input class="form-control" name="bindings[menu][icon][]" placeholder="请输入菜单图标 例如:fa fa-wechat" type="text">
+                                                        <input class="form-control" name="bindings[menu][icon][]" placeholder="例如:fa fa-wechat" type="text">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">

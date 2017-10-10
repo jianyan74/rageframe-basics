@@ -37,7 +37,7 @@ class Rule extends ActiveRecord
     const RULE_MODULE_IMAGES = 'images';
     const RULE_MODULE_VOICE = 'voice';
     const RULE_MODULE_VIDEO = 'video';
-    const RULE_MODULE_USER_API = 'userapi';
+    const RULE_MODULE_USER_API = 'user-api';
     const RULE_MODULE_WX_CARD = 'wxcard';
     const RULE_MODULE_DEFAULT = 'default';
 
@@ -52,9 +52,9 @@ class Rule extends ActiveRecord
         //self::RULE_MODULE_MUSIC     => '音乐回复',
         //self::RULE_MODULE_VOICE     => '语音回复',
         //self::RULE_MODULE_VIDEO     => '视频回复',
-        //self::RULE_MODULE_USER_API  => '自定义接口回复',
+        self::RULE_MODULE_USER_API  => '自定义接口回复',
         //self::RULE_MODULE_WX_CARD   => '微信卡卷回复',
-        //self::RULE_MODULE_DEFAULT   => '系统默认回复',
+        //self::RULE_MODULE_DEFAULT   => '默认回复',
     ];
 
     /**
@@ -108,24 +108,31 @@ class Rule extends ActiveRecord
             case  self::RULE_MODULE_BASE :
                 ReplyBasic::deleteAll(['rule_id' => $id]);
                 break;
+
             case  self::RULE_MODULE_NEWS :
                 ReplyNews::deleteAll(['rule_id' => $id]);
                 break;
+
             case  self::RULE_MODULE_MUSIC :
                // ReplyBasic::deleteAll(['rule_id'=>$id]);
                 break;
+
             case  self::RULE_MODULE_IMAGES :
                 ReplyImages::deleteAll(['rule_id' => $id]);
                 break;
+
             case  self::RULE_MODULE_VOICE :
                 //ReplyBasic::deleteAll(['rule_id'=>$id]);
                 break;
+
             case  self::RULE_MODULE_VIDEO :
                 //ReplyBasic::deleteAll(['rule_id'=>$id]);
                 break;
+
             case  self::RULE_MODULE_USER_API :
-                //ReplyBasic::deleteAll(['rule_id'=>$id]);
+                ReplyUserApi::deleteAll(['rule_id' => $id]);
                 break;
+
             case  self::RULE_MODULE_WX_CARD :
                 //::deleteAll(['rule_id'=>$id]);
                 break;

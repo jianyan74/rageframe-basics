@@ -3,14 +3,14 @@ namespace jianyan\basics\common\controllers;
 
 use Yii;
 use yii\web\NotFoundHttpException;
-use common\controllers\BaseController;
 use jianyan\basics\common\models\sys\Addons;
+use common\controllers\BaseController;
 use common\helpers\AddonsHelp;
 
 /**
  * 模块基类控制器
- * Class AddonsController
- * @package common\controllers
+ * Class AddonsBaseController
+ * @package jianyan\basics\common\controllers
  */
 class AddonsBaseController extends BaseController
 {

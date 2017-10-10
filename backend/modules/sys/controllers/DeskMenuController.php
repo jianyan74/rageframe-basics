@@ -33,15 +33,15 @@ class DeskMenuController extends MController
      */
     public function actionEdit()
     {
-        $request  = Yii::$app->request;
-        $id       = $request->get('id');
-        $level    = $request->get('level');
-        $pid      = $request->get('pid');
+        $request = Yii::$app->request;
+        $id = $request->get('id');
+        $level = $request->get('level');
+        $pid = $request->get('pid');
         $parent_title = $request->get('parent_title','无');
-        $model        = $this->findModel($id);
+        $model = $this->findModel($id);
 
         !empty($level) && $model->level = $level;//等级
-        !empty($pid) && $model->pid   = $pid;//上级id
+        !empty($pid) && $model->pid = $pid;//上级id
 
         //设置状态默认值
         !$model->status && $model->status = DeskMenu::STATUS_ON;
@@ -65,16 +65,6 @@ class DeskMenuController extends MController
             'model'         => $model,
             'parent_title'  => $parent_title,
         ]);
-    }
-
-    /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findModel($id));
     }
 
     /**

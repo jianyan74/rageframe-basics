@@ -1,12 +1,13 @@
 <?php
-
 namespace jianyan\basics\common\models\sys;
 
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
+use yii\web\NotFoundHttpException;
 use yii\db\ActiveRecord;
 use common\helpers\AddonsHelp;
+use common\enums\StatusEnum;
 
 /**
  * This is the model class for table "{{%sys_addons}}".
@@ -27,35 +28,9 @@ use common\helpers\AddonsHelp;
  */
 class Addons extends ActiveRecord
 {
-    /**
-     * 配置启用
-     */
-    const SETTING_TRUE = 1;
-    /**
-     * 配置关闭
-     */
-    const SETTING_FALSE = -1;
-    /**
-     * 钩子启用
-     */
-    const HOOK_TRUE = 1;
-    /**
-     * 钩子关闭
-     */
-    const HOOK_FALSE = -1;
-    /**
-     * 模块启用
-     */
-    const STATUS_ON = 1;
-    /**
-     * 模块关闭
-     */
-    const STATUS_OFF = -1;
-
     public $install;
     public $uninstall;
     public $upgrade;
-    public $wechatMessage;
 
     /**
      * @inheritdoc
@@ -74,11 +49,13 @@ class Addons extends ActiveRecord
             ['name','unique','message'=>'该模块已经存在'],
             ['name','match','pattern'=>'/^[_a-zA-Z]+$/','message'=>'标识由英文和下划线组成'],
             [['name','title','version', 'description','install','uninstall','upgrade'], 'trim'],
-            [['name','title', 'type','version', 'description','author'], 'required'],
+            [['name','title', 'type','version', 'description','author','brief_introduction'], 'required'],
             [['description', 'config'], 'string'],
             [['wxapp_support','status', 'setting', 'hook','updated', 'append'], 'integer'],
             [['name', 'author'], 'string', 'max' => 40],
-            [['title', 'version'], 'string', 'max' => 10],
+            [['version'], 'string', 'max' => 10],
+            [['title'], 'string', 'max' => 20],
+            [['title_initial'], 'string', 'max' => 1],
             [['cover','wechat_message'], 'string', 'max' => 1000],
             [['group'], 'safe'],
             [['install','uninstall','upgrade'], 'string', 'max' => 100],
@@ -92,27 +69,28 @@ class Addons extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'        => 'ID',
-            'name'      => '模块标识',
-            'title'     => '模板名称',
-            'cover'     => '封面',
-            'group'     => '组别',
-            'type'      => '类别',
+            'id' => 'ID',
+            'name' => '模块标识',
+            'title' => '模板名称',
+            'title_initial' => '首字母拼音',
+            'cover' => '封面',
+            'group' => '组别',
+            'type' => '类别',
             'brief_introduction' => '简单说明',
             'description' => '模块说明',
-            'status'    => '状态',
-            'config'    => '配置信息',
-            'hook'      => '钩子',
+            'status' => '状态',
+            'config' => '配置信息',
+            'hook' => '钩子',
             'wxapp_support' => '小程序',
-            'setting'   => '存在全局设置项',
-            'author'    => '作者',
-            'version'   => '版本',
-            'wechatMessage' => '微信公众平台消息处理选项',
-            'install'   => '模块安装脚本',
+            'setting' => '存在全局设置项',
+            'author' => '作者',
+            'version' => '版本',
+            'wechat_message' => '微信公众平台消息处理选项',
+            'install' => '模块安装脚本',
             'uninstall' => '模块卸载脚本',
-            'upgrade'   => '模块升级脚本',
-            'append'    => '创建时间',
-            'updated'   => '更新时间',
+            'upgrade' => '模块升级脚本',
+            'append' => '创建时间',
+            'updated' => '更新时间',
         ];
     }
 
@@ -136,8 +114,8 @@ class Addons extends ActiveRecord
 
         foreach($list as $addon)
         {
-            $addon['uninstall']		=	0;
-            $addons[$addon['name']]	=	$addon;
+            $addon['uninstall'] = 0;
+            $addons[$addon['name']]	= $addon;
         }
 
         foreach ($dirs as $value)
@@ -201,18 +179,17 @@ class Addons extends ActiveRecord
      */
     public static function getAddon($name)
     {
-        return Addons::find()->where(['name' => $name])->one();
+        return Addons::find()->where(['name' => $name, 'status' => StatusEnum::ENABLED])->one();
     }
 
     /**
      * 获取插件列表
-     * @param $name
-     * @return array|null|ActiveRecord
+     * @return array|ActiveRecord[]
      */
     public static function getPlugList()
     {
-        $models = Addons::find()
-            ->where(['status'=>Addons::STATUS_ON])
+        $models = self::find()
+            ->where(['status' => StatusEnum::ENABLED])
             ->andWhere(['type' => 'plug'])
             ->asArray()
             ->all();
@@ -221,11 +198,58 @@ class Addons extends ActiveRecord
     }
 
     /**
+     * 获取模块列表
+     * @return array|ActiveRecord[]
+     */
+    public static function getModuleList()
+    {
+        $models = self::find()
+            ->where(['status' => StatusEnum::ENABLED])
+            ->andWhere(['<>','type','plug'])
+            ->asArray()
+            ->all();
+
+        return $models ? $models : [];
+    }
+
+    /**
+     * 获取模块数据
+     * @param $message
+     * @param $addon
+     * @return string
+     */
+    public static function getWechatMessage($message, $addon)
+    {
+        try
+        {
+            $class = '\addons\\' . $addon . '\\WechatMessage';
+            if(!class_exists($class))
+            {
+                throw new NotFoundHttpException($class . '未找到');
+            }
+
+            $class = new $class;
+            if(!method_exists($class,'run'))
+            {
+                throw new NotFoundHttpException($class . '/actionRespond 方法未找到');
+            }
+
+            return $class->run($message);
+        }
+        catch (\Exception $e)
+        {
+            Yii::warning($e->getMessage());
+            return '模块异常,请联系管理员';
+        }
+    }
+
+    /**
+     * 获取小程序
      * @return mixed
      */
     public static function getWxAppList()
     {
-        $model = self::find()->where(['wxapp_support' => 1,'status' => 1])->all();
+        $model = self::find()->where(['wxapp_support' => 1,'status' => StatusEnum::ENABLED])->all();
         return ArrayHelper::map($model,'name','title');
     }
 

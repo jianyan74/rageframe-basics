@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                     <span class="label label-info">钩子</span>
                                                 <?php } ?>
                                             </h4>
-                                            <?php echo $vo['brief_introduction'] ?> <a href="#" class="show-description">详细介绍</a>
+                                            <?php echo $vo['brief_introduction'] ?> <a href="javascript:void(0);" class="show-description">详细介绍</a>
                                         </td>
                                         <td>
                                             <a href="<?php echo Url::to(['upgrade','name' => $vo['name']])?>"><span class="btn btn-info btn-sm">更新</span></a>&nbsp

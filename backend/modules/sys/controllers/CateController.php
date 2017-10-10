@@ -69,16 +69,6 @@ class CateController extends MController
     }
 
     /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findModel($id));
-    }
-
-    /**
      * @param $pid
      */
     public function actionList($pid, $typeid = 0)

@@ -13,9 +13,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         <div class="col-sm-12">
             <div class="tabs-container">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="<?= Url::to(['rule/index'])?>"> 关键字自动回复</a></li>
-                    <li><a href="<?= Url::to(['setting/special-message'])?>"> 非文字消息回复</a></li>
-                    <li><a href="<?= Url::to(['reply-default/index'])?>"> 关注/默认回复</a></li>
+                    <?= $this->render('/common/rule-nav',[
+                        'nav_type' => 1,
+                    ])?>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active">
@@ -68,28 +68,30 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                        <?php } ?>
                                                    <?php } ?>
                                                     <?php if($model->status == Rule::STATUS_OFF){ ?>
-                                                        <span class="label label-danger" onclick="status(this)">已禁用</span>
+                                                        <span class="label label-danger" onclick="statusRule(this)">已禁用</span>
                                                     <?php }else{ ?>
-                                                        <span class="label label-info" onclick="status(this)">已启用</span>
+                                                        <span class="label label-info" onclick="statusRule(this)">已启用</span>
                                                     <?php } ?>
                                                 </span>
                                             </div>
                                             <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true" style="">
                                                 <div class="panel-body">
+                                                    <div class="col-lg-9">
                                                     <?php if($model->ruleKeyword){ ?>
                                                         <?php foreach($model->ruleKeyword as $rule){
                                                             if($rule->type != RuleKeyword::TYPE_TAKE){ ?>
-                                                                <span class="label label-default"><?= $rule->content?></span>
+                                                                <span class="simple_tag"><?= $rule->content?></span>
                                                             <?php }
                                                         }
                                                     } ?>
-                                                </div>
-                                            </div>
-                                            <div class="panel-footer clearfix">
-                                                <div class="btn-group pull-right">
-                                                    <a class="btn btn-white btn-sm" href="<?= Url::to(['reply-'.$model->module.'/edit','id'=>$model->id])?>"><i class="fa fa-edit"></i> 编辑</a>
-                                                    <a class="btn btn-white btn-sm" href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><i class="fa fa-times"></i> 删除</a>
-                                                    <a class="btn btn-white btn-sm" href="#"><i class="fa fa-bar-chart-o"></i> 使用率走势</a>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <div class="btn-group pull-right">
+                                                            <a class="btn btn-white btn-sm" href="<?= Url::to(['reply-'.$model->module.'/edit','id'=>$model->id])?>"><i class="fa fa-edit"></i> 编辑</a>
+                                                            <a class="btn btn-white btn-sm" href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><i class="fa fa-times"></i> 删除</a>
+<!--                                                            <a class="btn btn-white btn-sm" href="#"><i class="fa fa-bar-chart-o"></i> 使用率走势</a>-->
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -117,7 +119,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 <script type="text/javascript">
     //status => 1:启用;-1禁用;
-    function status(obj){
+    function statusRule(obj){
 
         var id = $(obj).parent().attr('id');
         var self = $(obj);
@@ -125,11 +127,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
         $.ajax({
             type:"get",
-            url:"<?= Url::to(['update-ajax'])?>",
+            url:"<?= Url::to(['ajax-update'])?>",
             dataType: "json",
             data: {id:id,status:status},
             success: function(data){
-                if(data.flg == 1) {
+                if(data.code == 200) {
                     if(self.hasClass("label-danger")){
                         self.removeClass("label-danger").addClass("label-info");
                         self.text('已启用');
@@ -138,7 +140,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         self.text('已禁用');
                     }
                 }else{
-                    alert(data.msg);
+                    alert(data.message);
                 }
             }
         });

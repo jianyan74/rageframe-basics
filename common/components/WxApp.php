@@ -2,7 +2,6 @@
 namespace jianyan\basics\common\components;
 
 use yii;
-use yii\web\Response;
 use yii\helpers\ArrayHelper;
 use EasyWeChat\Foundation\Application;
 use common\controllers\BaseController;
@@ -71,27 +70,28 @@ class WxApp extends BaseController
      */
     public function actionGetSessionKey()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
+        $result = $this->setResult();
         $code = Yii::$app->request->get('code','');
         if(!$code)
         {
-            $this->result['message'] = '通信错误,请在微信重新发起请求';
-            return $this->result;
+            $result->message = '通信错误,请在微信重新发起请求';
+            return $this->getResult();
         }
 
         if($this->_app)
         {
             $oauth = $this->_app->mini_program->sns->getSessionKey($code);
 
-            $this->result['code'] = 0;
-            $this->result['message'] = '获取成功';
-            $this->result['data'] = $this->setAuth($oauth);
+            $result->code = 200;
+            $result->message = '获取成功';
+            $result->data = [
+                'auth_key' => $this->setAuth($oauth)
+            ];
             return $this->result;
         }
 
-        $this->result['message'] = '小程序找不到了';
-        return $this->result;
+        $result->message = '小程序找不到了';
+        return $this->getResult();
     }
 
     /**
@@ -99,8 +99,7 @@ class WxApp extends BaseController
      */
     public function actionDecode()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
+        $result = $this->setResult();
         $request  = Yii::$app->request;
 
         $iv = $request->post('iv','');
@@ -110,27 +109,27 @@ class WxApp extends BaseController
 
         if(!$this->_app)
         {
-            $this->result['message'] = '小程序找不到了';
-            return $this->result;
+            $result->message = '小程序找不到了';
+            return $this->getResult();
         }
 
         if(!$oauth)
         {
-            $this->result['message'] = 'auth_key已过期';
-            return $this->result;
+            $result->message = 'auth_key已过期';
+            return $this->getResult();
         }
 
         if(empty($iv) || empty($encryptedData) || empty($oauth['session_key']))
         {
-            $this->result['message'] = '请先登录';
-            return $this->result;
+            $result->message = '请先登录';
+            return $this->getResult();
         }
 
         $sign = sha1(htmlspecialchars_decode($request->post('rawData').$oauth['session_key']));
         if ($sign !== $request->post('signature'))
         {
-            $this->result['message'] = '签名错误';
-            return $this->result;
+            $result->message = '签名错误';
+            return $this->getResult();
         }
 
         $miniProgram = $this->_app->mini_program;
@@ -144,10 +143,12 @@ class WxApp extends BaseController
 
         unset($userinfo['watermark']);
 
-        $this->result['code'] = 0;
-        $this->result['message'] = '获取成功';
-        $this->result['data'] = $userinfo;
-        return $this->result;
+        $result->code = 200;
+        $result->message = '获取成功';
+        $result->data = [
+            'userinfo' => $userinfo
+        ];
+        return $this->getResult();
     }
 
     /**
@@ -157,9 +158,9 @@ class WxApp extends BaseController
      */
     protected function setAuth($oauth)
     {
-        $auth_key = Yii::$app->security->generateRandomString();
+        $auth_key = Yii::$app->security->generateRandomString() . '_' . time();
 
-        Yii::$app->cache->set($auth_key,ArrayHelper::toArray($oauth),7190);
+        Yii::$app->cache->set($auth_key,ArrayHelper::toArray($oauth),7195);
 
         return $auth_key;
     }

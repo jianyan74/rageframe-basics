@@ -19,7 +19,6 @@ use yii\db\ActiveRecord;
  * @property integer $position
  * @property string $content
  * @property string $link_id
- * @property integer $display
  * @property string $deadline
  * @property string $view
  * @property string $comment
@@ -31,24 +30,6 @@ use yii\db\ActiveRecord;
  */
 class Article extends ActiveRecord
 {
-    /**
-     * 状态启用
-     */
-    const STATUS_ON  = 1;
-    /**
-     * 状态禁用
-     */
-    const STATUS_OFF = -1;
-
-    /**
-     * 正常
-     */
-    const DISPLAY_ON  = 1;
-    /**
-     * 逻辑删除
-     */
-    const DISPLAY_OFF = -1;
-
     /**
      * @inheritdoc
      */
@@ -63,8 +44,8 @@ class Article extends ActiveRecord
     public function rules()
     {
         return [
-            [['title','status','view','display','content'], 'required'],
-            [['manager_id', 'display', 'deadline', 'view', 'comment', 'bookmark', 'incontent','sort', 'status', 'append', 'updated'], 'integer'],
+            [['title','status','view','content'], 'required'],
+            [['manager_id', 'deadline', 'view', 'comment', 'bookmark', 'incontent','sort', 'status', 'append', 'updated'], 'integer'],
             [['content'], 'string'],
             [['cate_stair','cate_second'],'safe'],
             [['title','seo_key'], 'string', 'max' => 50],
@@ -97,7 +78,6 @@ class Article extends ActiveRecord
             'content'       => '内容',
             'author'        => '作者',
             'link'          => '外链',
-            'display'       => '可见性',
             'deadline'      => '截至时间',
             'view'          => '浏览量',
             'comment'       => '评论数量',
@@ -139,7 +119,11 @@ class Article extends ActiveRecord
      */
     public static function getPrev($id)
     {
-        return self::find()->where(['<','id',$id])->select('id')->orderBy('id asc')->scalar();
+        return self::find()
+            ->where(['<','id',$id])
+            ->select('id')
+            ->orderBy('id asc')
+            ->scalar();
     }
 
     /**
@@ -149,7 +133,11 @@ class Article extends ActiveRecord
      */
     public static function getNext($id)
     {
-        return self::find()->where(['>','id',$id])->select('id')->orderBy('id asc')->scalar();
+        return self::find()
+            ->where(['>','id',$id])
+            ->select('id')
+            ->orderBy('id asc')
+            ->scalar();
     }
 
     /**

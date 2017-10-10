@@ -32,17 +32,30 @@ class QrStatController extends WController
             }
         }
 
-        $data = QrcodeStat::find()->where($where)->andFilterWhere(['between','append',strtotime($from_date),strtotime($to_date)]);
+        $data = QrcodeStat::find()
+            ->where($where)
+            ->andFilterWhere(['between','append',strtotime($from_date),strtotime($to_date)]);
+
+        $attention_data = clone $data;
+        $scan_data = clone $data;
+
         $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('append desc')
             ->limit($pages->limit)
             ->all();
 
+        //关注统计
+        $attention_count = $attention_data->andWhere(['type' => QrcodeStat::TYPE_ATTENTION])->count();
+        //扫描统计
+        $scan_count = $scan_data->andWhere(['type' => QrcodeStat::TYPE_SCAN])->count();
+
         return $this->render('index',[
-            'models'  => $models,
-            'pages'   => $pages,
-            'type'    => $type,
+            'models' => $models,
+            'pages' => $pages,
+            'type' => $type,
+            'attention_count' => $attention_count,
+            'scan_count' => $scan_count,
             'keyword' => $keyword,
             'from_date' => $from_date,
             'to_date' => $to_date,

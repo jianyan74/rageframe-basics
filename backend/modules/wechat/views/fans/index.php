@@ -63,10 +63,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <div class="panel-body">
                                 <div class="col-sm-12">
                                     <div class="ibox float-e-margins">
-                                        <div class="col-sm-12">
-                                            <span class="btn btn-white" id="sync"> 同步选中粉丝信息</span>
-                                            <span class="btn btn-white" onclick="getAllFans()"> 同步全部粉丝信息</span>
-                                        </div>
+                                        <span class="btn btn-white" id="sync"> 同步选中粉丝信息</span>
+                                        <span class="btn btn-white" onclick="getAllFans()"> 同步全部粉丝信息</span>
                                         <table class="table table-hover">
                                             <thead>
                                             <tr>

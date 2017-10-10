@@ -1,13 +1,12 @@
 <?php
-
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\data\Pagination;
-use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\sys\Article;
 use jianyan\basics\common\models\sys\Tag;
 use jianyan\basics\common\models\sys\TagMap;
+use common\enums\StatusEnum;
 use backend\controllers\MController;
 
 /**
@@ -47,7 +46,7 @@ class ArticleController extends MController
             }
         }
 
-        $data = Article::find()->where($where)->andFilterWhere(['display'=>Article::DISPLAY_ON]);
+        $data = Article::find()->where($where)->andFilterWhere(['>=','status',StatusEnum::DISABLED]);
         !empty($cate_stair) && $data->andWhere(['cate_stair'=>$cate_stair]);
         !empty($cate_second) && $data->andWhere(['cate_second'=>$cate_second]);
         $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
@@ -101,16 +100,6 @@ class ArticleController extends MController
     }
 
     /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findModel($id));
-    }
-
-    /**
      * 逻辑删除
      * @param $id
      * @return mixed
@@ -118,7 +107,7 @@ class ArticleController extends MController
     public function actionHide($id)
     {
         $model = $this->findModel($id);
-        $model->display = Article::DISPLAY_OFF;
+        $model->status = StatusEnum::DELETE;
 
         if($model->save())
         {
@@ -138,7 +127,7 @@ class ArticleController extends MController
     public function actionShow($id)
     {
         $model = $this->findModel($id);
-        $model->display = Article::DISPLAY_ON;
+        $model->status = StatusEnum::ENABLED;
 
         if($model->save())
         {
@@ -171,10 +160,12 @@ class ArticleController extends MController
             }
         }
 
-        $data = Article::find()->where($where)->andFilterWhere(['display'=>Article::DISPLAY_OFF]);
-        !empty($cate_stair) && $data->andWhere(['cate_stair'=>$cate_stair]);
-        !empty($cate_second) && $data->andWhere(['cate_second'=>$cate_second]);
-        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $data = Article::find()
+            ->where($where)
+            ->andFilterWhere(['status' => StatusEnum::DELETE]);
+        !empty($cate_stair) && $data->andWhere(['cate_stair' => $cate_stair]);
+        !empty($cate_second) && $data->andWhere(['cate_second' => $cate_second]);
+        $pages = new Pagination(['totalCount' => $data->count(), 'pageSize' => $this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('sort asc,append desc')
             ->limit($pages->limit)
@@ -214,7 +205,7 @@ class ArticleController extends MController
      */
     public function actionDeleteAll()
     {
-        Article::deleteAll(['display'=>Article::DISPLAY_OFF]);
+        Article::deleteAll(['status' => StatusEnum::DELETE]);
         return $this->message("清空成功",$this->redirect(['recycle']));
     }
 

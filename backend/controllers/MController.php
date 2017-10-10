@@ -3,7 +3,6 @@ namespace jianyan\basics\backend\controllers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\web\Response;
 use yii\filters\AccessControl;
 use yii\web\UnauthorizedHttpException;
 use common\controllers\BaseController;
@@ -218,26 +217,32 @@ class MController extends BaseController
     }
 
     /**
-     * 公用的修改排序或者状态
-     * @param $model
+     * 全局通用修改排序和状态
+     * @param $id
      * @return array
      */
-    public function updateModelData($model)
+    public function actionAjaxUpdate($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $result = [];
-        $model->attributes = Yii::$app->request->get();
+        $insert_data = [];
+        $data = Yii::$app->request->get();
+        isset($data['status']) && $insert_data['status'] = $data['status'];
+        isset($data['sort']) && $insert_data['sort'] = $data['sort'];
 
+        $result = $this->setResult();
+        $model = $this->findModel($id);
+        $model->attributes = $insert_data;
 
         if(!$model->save())
         {
-            $result['flg'] = 2;
-            $result['msg'] = $this->analysisError($model->getFirstErrors());
-            return $result;
+            $result->code = 422;
+            $result->message = $this->analysisError($model->getFirstErrors());
+        }
+        else
+        {
+            $result->code = 200;
+            $result->message = '修改成功';
         }
 
-        $result['flg'] = 1;
-        $result['msg'] = "修改成功!";
-        return $result;
+        return $this->getResult();
     }
 }

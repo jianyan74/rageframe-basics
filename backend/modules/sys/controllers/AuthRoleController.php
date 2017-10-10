@@ -21,7 +21,7 @@ class AuthRoleController extends MController
      */
     public function actionIndex()
     {
-        $data   = AuthItem::find()->where(['type'=>AuthItem::ROLE]);
+        $data   = AuthItem::find()->where(['type' => AuthItem::ROLE]);
         $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)->limit($pages->limit)->all();
 
@@ -37,9 +37,9 @@ class AuthRoleController extends MController
      */
     public function actionEdit()
     {
-        $request  = Yii::$app->request;
-        $name     = $request->get('name');
-        $model    = $this->findModel($name);
+        $request = Yii::$app->request;
+        $name = $request->get('name');
+        $model = $this->findModel($name);
 
         if ($model->load($request->post()))
         {
@@ -50,7 +50,6 @@ class AuthRoleController extends MController
             if($model->save())
             {
                 return $this->redirect(['index']);
-
             }
         }
 

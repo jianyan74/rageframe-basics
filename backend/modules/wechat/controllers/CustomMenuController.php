@@ -3,6 +3,7 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
+use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\wechat\CustomMenu;
 
 /**
@@ -72,8 +73,15 @@ class CustomMenuController extends WController
      */
     public function actionIndex()
     {
-        $menu = $this->_app->menu;
-        $menus = $menu->current();
+        try
+        {
+            $menu = $this->_app->menu;
+            $menus = $menu->current();
+        }
+        catch (\Exception $e)
+        {
+            throw new NotFoundHttpException($e->getMessage());
+        }
 
         //关联角色查询
         $data   = CustomMenu::find();

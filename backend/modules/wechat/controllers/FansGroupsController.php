@@ -2,8 +2,8 @@
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
-use jianyan\basics\common\models\wechat\FansGroups;
 use yii\web\NotFoundHttpException;
+use jianyan\basics\common\models\wechat\FansGroups;
 
 /**
  * 粉丝分组

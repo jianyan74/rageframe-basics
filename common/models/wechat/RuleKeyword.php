@@ -7,6 +7,7 @@ use EasyWeChat\Message\Image;
 use EasyWeChat\Message\Video;
 use EasyWeChat\Message\Voice;
 use EasyWeChat\Message\News;
+use common\enums\StatusEnum;
 
 /**
  * This is the model class for table "{{%wechat_rule_keyword}}".
@@ -21,31 +22,21 @@ use EasyWeChat\Message\News;
  */
 class RuleKeyword extends \yii\db\ActiveRecord
 {
-    /**
-     * 直接匹配关键字
-     */
     const TYPE_MATCH = 1;
-    /**
-     * 正则表达式
-     */
     const TYPE_INCLUDE = 2;
-    /**
-     * 包含关键字
-     */
     const TYPE_REGULAR = 3;
-    /**
-     * 直接接管
-     */
     const TYPE_TAKE = 4;
 
     /**
-     * 状态启用
+     * @var array
      */
-    const STATUS_ON  = 1;
-    /**
-     * 状态禁用
-     */
-    const STATUS_OFF = -1;
+    public static $typeExplain = [
+        self::TYPE_MATCH => '直接匹配关键字',
+        self::TYPE_INCLUDE => '正则表达式',
+        self::TYPE_REGULAR => '包含关键字',
+        self::TYPE_TAKE => '直接接管',
+    ];
+
     /**
      * @inheritdoc
      */
@@ -73,34 +64,34 @@ class RuleKeyword extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id'            => 'ID',
-            'rule_id'       => '规则ID',
-            'module'        => '模块ID',
-            'content'       => '关键字',
-            'type'          => '类别',
-            'displayorder'  => '排序',
-            'status'        => '状态',
+            'id' => 'ID',
+            'rule_id' => '规则ID',
+            'module' => '模块ID',
+            'content' => '关键字',
+            'type' => '类别',
+            'displayorder' => '排序',
+            'status' => '状态',
         ];
     }
 
     /**
      * 关键字查询匹配
-     * @param $content - 内容
+     * @param string $content 内容
      * @return array|bool
      */
     public static function match($content)
     {
         $keyword = RuleKeyword::find()->andWhere(['or',
-            ['and', '{{type}}=:typeMatch', '{{content}}=:content'], // 直接匹配关键字
-            ['and', '{{type}}=:typeInclude', 'INSTR(:content, {{content}})>0'], // 包含关键字
-            ['and', '{{type}}=:typeRegular', ' :content REGEXP {{content}}'], // 正则匹配关键字
+            ['and', '{{type}} = :typeMatch', '{{content}} = :content'], // 直接匹配关键字
+            ['and', '{{type}} = :typeInclude', 'INSTR(:content, {{content}}) > 0'], // 包含关键字
+            ['and', '{{type}} = :typeRegular', ' :content REGEXP {{content}}'], // 正则匹配关键字
         ])->addParams([
-                ':content'     => $content,
-                ':typeMatch'   => self::TYPE_MATCH,
+                ':content' => $content,
+                ':typeMatch' => self::TYPE_MATCH,
                 ':typeInclude' => self::TYPE_INCLUDE,
                 ':typeRegular' => self::TYPE_REGULAR
             ])
-            ->andWhere(['status'=>self::STATUS_ON])
+            ->andWhere(['status' => StatusEnum::ENABLED])
             ->orderBy('displayorder desc,id desc')
             ->one();
 
@@ -108,7 +99,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
         {
             //查询直接接管的
             $takeKeyword = RuleKeyword::find()
-                ->where(['type'=>self::TYPE_TAKE,'status'=>self::STATUS_ON])
+                ->where(['type' => self::TYPE_TAKE,'status' => StatusEnum::ENABLED])
                 ->andFilterWhere(['>','displayorder',$keyword->displayorder])
                 ->orderBy('displayorder desc,id desc')
                 ->one();
@@ -116,8 +107,8 @@ class RuleKeyword extends \yii\db\ActiveRecord
 
             $result = [
                 'keyword_id' => $keyword->id,
-                'rule_id'    => $keyword->rule_id,
-                'module'     => $keyword->module,
+                'rule_id' => $keyword->rule_id,
+                'module' => $keyword->module,
             ];
 
             //列表
@@ -128,14 +119,14 @@ class RuleKeyword extends \yii\db\ActiveRecord
                 Rule::RULE_MODULE_IMAGES => ReplyImages::find(),
                 Rule::RULE_MODULE_VOICE => ReplyVoice::find(),
                 Rule::RULE_MODULE_VIDEO => ReplyVideo::find(),
-                Rule::RULE_MODULE_USER_API => '自定义接口回复',
+                Rule::RULE_MODULE_USER_API => ReplyUserApi::find(),
                 Rule::RULE_MODULE_WX_CARD => '微信卡卷回复',
                 Rule::RULE_MODULE_DEFAULT => '系统默认回复',
             ];
 
             //模型
             $table = $ruleModels[$keyword->module];
-            $model = $table->where(['rule_id'=>$keyword->rule_id])
+            $model = $table->where(['rule_id' => $keyword->rule_id])
                 ->orderBy('rand()')
                 ->one();
 
@@ -159,8 +150,8 @@ class RuleKeyword extends \yii\db\ActiveRecord
                         foreach ($news as $vo)
                         {
                             $new_news = new News([
-                                'title'   => $vo['title'],
-                                'description'  => $vo['digest'],
+                                'title' => $vo['title'],
+                                'description' => $vo['digest'],
                                 'url' => $vo['url'],
                                 'image' => $vo['thumb_url'],
                             ]);
@@ -199,6 +190,17 @@ class RuleKeyword extends \yii\db\ActiveRecord
                     $result['content'] = new Voice([
                         'media_id' => $model->mediaid
                     ]);
+
+                    break;
+
+                //自定义接口回复
+                case Rule::RULE_MODULE_USER_API :
+
+                    $result['content'] = $model->default;
+                    if($api_content = ReplyUserApi::getApiData($model, $content))
+                    {
+                        $result['content'] = $api_content;
+                    }
 
                     break;
             }
@@ -244,9 +246,9 @@ class RuleKeyword extends \yii\db\ActiveRecord
      * @param $rule_id
      * @param $keywords
      */
-    public function removeKeywords($rule_id,$type,$keywords)
+    public function removeKeywords($rule_id, $type, $keywords)
     {
-        return RuleKeyword::deleteAll(['and',['rule_id'=>$rule_id],['type'=>$type],['in','content',$keywords]]);
+        return RuleKeyword::deleteAll(['and',['rule_id' => $rule_id],['type' => $type],['in','content',$keywords]]);
     }
 
     /**
@@ -259,7 +261,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
      * @param $rule
      * @return bool
      */
-    public function updateKeywords($matchKeywords,$otherKeywords,$ruleKeywords,$rule_id,$module,$rule)
+    public function updateKeywords($matchKeywords, $otherKeywords, $ruleKeywords, $rule_id, $module,$rule)
     {
         if(!isset($otherKeywords[self::TYPE_TAKE]))
         {
@@ -268,9 +270,17 @@ class RuleKeyword extends \yii\db\ActiveRecord
 
         //获取新的关键字
         $otherKeywords[self::TYPE_MATCH] = explode(',',$matchKeywords);
+
+        //给关键字赋值默认值
+        foreach (self::$typeExplain as $key => $value)
+        {
+            !isset($otherKeywords[$key]) && $otherKeywords[$key] = [];
+        }
+
         foreach ($otherKeywords as $key => &$vo)
         {
             $vo = array_unique($vo);
+
             if ($diff = array_diff($ruleKeywords[$key],$vo))
             {
                 $this->removeKeywords($rule_id,$key,array_values($diff));
@@ -292,7 +302,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
      * @param $status - 状态
      * @param $rule_id - 规则id
      */
-    public static function updateAllDisplayorder($displayorder,$status,$rule_id)
+    public static function updateAllDisplayorder($displayorder, $status, $rule_id)
     {
         RuleKeyword::updateAll(['displayorder' => $displayorder,'status'=>$status],['rule_id' => $rule_id]);
     }

@@ -61,7 +61,7 @@ class BaseController extends Controller
         ];
 
         // 测试环境显示处理时间信息 方便优化
-        if (!YII_ENV_TEST)
+        if (YII_ENV_TEST)
         {
             $result['use_time'] = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
         }

@@ -5,7 +5,7 @@ use yii\helpers\Url;
 
 <li class="dropdown">
     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-        <i class="fa fa-envelope"></i>
+        <i class="fa fa-commenting"></i>
         <span class="label label-warning" id="notify-announce"><?= $notify_pages->totalCount ?></span>
     </a>
     <ul class="dropdown-menu dropdown-alerts" id="announce-menu">
@@ -26,7 +26,7 @@ use yii\helpers\Url;
         <li class="other-li" style="display: <?= $notify ? 'none' : 'block';?>">
             <a href="javascript:;void(0)">
                 <div>
-                    暂无最新公告
+                    暂无最新消息
                 </div>
             </a>
         </li>
@@ -34,8 +34,8 @@ use yii\helpers\Url;
         <li class="other-li">
             <div class="text-center link-block">
                 <a class="J_menuItem" href="<?= Url::to(['sys/notify-announce/personal'])?>" onclick="announce()">
-                    <i class="fa fa-envelope"></i>
-                    <strong> 全部公告</strong>
+                    <i class="fa fa-commenting"></i>
+                    <strong> 全部消息</strong>
                     <i class="fa fa-angle-right"></i>
                 </a>
             </div>
@@ -65,7 +65,7 @@ use yii\helpers\Url;
         <li class="other-li" style="display: <?= $message ? 'none' : 'block';?>">
             <a href="javascript:;void(0)">
                 <div>
-                    暂无最新消息
+                    暂无最新私信
                 </div>
             </a>
         </li>
@@ -74,7 +74,7 @@ use yii\helpers\Url;
             <div class="text-center link-block">
                 <a class="J_menuItem" href="<?= Url::to(['sys/notify-message/personal'])?>" onclick="message()">
                     <i class="fa fa-bell"></i>
-                    <strong>全部消息 </strong>
+                    <strong>全部私信 </strong>
                     <i class="fa fa-angle-right"></i>
                 </a>
             </div>

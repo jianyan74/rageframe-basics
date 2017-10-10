@@ -76,6 +76,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>聊天记录</h5>
+                    <div class="ibox-tools">
+                        总计 <strong class="text-danger"><?= $pages->totalCount ?></strong> 条
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <table class="table table-hover">
@@ -109,7 +112,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     <?php if(!$model->module){ ?>
                                         <span class="label label-default">未触发</span>
                                     <?php }else{ ?>
-                                        <span class="label label-info"><?= Rule::$moduleExplain[$model->module] ?></span>
+                                        <span class="label label-info"><?= isset(Rule::$moduleExplain[$model->module]) ? Rule::$moduleExplain[$model->module] : $model->module; ?></span>
                                     <?php } ?>
                                 </td>
                                 <td>

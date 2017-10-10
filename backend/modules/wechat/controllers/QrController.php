@@ -5,10 +5,11 @@ use yii;
 use yii\data\Pagination;
 use jianyan\basics\common\models\wechat\Qrcode;
 use dosamigos\qrcode\QrCode as DosQrCode;
+
 /**
+ * 二维码管理
  * Class QrController
  * @package jianyan\basics\backend\modules\wechat\controllers
- * 二维码管理
  */
 class QrController extends WController
 {

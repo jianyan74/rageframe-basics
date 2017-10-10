@@ -54,8 +54,7 @@ class MassRecordController extends WController
         }
 
         $groups = FansGroups::updateGroupList();
-        unset($groups[0]);
-        unset($groups[1]);
+        unset($groups[0], $groups[1]);
 
         return $this->renderAjax('send-fans',[
             'model' => $model,

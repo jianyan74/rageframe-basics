@@ -175,7 +175,8 @@ class AddonsHelp
         $str = "";
         if(isset($data[$field]))
         {
-        $str = "'{$field}' => [";
+        $str = "
+        '{$field}' => [";
             $countCover = count($data[$field]['title']);
             for ($i = 0; $i < $countCover; $i++)
             {

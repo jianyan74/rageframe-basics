@@ -2,7 +2,6 @@
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
-use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\sys\ArticleSingle;
 use backend\controllers\MController;
 
@@ -57,16 +56,6 @@ class ArticleSingleController extends MController
         return $this->render('edit', [
             'model'         => $model,
         ]);
-    }
-
-    /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findModel($id));
     }
 
     /**

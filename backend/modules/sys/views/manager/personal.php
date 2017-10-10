@@ -193,9 +193,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             dataType: 'json',
             data    : data,
             success : function(data) {
-                if(data.flg == '1') {
-                    $('#manager-head_portrait').val(data.url);
-                    $('.img-circle').attr('src',data.url);
+                if(data.code == 200) {
+                    data = data.data;
+                    $('#manager-head_portrait').val(data.urlPath);
+                    $('.img-circle').attr('src',data.urlPath);
                 }
             }
         });

@@ -44,7 +44,7 @@ class ConfigController extends MController
             ->with('cateChild');
         $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)
-            ->orderBy('cate asc,sort asc')
+            ->orderBy('cate asc,cate_child asc,sort asc')
             ->limit($pages->limit)
             ->all();
 
@@ -171,16 +171,6 @@ class ConfigController extends MController
         {
             throw new NotFoundHttpException('请求出错!');
         }
-    }
-
-    /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findModel($id));
     }
 
     /**

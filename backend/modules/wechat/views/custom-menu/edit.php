@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <style>
 	.menuView{
-		height: 390px;
+		height: 480px;
 		position: relative;
 		background-color: white;
 	}
@@ -28,73 +28,90 @@ $this->params['breadcrumbs'][] = $this->title;
 		top: -5px;
 		transform: translateY(-100%);
 	}
+
+    .phone-header {
+        position: relative;
+        background: transparent url(/resource/backend/img/bg_mobile_head_default.png);
+        background-position: 0 0;
+        overflow: hidden;
+        text-align: center;
+        padding-top: 30px;
+        font-size: 15px;
+        color: #fff;
+        border: 1px solid #e7e7eb;
+    }
+    .ng-binding {
+        font-size: 15px;
+        line-height: 30px;
+    }
+
+    .btn-white{
+        line-height: 25px;
+    }
+    .btn-white:hover{
+        border: 1px solid #079200;
+        background-color: #fff;
+        color: #079200;
+    }
+    .phone-foot .btn {
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+
+    .phone-foot{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-top: 1px solid #e7e7eb;
+        background: url(/resource/backend/img/bg-mobile-foot-default.png);
+        background-position:0 0;
+        background-repeat: no-repeat;
+        padding-left: 43px;
+        margin-bottom: 0;
+    }
+
+    .custommenu_sub_container .btn {
+        font-size: 14px;
+    }
+
+    .flex-col .btn {
+        background: #FAFAFA;;
+    }
 </style>
 
 <div id="vueArea" class="wrapper wrapper-content animated fadeInRight">
     <?php $form = ActiveForm::begin(); ?>
     <div class="row  col-sm-offset-2">
     	<!-- 菜单编辑模式 -->
-        <div class="col-sm-3" v-if="!isSortMode">
+        <div class="col-sm-3" style="width: 361px">
             <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>自定义菜单</h5>
+                <div class="phone-header">
+                    <span class="ng-binding">自定义菜单</span>
                 </div>
-                <div class="flex-row flex-vDirection menuView borderColorGray">
+                <div class="flex-row flex-vDirection menuView">
                     <div class="flex-col"></div>
                     <div>
-                        <div class="flex-row">
+                        <draggable v-model="list" :options="{group:'mainMenu'}" class="flex-row phone-foot">
                             <div v-for="(item,index) in list" class="flex-col custommenu">
                                 <div class="custommenu_sub_container">
-                                    <div v-for="sub in item.sub">
-                                        <a class="btn btn-block btn-white" :class="{active:crtItem === sub}" @click="crtItem = sub">{{sub.name}}</a>
-                                    </div>
+                                    <draggable v-model="item.sub" :options="{group:'subMenu' + index}">
+                                        <div v-for="sub in item.sub">
+                                            <a class="btn btn-block btn-white" :class="{active:crtItem === sub}" @click="crtItem = sub">{{sub.name}}</a>
+                                        </div>
+                                    </draggable>
                                     <div v-show="item.sub.length < maxSubItemCount"><a class="btn btn-block btn-white" @click="addSubItem(item.sub)"><i class="fa fa-plus"></i></a></div>
                                 </div>
                                 <a class="btn btn-block btn-white" :class="{active:crtItem === item}" @click="crtItem = item">{{item.name}}</a>
                             </div>
                             <div class="flex-col" v-show="list.length < maxItemCount"><a class="btn btn-block btn-white" @click="addItem"><i class="fa fa-plus"></i> 添加菜单</a></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ibox-content">
-                    <div class="form-group">
-                        <div class="hAlignCenter">
-                        	<a class="btn btn-white separateFromNextInlineBlockFurther" @click="isSortMode = true" v-show="list.length > 0">排序</a>
-                            <a class="btn btn-primary" @click="submitForm">保存</a>
-                            <a class="btn btn-white" @click="back">返回</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 菜单排序模式 -->
-        <div class="col-sm-3" v-else>
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>自定义菜单</h5>
-                </div>
-                <div class="flex-row flex-vDirection menuView borderColorGray">
-                    <div class="flex-col"></div>
-                    <div>
-                        <draggable v-model="list" :options="{group:'mainMenu'}" class="flex-row">
-                            <div v-for="(item,index) in list" class="flex-col custommenu">
-                                <div class="custommenu_sub_container">
-                                	<draggable v-model="item.sub" :options="{group:'subMenu' + index}">
-	                                    <div v-for="sub in item.sub">
-	                                        <a class="btn btn-block btn-white" :class="{active:crtItem === sub}" @click="crtItem = sub">{{sub.name}}</a>
-	                                    </div>
-                                    </draggable>
-                                </div>
-                                <a class="btn btn-block btn-white" :class="{active:crtItem === item}" @click="crtItem = item">{{item.name}}</a>
-                            </div>
                         </draggable>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="form-group">
-                        <div class="col-sm-offset-4">
-                            <a class="btn btn-primary" @click="isSortMode = false">完成</a>
-                        </div>
+                <div class="form-group" style="padding-top: 30px;">
+                    <div class="hAlignCenter">
+                        <a class="btn btn-primary" @click="submitForm">保存</a>
+                        <a class="btn btn-white" @click="back">返回</a>
                     </div>
                 </div>
             </div>

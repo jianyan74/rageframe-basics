@@ -1,13 +1,15 @@
 <?php
 namespace jianyan\basics\backend\modules\sys\controllers;
 
+use Monolog\Handler\IFTTTHandler;
 use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
-use common\enums\StatusEnum;
+use Overtrue\Pinyin\Pinyin;
 use jianyan\basics\common\models\sys\Addons;
 use jianyan\basics\common\models\sys\AddonsBinding;
+use common\enums\StatusEnum;
 use common\helpers\AddonsHelp;
 use common\helpers\StringHelper;
 use backend\controllers\MController;
@@ -41,7 +43,11 @@ class AddonsController extends MController
         {
             $addonName = $request->get('name');
             //删除数据库
-            $this->findModel($addonName)->delete();
+            if($model = Addons::find()->where(['name' => $addonName])->one())
+            {
+                $model->delete();
+            }
+
             //验证模块信息
             $class = AddonsHelp::getAddonsClass($addonName);
 
@@ -56,7 +62,7 @@ class AddonsController extends MController
             {
                 if($addons->uninstall && file_exists(AddonsHelp::getAddons($addonName) . $addons->uninstall))
                 {
-                    include_once AddonsHelp::getAddons($addonName).$addons->uninstall;
+                    include_once AddonsHelp::getAddons($addonName) . $addons->uninstall;
                 }
             }
 
@@ -104,10 +110,18 @@ class AddonsController extends MController
                 isset($addons->bindings) && AddonsBinding::add($addons->bindings,$addonName);
                 $model->attributes = $addons->info;
                 $model->type = $addons->type ? $addons->type : 'other';
-                $model->setting = $addons->setting ? Addons::SETTING_TRUE : Addons::SETTING_FALSE;
-                $model->hook = $addons->hook ? Addons::HOOK_TRUE : Addons::HOOK_FALSE;
-                $model->wxapp_support = isset($addons->wxapp_support) ? StatusEnum::ENABLED : StatusEnum::DISABLED;
+                $model->setting = $addons->setting ? StatusEnum::ENABLED : StatusEnum::DISABLED;
+                $model->hook = $addons->hook ? StatusEnum::ENABLED : StatusEnum::DISABLED;
+                $model->wxapp_support = $addons->wxappSupport ? StatusEnum::ENABLED : StatusEnum::DISABLED;
                 $model->wechat_message = isset($addons->wechatMessage) ? serialize($addons->wechatMessage) : '' ;
+
+                //首先字母转大写拼音
+                if($chinese = StringHelper::strToChineseCharacters($model->title))
+                {
+                    $title_initial = mb_substr($chinese[0][0],0,1,'utf-8');
+                    $pinyin = new Pinyin();
+                    $model->title_initial = ucwords($pinyin->abbr($title_initial));
+                }
 
                 if($model->save())
                 {
@@ -170,59 +184,76 @@ class AddonsController extends MController
         $request  = Yii::$app->request;
 
         $model = new Addons();
+        $model->install = 'install.php';
+        $model->uninstall = 'uninstall.php';
+        $model->upgrade = 'upgrade.php';
         if($model->load($request->post()))
         {
             //全部post
             $allPost = $request->post();
+
             if(!is_writable(Yii::getAlias('@addons')))
             {
                 return $this->message('您没有创建目录写入权限，无法使用此功能',$this->redirect(['create']),'error');
             }
 
-            $model->name   =   trim($model->name);
-            $addons_dir    =  Yii::getAlias('@addons');
+            $model->name = trim($model->name);
+            $addons_dir = Yii::getAlias('@addons');
             //创建目录结构
-            $files          =   array();
-            $addon_dir      =   "$addons_dir/{$model->name}/";
-            $addon_name     =   "{$model->name}Addon.php";
-            $files[]        =   $addon_dir;
-            $files[]        =   "{$addon_dir}{$addon_name}";
+            $files = [];
+            $addon_dir = "$addons_dir/{$model->name}/";
+            $addon_name = "{$model->name}Addon.php";
+            $files[] = $addon_dir;
+            $files[] = "{$addon_dir}{$addon_name}";
 
             /**
              * 微信消息
              */
-            $wechatMessage = '[';
-            if($model->wechatMessage)
+            $wechat_message = '[';
+            if($model->wechat_message)
             {
                 $files[] = "{$addon_dir}WechatMessage.php";
 
-                foreach ($model->wechatMessage as $key => $value)
+                foreach ($model->wechat_message as $key => $value)
                 {
-                    $key >= 1 && $wechatMessage .= ',';
-                    $wechatMessage .= "'{$value}'";
+                    $key >= 1 && $wechat_message .= ',';
+                    $wechat_message .= "'{$value}'";
                 }
             }
-            $wechatMessage .= ']';
+            $wechat_message .= ']';
 
-            $files[]    =   "{$addon_dir}Setting.php";
-            $files[]    =   "{$addon_dir}common/";
-            $files[]    =   "{$addon_dir}common/models/";
-            $files[]    =   "{$addon_dir}common/models/{$model->name}.php";
-            $files[]    =   "{$addon_dir}admin/";
-            $files[]    =   "{$addon_dir}admin/controllers/";
-            $files[]    =   "{$addon_dir}admin/controllers/{$model->name}Controller.php";
-            $files[]    =   "{$addon_dir}admin/views/";
-            $files[]    =   "{$addon_dir}home/";
-            $files[]    =   "{$addon_dir}home/controllers/";
-            $files[]    =   "{$addon_dir}home/controllers/{$model->name}Controller.php";
-            $files[]    =   "{$addon_dir}home/views/";
+            //后台初始化视图
+            $admin_view_name = StringHelper::toUnderScore($model->name);
+
+            $files[] = "{$addon_dir}common/";
+            $files[] = "{$addon_dir}common/models/";
+            $files[] = "{$addon_dir}common/models/{$model->name}.php";
+            $files[] = "{$addon_dir}admin/";
+            $files[] = "{$addon_dir}admin/controllers/";
+            $files[] = "{$addon_dir}admin/controllers/{$model->name}Controller.php";
+            $files[] = "{$addon_dir}admin/views/";
+            $files[] = "{$addon_dir}admin/views/{$admin_view_name}/";
+            $files[] = "{$addon_dir}admin/views/{$admin_view_name}/index.php";
+            $files[] = "{$addon_dir}home/";
+            $files[] = "{$addon_dir}home/controllers/";
+            $files[] = "{$addon_dir}home/controllers/{$model->name}Controller.php";
+            $files[] = "{$addon_dir}home/views/";
 
             //小程序支持
             if($model->wxapp_support)
             {
-                $files[]    =   "{$addon_dir}api/";
-                $files[]    =   "{$addon_dir}api/controllers/";
-                $files[]    =   "{$addon_dir}api/controllers/PagesController.php";
+                $files[] = "{$addon_dir}api/";
+                $files[] = "{$addon_dir}api/controllers/";
+                $files[] = "{$addon_dir}api/controllers/PagesController.php";
+            }
+
+            //参数设置支持
+            if($model->setting == true)
+            {
+                $files[] = "{$addon_dir}Setting.php";
+                $files[] = "{$addon_dir}common/models/SettingForm.php";
+                $files[] = "{$addon_dir}admin/views/setting/";
+                $files[] = "{$addon_dir}admin/views/setting/index.php";
             }
 
             $model['install'] && $files[] = "{$addon_dir}{$model['install']}";
@@ -264,11 +295,12 @@ class PagesController extends WxApp
                 $hook = 'true';
                 $hookStr = "
     /**
-    * @param \$addons 模块名字
-    * @param null \$config 参数
-    * @return string
-    */
-    public function actionHook(\$addon,\$config = null)
+     * 钩子
+     * @param string \$addons 模块名字
+     * @param null \$config 参数
+     * @return string
+     */
+    public function actionHook(\$addon, \$config = null)
     {
         return \$this->rederHook(\$addon,[
         ]);
@@ -289,14 +321,17 @@ class PagesController extends WxApp
     public function actionDisplay()
     {
         \$request  = Yii::\$app->request;
+        \$model = new SettingForm();
         if(\$request->isPost)
         {
-            \$config = \$request->post();
+            \$data = \$request->post();
+            \$config = \$data['SettingForm'];
             \$this->setConfig(\$config);
         }
-        
+
+        \$model->attributes = \$this->getConfig();
         return \$this->renderAddon('index',[
-            'config' => \$this->getConfig()
+            'model' => \$model
         ]);
     }
                 ";
@@ -337,7 +372,7 @@ class {$model->name}Addon
      * [true,false] 开启|关闭
      * @var bool
      */
-    public \$wxapp_support = {$wxapp_support};
+    public \$wxappSupport = {$wxapp_support};
     
     /**
      * 类别
@@ -359,7 +394,7 @@ class {$model->name}Addon
      * 微信接收消息类别
      * @var array 
      */
-    public \$wechatMessage = {$wechatMessage};
+    public \$wechatMessage = {$wechat_message};
     
     /**
      * 配置信息
@@ -377,18 +412,18 @@ class {$model->name}Addon
     /**
      * 后台菜单
      * 例如
-     *     public \$bindings = [
-     *          'cover' => [
-     *          ]，
-     *         'menu' => [
-     *             [
-     *                  'title' => '碎片列表',
-     *                  'route' => 'Debris/index',
-     *                  'icon' => 'fa fa-weixin',
-     *              ]
-     *           ...
-     *         ],
-     *     ];
+     * public \$bindings = [
+     *      'cover' => [
+     *      ]，
+     *     'menu' => [
+     *         [
+     *              'title' => '碎片列表',
+     *              'route' => 'Debris/index',
+     *              'icon' => 'fa fa-weixin',
+     *          ]
+     *       ...
+     *     ],
+     * ];
      * @var array
      */
     public \$bindings = [
@@ -423,6 +458,7 @@ class {$model->name}Addon
 namespace addons\\{$model->name}\\admin\\controllers;
 
 use yii;
+use yii\data\Pagination;
 use common\\components\\Addons;
 use addons\\{$model->name}\\common\\models\\{$model->name};
 
@@ -433,13 +469,82 @@ use addons\\{$model->name}\\common\\models\\{$model->name};
  */
 class {$model->name}Controller extends Addons
 {
-    /**
-    * 首页
-    */
+     /**
+     * 首页
+     * @return string
+     */
     public function actionIndex()
     {
+        //\$data = {$model->name}::find();
+        //\$pages = new Pagination(['totalCount' => \$data->count(), 'pageSize' => \$this->_pageSize]);
+        //\$models = \$data->offset(\$pages->offset)
+        //    ->limit(\$pages->limit)
+        //    ->all();
+
+        \$pages = '';
+        \$models = '';
+        
         return \$this->renderAddon('index',[
+            'models' => \$models,
+            'pages' => \$pages,
         ]);
+    }
+
+    /**
+     * 编辑
+     * @return string|yii\web\Response
+     */
+    public function actionEdit()
+    {
+        \$request  = Yii::\$app->request;
+        \$id = \$request->get('id');
+        \$model = \$this->findModel(\$id);
+
+        if (\$model->load(Yii::\$app->request->post()) && \$model->save())
+        {
+            return \$this->redirectAddon(['index']);
+        }
+
+        return \$this->renderAddon('edit',[
+            'model' => \$model
+        ]);
+    }
+
+    /**
+     * 删除
+     */
+    public function actionDelete()
+    {
+        \$id =  Yii::\$app->request->get('id');
+        if(\$this->findModel(\$id)->delete())
+        {
+            \$this->message(\"删除成功\",\$this->redirectAddon(['index']));
+        }
+        else
+        {
+            \$this->message(\"删除失败\",\$this->redirectAddon(['index']),'error');
+        }
+    }
+    
+    /**
+     * 返回模型
+     * @param \$id
+     * @return \$this|{$model->name}|static
+     */
+    protected function findModel(\$id)
+    {
+        if (empty(\$id))
+        {
+            \$model = new {$model->name};
+            return \$model->loadDefaultValues();
+        }
+
+        if (empty((\$model = {$model->name}::findOne(\$id))))
+        {
+            return new {$model->name};
+        }
+
+        return \$model;
     }
 }
             ";
@@ -492,7 +597,7 @@ namespace addons\\{$model->name};
 
 use yii;
 use common\\components\\Addons;
-use addons\\{$model->name}\\common\\models\\{$model->name};
+use addons\\{$model->name}\\common\\models\\SettingForm;
 
 /**
  * 全局配置
@@ -513,38 +618,147 @@ use Yii;
 use common\\components\\Addons;
 
 /**
- * 微信消息控制箱
+ * 微信消息类
  * Class WechatMessage
  * @package addons\\{$model->name}
  */
-class WechatMessage extends Addons
+class WechatMessage
 {
     /**
-    * \$message -消息 
+    * \$message 消息 
     */
-    public function actionRespond(\$message)
+    public function run(\$message)
     {
-    	//这里定义此模块进行消息处理时的具体过程, 请查看有料文档来编写你的代码
+    	//这里定义此模块进行消息处理时的具体过程, 请查看RageFrame文档来编写你的代码
     }
 }
             
             ";
+
+            /*********************************配置模型*********************************/
+            $SettingForm = "<?php
+namespace addons\\{$model->name}\common\models;
+
+use Yii;
+
+class SettingForm extends \yii\base\Model
+{
+    public \$site_title;
+    public \$share_title;
+    public \$share_desc;
+    public \$share_pic;
+    public \$share_url;
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            [['site_title'], 'required'],
+            [['share_title','share_desc','share_pic','share_url'], 'string'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'site_title' => '网站标题',
+            'share_title' => '分享标题',
+            'share_desc' => '分享描述',
+            'share_pic' => '分享图片',
+            'share_url' => '分享链接',
+        ];
+    }
+}
+            ";
+
+            /*********************************配置页面*********************************/
+            $SettingIndex = "<?php
+use yii\widgets\ActiveForm;
+
+\$this->title = '参数设置';
+\$this->params['breadcrumbs'][] = ['label' => \$this->title];
+?>
+            ";
+
+            $SettingIndex .=  <<<HTML
+            
+<div class="wrapper wrapper-content animated fadeInRight">
+    <?php \$form = ActiveForm::begin([
+        'options' => [
+            'enctype' => 'multipart/form-data'
+        ]
+    ]); ?>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>基本设置</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="col-sm-12">
+                        <?= \$form->field(\$model, 'site_title')->textInput() ?>
+                    </div>　
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>分享设置</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="col-sm-12">
+                        <?= \$form->field(\$model, 'share_title')->textInput() ?>
+                        <?= \$form->field(\$model, 'share_desc')->textarea() ?>
+                        <?= \$form->field(\$model, 'share_pic')->widget('backend\widgets\webuploader\Image', [
+                            'boxId' => 'share_pic',
+                            'options' => [
+                                'multiple'   => false,
+                            ]
+                        ])?>
+                        <?= \$form->field(\$model, 'share_url')->textInput() ?>
+                        <div class="hr-line-dashed"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12 col-sm-offset-2">
+                            <button class="btn btn-primary" type="submit">保存内容</button>
+                        </div>
+                    </div>　
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php ActiveForm::end(); ?>
+</div>
+HTML;
+
             //写入模块配置
             file_put_contents("{$addon_dir}{$model->name}Addon.php", $Addon);
             //写入后台控制器
             file_put_contents("{$addon_dir}admin/controllers/{$model->name}Controller.php", $AdminController);
+            file_put_contents("{$addon_dir}admin/views/{$admin_view_name}/index.php", '初始化页面...');
             //写入前台控制器
             file_put_contents("{$addon_dir}home/controllers/{$model->name}Controller.php", $HomeController);
             //写入模型
             file_put_contents("{$addon_dir}common/models/{$model->name}.php", $CommonModel);
             //写入参数
-            file_put_contents($addon_dir.'Setting.php', $Setting);
+            if($model->setting == true)
+            {
+                file_put_contents($addon_dir.'Setting.php', $Setting);
+                file_put_contents($addon_dir.'common/models/SettingForm.php', $SettingForm);
+                file_put_contents($addon_dir.'admin/views/setting/index.php', $SettingIndex);
+            }
 
             //写入文件
             $model['install'] && file_put_contents("{$addon_dir}/{$model['install']}", '<?php');
             $model['uninstall'] && file_put_contents("{$addon_dir}/{$model['uninstall']}", '<?php');
             $model['upgrade'] && file_put_contents("{$addon_dir}/{$model['upgrade']}", '<?php');
-            $model->wechatMessage && file_put_contents($addon_dir.'WechatMessage.php', $WechatInfo);
+            $model->wechat_message && file_put_contents($addon_dir.'WechatMessage.php', $WechatInfo);
             $model->wxapp_support && file_put_contents("{$addon_dir}api/controllers/PagesController.php", $wxapp_support_str);
 
             //移动图标
@@ -563,16 +777,6 @@ class WechatMessage extends Addons
     }
 
     /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData(Addons::findOne($id));
-    }
-
-    /**
      * 插件首页
      * @return string
      */
@@ -585,7 +789,7 @@ class WechatMessage extends Addons
             $type = $request->get('type');
 
             $list = Addons::find()
-                ->where(['status' => Addons::STATUS_ON])
+                ->where(['status' => StatusEnum::ENABLED])
                 ->andFilterWhere(['like','title',$keyword])
                 ->andFilterWhere(['type' => $type])
                 ->andFilterWhere(['<>','type','plug'])
@@ -594,7 +798,7 @@ class WechatMessage extends Addons
 
             foreach ($list as &$vo)
             {
-                if(file_exists(AddonsHelp::getAddons($vo['name']).'icon.jpg'))
+                if(file_exists(AddonsHelp::getAddons($vo['name']) . 'icon.jpg'))
                 {
                     $vo['cover'] = "/addons/{$vo['name']}/icon.jpg";
                 }
@@ -619,7 +823,7 @@ class WechatMessage extends Addons
         else
         {
             $models = Addons::find()
-                ->where(['status'=>Addons::STATUS_ON])
+                ->where(['status' => StatusEnum::ENABLED])
                 ->andWhere(['<>','type','plug'])
                 ->asArray()
                 ->all();
@@ -649,11 +853,6 @@ class WechatMessage extends Addons
         }
 
         $list = AddonsBinding::getList($addonName);
-
-        /**插件信息加入公共配置**/
-        Yii::$app->params['addon']['info'] = ArrayHelper::toArray($model);
-        Yii::$app->params['addon']['binding'] = $list;
-
         if(!$list)
         {
             return $this->message('插件菜单未配置',$this->redirect(['index']),'error');
@@ -664,6 +863,10 @@ class WechatMessage extends Addons
         {
             return $this->redirect(['execute','route' => $list['menu'][0]['route'],'addon' => $addonName]);
         }
+
+        /** 插件信息加入公共配置 **/
+        Yii::$app->params['addon']['info'] = ArrayHelper::toArray($model);
+        Yii::$app->params['addon']['binding'] = $list;
 
         return $this->render('binding',[
 
@@ -677,20 +880,27 @@ class WechatMessage extends Addons
     public function actionCover()
     {
         $request  = Yii::$app->request;
-        $id = $request->get('id');
+        $id = $request->get('id','');
+        $addon = $request->get('addon');
 
-        if(!($model = AddonsBinding::find()->where(['id' => $id])->with('addon')->asArray()->one()))
+        if(!($model = Addons::getAddon($addon)))
         {
-            return $this->message('插件不存在',$this->redirect(['index']),'error');
+            throw new NotFoundHttpException('插件不存在');
         }
 
-        Yii::$app->params['addon'] = $model['addon'];
         /**插件信息加入公共配置**/
-        Yii::$app->params['addon']['info'] = $model['addon'];
-        Yii::$app->params['addon']['binding'] = AddonsBinding::getList($model['addon']['name']);
+        Yii::$app->params['addon']['info'] = $model;
+        Yii::$app->params['addon']['binding'] = AddonsBinding::getList($model['name']);
+
+        if(!$id && Yii::$app->params['addon']['binding'])
+        {
+            $id = Yii::$app->params['addon']['binding']['cover'][0]['id'];
+        }
 
         return $this->render('cover',[
+            'id' => $id,
             'model' => $model,
+            'binding' => Yii::$app->params['addon']['binding'],
         ]);
     }
 
@@ -705,18 +915,24 @@ class WechatMessage extends Addons
 
     /**
      * 后台插件页面实现
+     * @param $route -路由
+     * @param $addon - 模块名称
+     * @return bool
      */
     public function actionExecute($route, $addon)
     {
-        return $this->skip(AddonsHelp::analysisBusinessRoute($route,$addon));
+        return $this->skip(AddonsHelp::analysisBusinessRoute($route, $addon));
     }
 
     /**
      * 后台插件设置实现
+     * @param $route -路由
+     * @param $addon - 模块名称
+     * @return bool
      */
     public function actionCentre($route, $addon)
     {
-        return $this->skip(AddonsHelp::analysisBaseRoute($route,$addon));
+        return $this->skip(AddonsHelp::analysisBaseRoute($route, $addon));
     }
 
     /**
@@ -725,7 +941,7 @@ class WechatMessage extends Addons
      * @return bool
      * @throws \yii\web\UnauthorizedHttpException
      */
-    public function skip($through)
+    protected function skip($through)
     {
         $class = $through['class'];
         $actionName = $through['actionName'];
@@ -743,10 +959,10 @@ class WechatMessage extends Addons
         $list = new $class($through['controller'],Yii::$app->module);
         if(!method_exists($list,$actionName))
         {
-            throw new NotFoundHttpException($through['controllerName'].'/' . $actionName . '方法未找到');
+            throw new NotFoundHttpException($through['controllerName'] . '/' . $actionName . '方法未找到');
         }
 
-        /**插件信息加入公共配置**/
+        /** 插件信息加入公共配置 **/
         Yii::$app->params['addon']['info'] = ArrayHelper::toArray($model);
         Yii::$app->params['addon']['binding'] = AddonsBinding::getList($through['addon']);
 
@@ -758,9 +974,9 @@ class WechatMessage extends Addons
      * @param $id
      * @return null|static
      */
-    protected function findModel($name)
+    protected function findModel($id)
     {
-        if ($model = Addons::find()->where(['name' => $name])->one())
+        if ($model = Addons::findOne($id))
         {
             return $model;
         }

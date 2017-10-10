@@ -6,6 +6,8 @@ use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
+use common\enums\StatusEnum;
+
 /**
  * This is the model class for table "{{%wechat_msg_history}}".
  *
@@ -79,7 +81,7 @@ class MsgHistory extends ActiveRecord
 
         //历史记录状态
         $setting = Setting::getSetting('history');
-        if($setting['is_msg_history']['status'] != Setting::MSG_HISTORY_OFF)
+        if($setting['is_msg_history']['status'] != StatusEnum::DELETE)
         {
             $msgHistory = new MsgHistory();
             if($msg_history['type'] == 'text')
@@ -96,7 +98,7 @@ class MsgHistory extends ActiveRecord
         }
 
         //统计状态
-        if($setting['is_utilization_stat']['status'] != Setting::UTILZATION_STAT_OFF)
+        if($setting['is_utilization_stat']['status'] != StatusEnum::DELETE)
         {
             //插入规则统计
             !empty($add['rule_id']) && RuleStat::setStat($add['rule_id']);
@@ -146,12 +148,12 @@ class MsgHistory extends ActiveRecord
 
             case Account::TYPE_VIDEO :
                 $messgae = unserialize($messgae);
-                return "MediaId【".$messgae['MediaId']."】";
+                return "MediaId【" . $messgae['MediaId'] . "】";
                 break;
 
             case Account::TYPE_LOCATION :
                 $messgae = unserialize($messgae);
-                return '经纬度【'.$messgae['Location_X'].','.$messgae['Location_Y']."】地址:".$messgae['Label'];
+                return '经纬度【'.$messgae['Location_X'] . ',' . $messgae['Location_Y'] . "】地址:" . $messgae['Label'];
                 break;
 
             case Account::TYPE_CILCK :
@@ -161,6 +163,11 @@ class MsgHistory extends ActiveRecord
 
             case Account::TYPE_SUBSCRIBE :
                 return '关注公众号';
+                break;
+
+            case Account::TYPE_VOICE :
+                $messgae = unserialize($messgae);
+                return isset($messgae['Recognition']) ? $messgae['Recognition'] : '语音消息';
                 break;
 
                 //触发事件
@@ -174,11 +181,15 @@ class MsgHistory extends ActiveRecord
                         break;
 
                     case Account::TYPE_EVENT_LOCATION :
-                        return '经纬度【'.$messgae['Latitude'].','.$messgae['Longitude']."】精度:".$messgae['Precision'];
+                        return '经纬度【'.$messgae['Latitude'] . ',' . $messgae['Longitude'] . "】精度:" . $messgae['Precision'];
                         break;
 
                     case Account::TYPE_EVENT_VIEW :
                         return "单击菜单访问：" . $messgae['EventKey'];
+                        break;
+
+                    case Account::TYPE_SCAN :
+                        return "二维码扫描：" . $messgae['EventKey'];
                         break;
 
                     default :

@@ -25,7 +25,7 @@ AppAsset::register($this);
     <link href="/resource/backend/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
     <link href="/resource/backend/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link href="/resource/backend/css/animate.min.css" rel="stylesheet">
-    <link href="/resource/backend/css/style.min.css?v=4.0.0" rel="stylesheet">
+    <link href="/resource/backend/css/style.css?v=4.0.0" rel="stylesheet">
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
@@ -40,7 +40,7 @@ AppAsset::register($this);
                 <li class="nav-header">
                     <div class="dropdown profile-element" style="text-align: center">
                         <span>
-                                <img src="<?php echo !empty($user['head_portrait']) ? $user['head_portrait'] : "/resource/backend/img/profile.jpg" ?>" class="img-circle" width="64" height="64" id="head_portrait">
+                                <img src="<?php echo !empty($user['head_portrait']) ? $user['head_portrait'] : "/resource/backend/img/profile.jpg" ?>" class="img-circle" width="48" height="48" id="head_portrait">
                         </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear">

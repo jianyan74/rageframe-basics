@@ -11,9 +11,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-12">
             <div class="tabs-container">
                 <ul class="nav nav-tabs">
-                    <li><a href="<?= Url::to(['rule/index'])?>"> 关键字自动回复</a></li>
-                    <li><a href="<?= Url::to(['setting/special-message'])?>"> 非文字消息回复</a></li>
-                    <li class="active"><a href="<?= Url::to(['reply-default/index'])?>"> 关注/默认回复</a></li>
+                    <?= $this->render('/common/rule-nav',[
+                        'nav_type' => 3,
+                    ])?>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active">

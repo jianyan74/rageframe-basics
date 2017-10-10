@@ -33,7 +33,7 @@ class DefaultController extends WController
      * 聊天记录
      * @var
      */
-    protected $_msg_history;
+    protected $_msgHistory;
 
     /**
      * 行为控制
@@ -59,6 +59,7 @@ class DefaultController extends WController
     }
 
     /**
+     * 接收微信消息
      * @return array|mixed
      * @throws NotFoundHttpException
      * subscribe 订阅关注事件
@@ -90,7 +91,7 @@ class DefaultController extends WController
                 {
                     $openid = $message->FromUserName;
                     //默认回复消息
-                    $this->_msg_history = [
+                    $this->_msgHistory = [
                         'openid' => $openid,
                         'type' => $message->MsgType,
                         'rule_id' => MsgHistory::DEFAULT_RULE,
@@ -108,7 +109,7 @@ class DefaultController extends WController
                                 case Account::TYPE_SUBSCRIBE:
 
                                     Fans::follow($openid,$this->_app);
-                                    $this->_msg_history['type'] = $message->Event;
+                                    $this->_msgHistory['type'] = $message->Event;
                                     $this->_reply = ReplyDefault::defaultReply();
 
                                     break;
@@ -124,7 +125,7 @@ class DefaultController extends WController
                                 case Account::TYPE_CILCK:
 
                                     Fans::follow($openid,$this->_app);
-                                    $this->_msg_history['type'] = $message->Event;
+                                    $this->_msgHistory['type'] = $message->Event;
                                     $this->_reply = ReplyDefault::defaultReply('text',$message->EventKey);
 
                                     break;
@@ -155,7 +156,7 @@ class DefaultController extends WController
                     }
 
                     //历史记录
-                    MsgHistory::add($message,$this->_msg_history,$this->_reply);
+                    MsgHistory::add($message,$this->_msgHistory,$this->_reply);
                     //返回响应信息
                     return $this->_reply ? $this->_reply['content'] : $this->_reply;
                 });

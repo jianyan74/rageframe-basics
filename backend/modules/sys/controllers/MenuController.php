@@ -95,16 +95,6 @@ class MenuController extends MController
     }
 
     /**
-     * ajax修改
-     * @return array
-     */
-    public function actionUpdateAjax()
-    {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findModel($id));
-    }
-
-    /**
      * 返回模型
      * @param $id
      * @return $this|Menu|static

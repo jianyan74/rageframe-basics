@@ -1,6 +1,7 @@
 ﻿<?php
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
+use yii\helpers\Url;
 use backend\assets\AppAsset;
 use common\widgets\Alert;
 
@@ -36,10 +37,10 @@ AppAsset::register($this);
     </div>
     <div class="col-sm-8" style="margin-top: 16px;">
         <div class="ibox-tools">
-            <a href="javascript:history.go(-1)">
-                <i><img src="/resource/backend/img/return.png" style="margin-bottom: 3px;"></i> <font color="#777">返回上一页</font>
+            <a href="javascript:history.go(-1)" style="color: #999">
+                <i class="fa fa-mail-reply"></i> <font color="#999">返回上一页</font>
             </a>
-            <a href="" style="color: #777">
+            <a href="" style="color: #999">
                 <i class="glyphicon glyphicon-refresh"></i> 刷新
             </a>
         </div>
@@ -87,6 +88,60 @@ AppAsset::register($this);
             $(this).removeData("bs.modal");
         })
     });
+</script>
+
+<script type="text/javascript">
+    //status => 1:启用;-1禁用;
+    function status(obj){
+        var id = $(obj).parent().parent().attr('id');
+        var status; self = $(obj);
+        if(self.hasClass("btn-primary")){
+            status = 1;
+        } else {
+            status = -1;
+        }
+
+        $.ajax({
+            type:"get",
+            url:"<?= Url::to(['ajax-update'])?>",
+            dataType: "json",
+            data: {id:id,status:status},
+            success: function(data){
+                if(data.code == 200) {
+                    if(self.hasClass("btn-primary")){
+                        self.removeClass("btn-primary").addClass("btn-default");
+                        self.text('禁用');
+                    } else {
+                        self.removeClass("btn-default").addClass("btn-primary");
+                        self.text('启用');
+                    }
+                }else{
+                    alert(data.message);
+                }
+            }
+        });
+    }
+
+    function sort(obj){
+        var id = $(obj).parent().parent().attr('id');
+        var sort = $(obj).val();
+        if(isNaN(sort)){
+            alert('排序只能为数字');
+            return false;
+        }else{
+            $.ajax({
+                type:"get",
+                url:"<?= Url::to(['ajax-update'])?>",
+                dataType: "json",
+                data: {id:id,sort:sort},
+                success: function(data){
+                    if(data.code != 200) {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+    }
 </script>
 </body>
 </html>

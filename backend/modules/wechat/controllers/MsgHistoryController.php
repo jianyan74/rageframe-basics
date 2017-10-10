@@ -36,6 +36,7 @@ class MsgHistoryController extends WController
                 $where['module'] = Rule::RULE_MODULE_DEFAULT;
                 break;
         }
+
         //关联角色查询
         $data   = MsgHistory::find()->with('fans')
             ->where($where)

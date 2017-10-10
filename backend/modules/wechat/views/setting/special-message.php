@@ -11,9 +11,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-12">
             <div class="tabs-container">
                 <ul class="nav nav-tabs">
-                    <li><a href="<?= Url::to(['rule/index'])?>"> 关键字自动回复</a></li>
-                    <li class="active"><a href="<?= Url::to(['setting/special-message'])?>"> 非文字消息回复</a></li>
-                    <li><a href="<?= Url::to(['reply-default/index'])?>"> 关注/默认回复</a></li>
+                    <?= $this->render('/common/rule-nav',[
+                        'nav_type' => 2,
+                    ])?>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active">
@@ -31,9 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <input class="form-control" name="setting[<?= $key ?>][content]" value="<?= $row['content'] ?>" type="text">
                                         </div>
                                         <div style="display: <?= $row['type'] == 1 ? "none" : "block" ?>">
-                                            <select name="setting[<?= $key ?>][module]" class="form-control">
+                                            <select name="setting[<?= $key ?>][selected]" class="form-control">
                                                 <option value="" selected>不处理(使用系统默认回复)</option>
                                                 <!--<option value="custom">多客服转接</option>-->
+                                                <?php foreach ($row['module'] as $k => $item){ ?>
+                                                    <option value="<?= $k ?>" <?php if($k == $row['selected']){?>selected<?php } ?>><?= $item ?></option>
+                                                <?php } ?>
                                             </select>
                                         </div>
                                         <div class="hint-block">如果【<?= $row['title'] ?>】到达时, 并且此时并不在对话上下文中, 将会采用选中的模块来处理. 如果选择"不处理", 那么这个消息将会使用系统默认回复来回复</div>

@@ -19,11 +19,11 @@ class RuleController extends WController
      */
     public function actionIndex()
     {
-        $request  = Yii::$app->request;
-        $module     = $request->get('module','');
+        $request = Yii::$app->request;
+        $module = $request->get('module','');
 
-        $type     = $request->get('type','');
-        $keyword  = $request->get('keyword','');
+        $type = $request->get('type','');
+        $keyword = $request->get('keyword','');
 
         $where = [];
         switch ($type)
@@ -36,23 +36,23 @@ class RuleController extends WController
                 break;
         }
 
-        $data   = Rule::find()->with('ruleKeyword')
+        $data = Rule::find()->with('ruleKeyword')
             ->andFilterWhere(['module' => $module])
             ->andFilterWhere($where)
             ->andFilterWhere(['like', 'name', $keyword]);
 
-        $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('displayorder desc,append desc')
             ->limit($pages->limit)
             ->all();
 
         return $this->render('index',[
-            'modules'   => Rule::$moduleExplain,
-            'module'   => $module,
-            'models'  => $models,
-            'pages'   => $pages,
-            'type'    => $type,
+            'modules' => Rule::$moduleExplain,
+            'module' => $module,
+            'models' => $models,
+            'pages' => $pages,
+            'type' => $type,
             'keyword' => $keyword,
         ]);
     }
@@ -63,15 +63,15 @@ class RuleController extends WController
      */
     public function actionEdit()
     {
-        $request  = Yii::$app->request;
-        $id       = $request->get('id');
+        $request = Yii::$app->request;
+        $id = $request->get('id');
 
         //回复规则
-        $rule    = $this->findRuleModel($id);
+        $rule = $this->findRuleModel($id);
         //默认关键字
         $keyword = new RuleKeyword();
         //基础
-        $model     = $this->findModel($id);
+        $model = $this->findModel($id);
 
         //关键字列表
         $ruleKeywords = [
@@ -98,16 +98,15 @@ class RuleController extends WController
                 if($rule->save())
                 {
                     //获取规则ID
-                    $rule_id = $rule->isNewRecord ?  Yii::$app->db->getLastInsertID() : $rule->id;
-                    $model->rule_id = $rule_id;
+                    $model->rule_id = $rule->id;
                     //其他匹配包含关键字
                     $otherKeywords = Yii::$app->request->post('ruleKey',[]);
-                    $resultKeywords = $keyword->updateKeywords($keyword->content,$otherKeywords,$ruleKeywords,$rule_id,$this->_module,$rule);
+                    $resultKeywords = $keyword->updateKeywords($keyword->content,$otherKeywords,$ruleKeywords,$rule->id,$this->_module,$rule);
 
                     if($model->save() && $resultKeywords)
                     {
                         $transaction->commit();
-                        return $this->redirect(['rule/index','module'=>$rule->module]);
+                        return $this->redirect(['rule/index','module' => $rule->module]);
                     }
                 }
             }
@@ -119,22 +118,42 @@ class RuleController extends WController
         }
 
         return $this->render('edit',[
-            'rule'          => $rule,
-            'model'         => $model,
-            'keyword'       => $keyword,
-            'title'         => Rule::$moduleExplain[$this->_module],
-            'ruleKeywords'  => $ruleKeywords,
+            'rule' => $rule,
+            'model' => $model,
+            'keyword' => $keyword,
+            'title' => Rule::$moduleExplain[$this->_module],
+            'ruleKeywords' => $ruleKeywords,
         ]);
     }
 
     /**
-     * ajax修改
+     * 修改排序和状态
+     * @param $id
      * @return array
      */
-    public function actionUpdateAjax()
+    public function actionAjaxUpdate($id)
     {
-        $id = Yii::$app->request->get('id');
-        return $this->updateModelData($this->findRuleModel($id));
+        $insert_data = [];
+        $data = Yii::$app->request->get();
+        isset($data['status']) && $insert_data['status'] = $data['status'];
+        isset($data['sort']) && $insert_data['sort'] = $data['sort'];
+
+        $result = $this->setResult();
+        $model = $this->findRuleModel($id);
+        $model->attributes = $insert_data;
+
+        if(!$model->save())
+        {
+            $result->code = 422;
+            $result->message = $this->analysisError($model->getFirstErrors());
+        }
+        else
+        {
+            $result->code = 200;
+            $result->message = '修改成功';
+        }
+
+        return $this->getResult();
     }
 
     /**

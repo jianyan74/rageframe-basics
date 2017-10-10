@@ -54,6 +54,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         </div>
                                     </form>
                                 </div>
+                                <div class="col-sm-6">
+                                    <div class="ibox-tools">
+                                        【总计】关注扫描 <strong class="text-danger"><?= $attention_count ?></strong> 次 已关注扫描 <strong class="text-danger"><?= $scan_count ?></strong> 次 扫描 <strong class="text-danger"><?= $pages->totalCount ?></strong> 次
+                                    </div>
+                                </div>
                                 <div class="ibox-content">
                                     <table class="table table-hover">
                                         <thead>
