@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <small><?php echo Yii::$app->formatter->asRelativeTime($model['append'])?></small>
                                     </td>
                                     <td class="project-actions">
-                                        <a href="<?= Url::to(['target-delete','id'=>$model->id])?>" onclick="deleted(this);return false;" class="btn btn-warning btn-sm"> 删除 </a>
+                                        <a href="<?= Url::to(['target-delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;" class="btn btn-warning btn-sm"> 删除 </a>
                                     </td>
                                 </tr>
                             <?php } ?>

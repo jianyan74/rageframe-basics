@@ -23,15 +23,6 @@ use yii\db\ActiveRecord;
 class DeskMenu extends ActiveRecord
 {
     /**
-     * 状态启用
-     */
-    const STATUS_ON  = 1;
-    /**
-     * 状态禁用
-     */
-    const STATUS_OFF = -1;
-
-    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -45,7 +36,7 @@ class DeskMenu extends ActiveRecord
     public function rules()
     {
         return [
-            [['title','status'], 'required'],
+            [['title','status','url_type','target'], 'required'],
             [['status','menu_css','url','append', 'updated'], 'trim'],
             ['sort', 'number'],
             ['cover', 'string'],
@@ -66,7 +57,9 @@ class DeskMenu extends ActiveRecord
             'cover'    => '封面',
             'pid'      => '上级id',
             'url'      => '路由',
+            'url_type' => '路由类型',
             'menu_css' => '样式图标',
+            'target' => '新窗口打开',
             'sort'     => '排序',
             'status'   => '状态',
             'append'   => '创建时间',

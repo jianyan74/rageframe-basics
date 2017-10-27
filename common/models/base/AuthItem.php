@@ -49,11 +49,11 @@ class AuthItem extends \yii\db\ActiveRecord
     protected $auth_item_child;
 
     /**
-     * 角色类型
+     * 角色
      */
     const ROLE = 1;
     /**
-     * 角色类型
+     * 权限
      */
     const AUTH = 2;
 
@@ -93,7 +93,7 @@ class AuthItem extends \yii\db\ActiveRecord
             'key'           => '手动增ID',
             'type'          => '类型',
             'description'   => '路由说明',
-            'rule_name'     => 'rule名称',
+            'rule_name'     => '规则名称(选填)',
             'data'          => 'Data',
             'sort'          => '排序',
             'parent_key'   => '父级目录',
@@ -157,7 +157,7 @@ class AuthItem extends \yii\db\ActiveRecord
      */
     public function afterDelete()
     {
-        AuthItem::deleteAll(['parent_key'=>$this->key]);
+        AuthItem::deleteAll(['parent_key' => $this->key]);
         return parent::beforeDelete();
     }
 
@@ -171,7 +171,11 @@ class AuthItem extends \yii\db\ActiveRecord
         if($this->isNewRecord)
         {
             //设置key
-            $model = self::find()->orderBy('key desc')->select('key')->one();
+            $model = self::find()
+                ->orderBy('key desc')
+                ->select('key')
+                ->one();
+
             $key = $model['key'];
             $this->key = $key ? $key + 1 : 1;
 

@@ -77,11 +77,17 @@ class AuthAssignment extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param $user_id
      * 根据用户ID获取权限名称
+     * @param $user_id
+     * @return bool|mixed
      */
     public function getName($user_id)
     {
+        if(!$user_id)
+        {
+            return false;
+        }
+
         $model = $this::find()
             ->where(['user_id'=>$user_id])
             ->one();
@@ -91,7 +97,6 @@ class AuthAssignment extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
-     *  关联
      */
     public function getItemName()
     {
@@ -100,7 +105,6 @@ class AuthAssignment extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
-     *  关联
      */
     public function getItemNameChild()
     {

@@ -19,9 +19,11 @@ use yii\helpers\Url;
             <div class="ibox-content">
                 <div class="col-sm-12">
                     <?= $form->field($model, 'title')->textInput() ?>
-                    <?= $form->field($model, 'url')->textInput()->hint("例如：index/index") ?>
+                    <?= $form->field($model, 'url_type')->radioList(['1'=>'系统路由','2'=>'直接链接']) ?>
+                    <?= $form->field($model, 'url')->textInput()->hint("系统路由例如：index/index<br/>直接链接例如：www.baidu.com") ?>
                     <?= $form->field($model, 'menu_css')->textInput()?>
                     <?= $form->field($model, 'sort')->textInput() ?>
+                    <?= $form->field($model, 'target')->radioList(['1'=>'是','-1'=>'否']) ?>
                     <?= $form->field($model, 'status')->radioList(['1'=>'启用','-1'=>'禁用']) ?>
                 </div>
             </div>

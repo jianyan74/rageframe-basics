@@ -1,4 +1,6 @@
 <?php
+use yii\widgets\ActiveForm;
+
 $this->title = '角色授权';
 $this->params['breadcrumbs'][] = ['label' => '系统', 'url' => ['/sys/system/index']];
 $this->params['breadcrumbs'][] = ['label' => '角色管理', 'url' => ['index']];
@@ -9,7 +11,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox-content">
-                <form class="form-horizontal" method="post" action="">
+
+                <?php $form = ActiveForm::begin([]); ?>
                     <div class="form-group">
                         <div class="col-sm-12">
                             <?php foreach($auth as $item){ ?>
@@ -31,15 +34,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                     <!-- 加入csrf验证-->
-                    <input name="_csrf" type="hidden" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
                     <input name="parent" type="hidden" value="<?= $parent ?>">
                     <div class="form-group">
                         <div class="col-sm-12 text-center">
                             <button type="submit" class="btn btn-primary">保存内容</button>
                             <span class="btn btn-white" onclick="history.go(-1)">返回</span>
                         </div>
-                    </div>
-                </form>
+                    </div>　
+                <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>

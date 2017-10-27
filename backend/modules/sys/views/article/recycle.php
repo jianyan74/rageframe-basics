@@ -26,14 +26,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-2 col-md-2 control-label">文章分类</label>
-                            <div class="col-sm-8 col-md-8 col-lg-8 col-xs-12">
+                            <div class="col-sm-8">
                                 <div class="row row-fix tpl-category-container">
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <?= Html::dropDownList('cate_stair',$cate_stair,Cate::getList(),['class' => 'form-control tpl-category-parent','prompt' =>'请选择一级分类']); ?>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <?= Html::dropDownList('cate_second',$cate_second,Cate::getList($cate_stair),['class' => 'form-control tpl-category-parent','prompt' =>'请选择二级分类']); ?>
-                                    </div>
+                                    <?= Html::dropDownList('cate_id',$cate_id,Cate::getTree(),['class' => 'form-control tpl-category-parent','prompt' =>'请选择分类']); ?>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +58,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <tr>
                             <th>#</th>
                             <th>文章标题</th>
-                            <th>作者</th>
+                            <th>分类</th>
                             <th>浏览量</th>
                             <th>推荐位</th>
                             <th>操作</th>
@@ -74,7 +69,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <tr id = <?= $model->id ?>>
                                 <td><?= $model->id ?></td>
                                 <td><?= $model->title ?></td>
-                                <td><?= $model->author ?></td>
+                                <td><?= isset($model->cate->title) ? $model->cate->title : '' ?></td>
                                 <td><?= $model->view ?></td>
                                 <td>
                                     <?php foreach (Yii::$app->params['recommend'] as $key => $value){ ?>
@@ -83,7 +78,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 </td>
                                 <td>
                                     <a href="<?= Url::to(['show','id'=>$model->id])?>"><span class="btn btn-info btn-sm">还原</span></a>&nbsp
-                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                 </td>
                             </tr>
                         <?php } ?>

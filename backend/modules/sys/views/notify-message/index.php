@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td><?= $model->managerTarget->username ?></td>
                                 <td><?= Yii::$app->formatter->asDatetime($model->append) ?></td>
                                 <td>
-                                    <a href="<?= Url::to(['sender-delete','id'=>$model->id])?>" onclick="deleted(this);return false;" class="btn btn-warning btn-sm"> 删除 </a>
+                                    <a href="<?= Url::to(['sender-delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;" class="btn btn-warning btn-sm"> 删除 </a>
                                 </td>
                             </tr>
                         <?php } ?>

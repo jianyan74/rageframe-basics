@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         </td>
                                         <td>
                                             <a href="<?php echo Url::to(['upgrade','name' => $vo['name']])?>"><span class="btn btn-info btn-sm">更新</span></a>&nbsp
-                                            <?php echo $vo['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="status(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="status(this)">禁用</span>' ;?>
+                                            <?php echo $vo['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>' ;?>
                                             <a href="<?php echo Url::to(['uninstall','name' => $vo['name']])?>" data-method="post"><span class="btn btn-warning btn-sm">卸载</span></a>&nbsp
                                         </td>
                                     </tr>
@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
 <!--列表-->
 <script type="text/html" id="listModel">
-    {{each list as value i}}
+    {{each data as value i}}
     <tr id = "{{value.id}}">
         <td class="feed-element" style="width: 70px;">
             <img alt="image" class="img-rounded m-t-xs img-responsive" src="{{value.cover}}" width="64" height="64">
@@ -96,9 +96,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         <td>
             <a href="{{value.upgrade}}"><span class="btn btn-info btn-sm">更新</span></a>&nbsp
             {{if value.status == -1 }}
-            <span class="btn btn-primary btn-sm" onclick="status(this)">启用</span>
+            <span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>
             {{else}}
-            <span class="btn btn-default btn-sm"  onclick="status(this)">禁用</span>'
+            <span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>'
             {{/if}}
             <a href="{{value.uninstall}}" data-method="post"><span class="btn btn-warning btn-sm">卸载</span></a>&nbsp
         </td>
@@ -120,14 +120,14 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             type:"get",
             url:"<?php echo  Url::to(['index'])?>",
             dataType: "json",
-            data: {keyword:value},
+            data: {keyword:value,'type':'plug'},
             success: function(data){
-                if(data.flg == 1) {
+                if(data.code == 200) {
                     $('#listAddons').html('');
                     var html = template('listModel', data);
                     $('#listAddons').append(html);
                 }else{
-                    alert(data.msg);
+                    alert(data.message);
                 }
             }
         });
@@ -143,37 +143,4 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             $("#description-"+id).hide();
         }
     });
-
-    //status => 1:启用;-1禁用;
-    function status(obj){
-        var status = "";
-        var id = $(obj).parent().parent().attr('id');
-        var self = $(obj);
-
-        if(self.hasClass("btn-primary")){
-            status = 1;
-        } else {
-            status = -1;
-        }
-
-        $.ajax({
-            type:"get",
-            url:"<?= Url::to(['update-ajax'])?>",
-            dataType: "json",
-            data: {id:id,status:status},
-            success: function(data){
-                if(data.flg == 1) {
-                    if(self.hasClass("btn-primary")){
-                        self.removeClass("btn-primary").addClass("btn-default");
-                        self.text('禁用');
-                    } else {
-                        self.removeClass("btn-default").addClass("btn-primary");
-                        self.text('启用');
-                    }
-                }else{
-                    alert(data.msg);
-                }
-            }
-        });
-    }
 </script>

@@ -1,6 +1,7 @@
 <?php
 namespace jianyan\basics\backend\modules\sys\controllers;
 
+use jianyan\basics\backend\modules\sys\models\AuthAssignment;
 use yii;
 use yii\data\Pagination;
 use common\helpers\SysArrayHelper;
@@ -32,8 +33,8 @@ class AuthRoleController extends MController
     }
 
     /**
-     * 角色编辑
-     * @return string|yii\web\Response
+     * 编辑
+     * @return array|mixed|string|\yii\web\Response
      */
     public function actionEdit()
     {
@@ -41,19 +42,24 @@ class AuthRoleController extends MController
         $name = $request->get('name');
         $model = $this->findModel($name);
 
-        if ($model->load($request->post()))
+        if ($model->load(Yii::$app->request->post()))
         {
-            //默认状态值
-            $model->type = AuthItem::ROLE;
-            $model->description = Yii::$app->user->identity->username."|添加了|".$model->name."|角色";
-
-            if($model->save())
+            if($request->isAjax)
             {
-                return $this->redirect(['index']);
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return \yii\widgets\ActiveForm::validate($model);
+            }
+            else
+            {
+                $model->type = AuthItem::ROLE;
+                $model->description = Yii::$app->user->identity->username."|添加了|".$model->name."|角色";
+                return $model->save()
+                    ? $this->redirect(['index'])
+                    : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
             }
         }
 
-        return $this->render('edit', [
+        return $this->renderAjax('edit', [
             'model' => $model,
         ]);
     }
@@ -84,12 +90,25 @@ class AuthRoleController extends MController
         $request  = Yii::$app->request;
         $parent   = $request->get('parent');
 
-        //所有权限
+        $userAuth = [];
+        //验证是否总管理员
+        if(Yii::$app->params['adminAccount'] != Yii::$app->user->id)
+        {
+            $itemNames = AuthAssignment::getUserItemName(Yii::$app->user->id);
+            if(isset($itemNames['itemNameChild']))
+            {
+                foreach ($itemNames['itemNameChild'] as $child)
+                {
+                    $userAuth[] = $child['child'];
+                }
+            }
+        }
+
         $auth   = AuthItem::find()
-            ->where(['type'=>AuthItem::AUTH])
+            ->where(['type' => AuthItem::AUTH])
+            ->andFilterWhere(['in','name',$userAuth])
             ->with([
-                'authItemChildren0' => function($query) {
-                    $parent  = Yii::$app->request->get('parent');
+                'authItemChildren0' => function($query) use($parent){
                     $query->andWhere(['parent' => $parent]);
                 },
             ])
@@ -99,7 +118,7 @@ class AuthRoleController extends MController
 
         $auth = SysArrayHelper::itemsMerge($auth,'key',0,'parent_key');
 
-        if ($request->post())
+        if ($request->isPost)
         {
             //提交过来的信息
             $PostAuth = $request->post();

@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td><?= Yii::$app->formatter->asDatetime($row['time'])?></td>
                                 <td>
                                     <a href="javascript:;"><span class="btn btn-info btn-sm table-restore">还原</span></a>&nbsp
-                                    <a href="<?= Url::to(['delete','time'=>$row['time']])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>
+                                    <a href="<?= Url::to(['delete','time'=>$row['time']])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -48,64 +48,55 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
     </div>
 </div>
 
-
 <script type="text/javascript">
     $(document).ready(function(){
 
         var time;
         //优化表单击
         $(".table-restore").click(function () {
-
             time = $(this).parent().parent().parent().attr('data-time');
-
             $.ajax({
                 type: "post",
                 url: "<?= Url::to(['restore-init'])?>",
                 dataType: 'json',
                 data: {time:time},
                 success: function(data) {
-                    if(data.flg == 1){
-                        var part    = data.part;
-                        var start   = data.start;
+                    if(data.code == 200){
+                        var part = data.data.part;
+                        var start = data.data.start;
                         startRestore(part,start);
                         $('#reminder').text('还原中,请不要关闭本页面,可能会造成服务器卡顿......');
                         $('#reminder').show();
                     }else{
-                        alert(data.msg);
+                        alert(data.message);
                     }
                 }
             })
 
         });
 
-
         //开始备份
-        function startRestore(part,start)
-        {
+        function startRestore(part,start) {
             $.ajax({
                 type: "post",
                 url: "<?= Url::to(['restore-start'])?>",
                 dataType: 'json',
                 data: {part:part,start:start},
                 success: function(data) {
-                    if(data.flg == 1){
-
-                        var achieveStatus = data.achieveStatus;
-
+                    if(data.code == 200){
+                        var achieveStatus = data.data.achieveStatus;
                         if(achieveStatus == 0){
-                            startRestore(data.part,data.start);
-                            $('#reminder').text('还原中,请不要关闭本页面,可能会造成服务器卡顿['+data.start+']......');
-                            //alert(data.msg);
+                            startRestore(data.data.part, data.data.start);
+                            $('#reminder').text('还原中,请不要关闭本页面,可能会造成服务器卡顿['+data.data.start+']......');
                         }else{
                             $('#reminder').hide();
-                            alert(data.msg);
+                            alert(data.message);
                         }
                     }else{
-                        alert(data.msg);
+                        alert(data.message);
                     }
                 }
             })
         }
-
     })
 </script>

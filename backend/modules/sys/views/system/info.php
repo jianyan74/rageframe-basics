@@ -7,61 +7,123 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 ?>
 
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="col-sm-12">
+    <div class="col-sm-7">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5><i class="fa fa-cog"></i>  系统信息</h5>
             </div>
             <div class="ibox-content">
-                <p>Yii2版本　　　　　　　　　　　　 <?php echo Yii::getVersion(); ?></p>
-                <p>PHP版本　　　　　　　　　　　　<?= phpversion(); ?></p>
-                <p>Mysql版本 　　　　　　　　　　　<?= Yii::$app->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION); ?></p>
-                <p>GD库  　　　　　　　　　　　　　<?php if(!function_exists('gd_info')){ ?>未开启<?php }else{ ?>已开启<?php } ?></p>
-                <p>数据库大小　　　　　　　　　　　<?= Yii::$app->formatter->asShortSize($mysqlSize); ?></p>
-                <p>运行环境　　　　　　　　　　　　<?= $_SERVER['SERVER_SOFTWARE']; ?></p>
-                <p>文件上传目录　　　　　　　　　　<?= Yii::$app->request->hostInfo . Yii::getAlias('@attachurl'); ?>/</p>
-                <p>文件上传限制　　　　　　　　　　<?= ini_get('upload_max_filesize'); ?></p>
-                <p>超时时间　　　　　　　　　　　　<?= ini_get('max_execution_time'); ?>秒</p>
-                <p>当前服务器时间　　　　　　　　　<span id="divTime"></span></p>
-                <p>访问客户端信息　　　　　　　　　<?= $_SERVER['HTTP_USER_AGENT'] ?></p>
+                <table class="table table-hover">
+                    <tr>
+                        <td width="150px">Yii2版本</td>
+                        <td><?php echo Yii::getVersion(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>PHP版本</td>
+                        <td><?= phpversion(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>Mysql版本</td>
+                        <td><?= Yii::$app->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION); ?></td>
+                    </tr>
+                    <tr>
+                        <td>Memcache扩展</td>
+                        <td>
+                            <?= extension_loaded('memcache')
+                                ? '<span class="label label-primary">支持</span>'
+                                : '<span class="label label-default">不支持</span>'; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Redis扩展</td>
+                        <td>
+                            <?= extension_loaded('redis')
+                                ? '<span class="label label-primary">支持</span>'
+                                : '<span class="label label-default">不支持</span>'; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>数据库大小</td>
+                        <td><?= Yii::$app->formatter->asShortSize($mysql_size); ?></td>
+                    </tr>
+                    <tr>
+                        <td>运行环境</td>
+                        <td><?= $_SERVER['SERVER_SOFTWARE']; ?></td>
+                    </tr>
+                    <tr>
+                        <td>PHP执行方式</td>
+                        <td><?= php_sapi_name(); ?></td>
+                    </tr>
+                    <tr>
+                        <td>当前附件目录</td>
+                        <td><?= Yii::$app->request->hostInfo . Yii::getAlias('@attachurl'); ?>/</td>
+                    </tr>
+                    <tr>
+                        <td>当前附件目录大小</td>
+                        <td><?= Yii::$app->formatter->asShortSize($attachment_size); ?></td>
+                    </tr>
+                    <tr>
+                        <td>文件上传限制</td>
+                        <td><?= ini_get('upload_max_filesize'); ?></td>
+                    </tr>
+                    <tr>
+                        <td>超时时间</td>
+                        <td><?= ini_get('max_execution_time'); ?>秒</td>
+                    </tr>
+                    <tr>
+                        <td>访问客户端信息</td>
+                        <td><?= $_SERVER['HTTP_USER_AGENT'] ?></td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
-    <div class="col-sm-12">
+    <div class="col-sm-5">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5><i class="fa fa-code"></i>  开发信息</h5>
             </div>
             <div class="ibox-content">
-                <p>系统名称　　　　　　　　　　　　　<?= Yii::$app->params['exploitSysName']?></p>
-                <p>系统版本　　　　　　　　　　　　　<?= Yii::$app->params['exploitVersions']?></p>
-                <p>官网　　　　　　　　　　　　　　　<?= Yii::$app->params['exploitOfficialWebsite']?></p>
-                <p>Git@OSC　　　　　　　　　　　　&nbsp;&nbsp;<?= Yii::$app->params['exploitGit@OSC']?></p>
-                <p>GitHub　　　　　　　　　　　　　　<?= Yii::$app->params['exploitGitHub']?></p>
-                <p>开发者　　　　　　　　　　　　　　<?= Yii::$app->params['exploitName']?></p>
-                <p>问题反馈(QQ同号)　　　　　　　　　<?= Yii::$app->params['exploitEmail']?></p>
+                <table class="table table-hover">
+                    <tr>
+                        <td width="150px">系统名称</td>
+                        <td><?= Yii::$app->params['exploitSysName']?></td>
+                    </tr>
+                    <tr>
+                        <td>系统版本</td>
+                        <td><?= Yii::$app->params['exploitVersions']?></td>
+                    </tr>
+                    <tr>
+                        <td>官网</td>
+                        <td><?= Yii::$app->params['exploitOfficialWebsite']?></td>
+                    </tr>
+                    <tr>
+                        <td>Git@OSC</td>
+                        <td><?= Yii::$app->params['exploitGit@OSC']?></td>
+                    </tr>
+                    <tr>
+                        <td>GitHub</td>
+                        <td><?= Yii::$app->params['exploitGitHub']?></td>
+                    </tr>
+                    <tr>
+                        <td>开发者</td>
+                        <td><?= Yii::$app->params['exploitName']?></td>
+                    </tr>
+                    <tr>
+                        <td>官方QQ群</td>
+                        <td><a href="https://jq.qq.com/?_wv=1027&amp;k=4BeVA2r" target="_blank">655084090</a></td>
+                    </tr>
+                    <tr>
+                        <td>问题反馈(qq同号)</td>
+                        <td>751393839@qq.com</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        setTime();
-        setInterval(setTime, 1000);
-    });
-    function setTime(){
-        var d = new Date(), str = '';
-        str += d.getFullYear() + ' 年 '; //获取当前年份
-        str += d.getMonth() + 1 + ' 月 '; //获取当前月份（0——11）
-        str += d.getDate() + ' 日  ';
-        str += d.getHours() + ' 时 ';
-        str += d.getMinutes() + ' 分 ';
-        str += d.getSeconds() + ' 秒 ';
-        $("#divTime").text(str);
-    }
-</script>
 
 
 

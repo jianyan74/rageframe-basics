@@ -257,6 +257,10 @@ class FileBaseController extends BaseController
                         'urlPath' => Yii::getAlias("@attachurl/") . $filePath,
                     ];
                 }
+                else
+                {
+                    $result->message = '文件移动错误';
+                }
             }
         }
 
@@ -271,7 +275,7 @@ class FileBaseController extends BaseController
      */
     private function checkType($ext, $type)
     {
-        if(!isset(Yii::$app->params[$type]['maxExc']))
+        if(empty(Yii::$app->params[$type]['maxExc']))
         {
             return true;
         }

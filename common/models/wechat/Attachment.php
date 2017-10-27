@@ -55,6 +55,8 @@ class Attachment extends \yii\db\ActiveRecord
         self::LINK_TYPE_LOCAL => '本地图文',
     ];
 
+    public $description;
+
     /**
      * @inheritdoc
      */
@@ -107,7 +109,7 @@ class Attachment extends \yii\db\ActiveRecord
      * @param $wxResult - 微信返回的信息
      * @param $imagePath - 本地的绝对路径
      */
-    public static function addImage($wxResult,$imagePath)
+    public static function addImage($wxResult, $imagePath)
     {
         $prefix =  Yii::getAlias("@rootPath/").'web';
 
@@ -121,6 +123,39 @@ class Attachment extends \yii\db\ActiveRecord
         $image_model->height = $img_info[1];
         $image_model->file_name = array_slice(explode('/',$imagePath),-1,1)[0];
         $image_model->tag = $wxResult['url'];
+        $image_model->manager_id = Yii::$app->user->id;
+
+        return $image_model->save() ? true : false;
+    }
+
+    /**
+     * @param $wxResult
+     * @param $imagePath
+     * @param $type
+     */
+    public static function addVoice($wxResult,$imagePath)
+    {
+        $prefix =  Yii::getAlias("@rootPath/").'web';
+
+        $image_model = new Attachment();
+        $image_model->media_id = $wxResult['media_id'];
+        $image_model->attachment = str_replace($prefix,'',trim($imagePath));;
+        $image_model->type =  self::TYPE_VOICE;
+        $image_model->file_name = array_slice(explode('/',$imagePath),-1,1)[0];
+        $image_model->manager_id = Yii::$app->user->id;
+
+        return $image_model->save() ? true : false;
+    }
+
+    public static function addVideo($wxResult,$imagePath,$file_name)
+    {
+        $prefix =  Yii::getAlias("@rootPath/").'web';
+
+        $image_model = new Attachment();
+        $image_model->media_id = $wxResult['media_id'];
+        $image_model->attachment = str_replace($prefix,'',trim($imagePath));;
+        $image_model->type = self::TYPE_VIDEO;
+        $image_model->file_name = $file_name;
         $image_model->manager_id = Yii::$app->user->id;
 
         return $image_model->save() ? true : false;

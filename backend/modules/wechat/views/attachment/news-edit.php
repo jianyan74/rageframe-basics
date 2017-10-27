@@ -232,7 +232,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         }
 
-                        swalAlert('同步到微信中,请不要关闭当前页面');
+                        rfAffirm('同步到微信中,请不要关闭当前页面');
 
                         var cloneAry = this.postList.concat();
                         for(var i=0; i<cloneAry.length; i++)

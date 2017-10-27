@@ -188,7 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             }
                         }
 
-                        swalAlert('同步到微信中,请不要关闭当前页面');
+                        rfAffirm('同步到微信中,请不要关闭当前页面');
 
                         //ajax提交
                         $.ajax({

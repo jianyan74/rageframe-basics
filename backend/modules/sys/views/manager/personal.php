@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         <div class="col-sm-3">
             <div class="ibox-content text-center">
                 <div class="m-b-md">
-                    <img class="img-circle circle-border" alt="image" src="<?php echo !empty($model->head_portrait) ? $model->head_portrait : '/resource/backend/img/profile.jpg' ?>">
+                    <img class="img-circle circle-border" alt="image" src="<?php echo !empty($model->head_portrait) ? $model->head_portrait : '/resource/backend/img/profile_small.jpg' ?>">
                 </div>
                 <p class="font-bold"><h3><i class="fa <?php echo $model->sex == 1 ? 'fa-mars': 'fa-venus'; ?>"></i> <?= $model->realname?></h3></p>
                 <div class="text-center">
@@ -29,8 +29,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
             </div>
             <div class="ibox-content">
                 <p><i class="fa fa-map-marker"></i> <?= Provinces::getCityName($model->provinces)?>·<?= Provinces::getCityName($model->city)?>·<?= Provinces::getCityName($model->area)?></p>
-                <p><i class="fa fa-mobile"></i> <?php echo $model->mobile_phone ?> </p>
-                <p>E-MAIL： <?= $model->email?></p>
+                <p><i class="fa fa-mobile"></i> <?php echo !empty($model->mobile_phone) ? $model->mobile_phone : '～' ?> </p>
+                <p>E-MAIL： <?php echo !empty($model->email) ? $model->email : '～' ?></p>
+                <p>最后登陆IP： <?php echo $model->last_ip ?></p>
+                <p>最后登陆时间： <?php echo Yii::$app->formatter->asDatetime($model->last_time) ?></p>
             </div>
             <div class="ibox-content">
                 <h5>详细地址</h5>

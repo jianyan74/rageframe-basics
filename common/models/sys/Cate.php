@@ -6,6 +6,9 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use common\enums\StatusEnum;
+use common\helpers\SysArrayHelper;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%cate}}".
@@ -22,15 +25,6 @@ use yii\db\ActiveRecord;
  */
 class Cate extends ActiveRecord
 {
-    /**
-     * 状态启用
-     */
-    const STATUS_ON  = 1;
-    /**
-     * 状态禁用
-     */
-    const STATUS_OFF = -1;
-
     /**
      * @inheritdoc
      */
@@ -59,7 +53,7 @@ class Cate extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'cate_id'   => 'Cate ID',
+            'id'        => '分类id',
             'title'     => '分类名称',
             'pid'       => 'Pid',
             'sort'      => '排序',
@@ -76,27 +70,37 @@ class Cate extends ActiveRecord
      */
     public static function getTitle($cate_id)
     {
-        $cate = Cate::findOne($cate_id);
-        if($cate)
-        {
-            return $cate['title'];
-        }
-        else
-        {
-            return "未选择";
-        }
+        $cate = self::findOne($cate_id);
+        return $cate ? $cate['title'] : "未选择";
     }
 
     /**
-     * @param int $parentid
-     * @return array
      * 根据父级ID返回信息
+     * @param int $pid
+     * @return array
      */
     public static function getList($pid = 0)
     {
-        $cates = Cate::find()->where(['pid'=>$pid,'status'=>1])->all();
+        $cates = self::find()
+            ->where(['pid' => $pid, 'status' => StatusEnum::ENABLED])
+            ->all();
 
-        return ArrayHelper::map($cates,'cate_id','title');
+        return $cates;
+    }
+
+    /**
+     * 获取下拉列表
+     * @return array
+     */
+    public static function getTree()
+    {
+        $cates = self::find()
+            ->where(['status' => StatusEnum::ENABLED])
+            ->asArray()
+            ->all();
+
+        $cates = SysArrayHelper::itemsMerge($cates);
+        return ArrayHelper::map(SysArrayHelper::itemsMergeDropDown($cates),'id','title');
     }
 
     /**

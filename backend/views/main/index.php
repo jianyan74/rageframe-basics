@@ -9,8 +9,6 @@ AppAsset::register($this);
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
-<html>
-
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,10 +20,10 @@ AppAsset::register($this);
     <!--[if lt IE 8]>
     <meta http-equiv="refresh" content="0;ie.html" />
     <![endif]-->
-    <link href="/resource/backend/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
-    <link href="/resource/backend/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
-    <link href="/resource/backend/css/animate.min.css" rel="stylesheet">
-    <link href="/resource/backend/css/style.css?v=4.0.0" rel="stylesheet">
+    <?= Html::cssFile('/resource/backend/css/bootstrap.min.css?v=3.3.5'); ?>
+    <?= Html::cssFile('/resource/backend/css/font-awesome.min.css?v=4.4.0'); ?>
+    <?= Html::cssFile('/resource/backend/css/animate.min.css'); ?>
+    <?= Html::cssFile('/resource/backend/css/style.css?v=4.0.0'); ?>
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
@@ -33,29 +31,30 @@ AppAsset::register($this);
 <div id="wrapper">
     <!--左侧导航开始-->
     <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="nav-close"><i class="fa fa-times-circle"></i>
+        <div class="nav-close">
+            <i class="fa fa-times-circle"></i>
         </div>
         <div class="sidebar-collapse">
             <ul class="nav" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element" style="text-align: center">
-                        <span>
-                                <img src="<?php echo !empty($user['head_portrait']) ? $user['head_portrait'] : "/resource/backend/img/profile.jpg" ?>" class="img-circle" width="48" height="48" id="head_portrait">
-                        </span>
+                    <span>
+                            <img src="<?php echo !empty($user['head_portrait']) ? $user['head_portrait'] : "/resource/backend/img/profile_small.jpg" ?>" class="img-circle" width="48" height="48" id="head_portrait">
+                    </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear">
-                               <span class="block m-t-xs">
-                                   <strong class="font-bold"><?php echo $user['username'] ?></strong>
-                               </span>
-                                <span class="text-muted text-xs block" style="padding-left: 10px">
-                                    <?php if($user['id'] == Yii::$app->params['adminAccount']){ ?>
-                                        超级管理员
-                                    <?php }else{ ?>
-                                        <?php echo isset($user['assignment']['item_name']) ? $user['assignment']['item_name'] : '游客' ?>
-                                    <?php } ?>
-                                    <b class="caret"></b>
-                                </span>
+                        <span class="clear">
+                           <span class="block m-t-xs">
+                               <strong class="font-bold"><?php echo $user['username'] ?></strong>
+                           </span>
+                            <span class="text-muted text-xs block" style="padding-left: 10px">
+                                <?php if($user['id'] == Yii::$app->params['adminAccount']){ ?>
+                                    超级管理员
+                                <?php }else{ ?>
+                                    <?php echo isset($user['assignment']['item_name']) ? $user['assignment']['item_name'] : '游客' ?>
+                                <?php } ?>
+                                <b class="caret"></b>
                             </span>
+                        </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li>
@@ -84,7 +83,10 @@ AppAsset::register($this);
     <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#">
+                        <i class="fa fa-bars"></i>
+                    </a>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
                     <?= NotifyWidget::widget() ?>
@@ -184,25 +186,25 @@ AppAsset::register($this);
                         </div>
                         <div class="title">皮肤选择</div>
                         <div class="setings-item default-skin nb">
-                            <span class="skin-name ">
-                                 <a href="#" class="s-skin-0">
-                                     默认皮肤
-                                 </a>
-                            </span>
+                        <span class="skin-name ">
+                             <a href="#" class="s-skin-0">
+                                 默认皮肤
+                             </a>
+                        </span>
                         </div>
                         <div class="setings-item blue-skin nb">
-                            <span class="skin-name ">
-                                <a href="#" class="s-skin-1">
-                                    蓝色主题
-                                </a>
-                            </span>
+                        <span class="skin-name ">
+                            <a href="#" class="s-skin-1">
+                                蓝色主题
+                            </a>
+                        </span>
                         </div>
                         <div class="setings-item yellow-skin nb">
-                            <span class="skin-name ">
-                                <a href="#" class="s-skin-3">
-                                    黄色/紫色主题
-                                </a>
-                            </span>
+                        <span class="skin-name ">
+                            <a href="#" class="s-skin-3">
+                                黄色/紫色主题
+                            </a>
+                        </span>
                         </div>
                     </div>
                 </div>

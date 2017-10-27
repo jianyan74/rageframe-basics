@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
-use \kucha\ueditor\UEditor;
+use kucha\ueditor\UEditor;
 use jianyan\basics\common\models\sys\Config;
 
 $this->title = '系统配置';
@@ -24,132 +24,130 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <?php foreach ($configCateAll as $k => $cate){ ?>
                             <div class="tab-pane <?php if($k == 0){ ?>active<?php } ?>" id="tab-<?= $cate['id'] ?>">
                                 <div class="panel-body">
-                                    <div class="col-sm-12">
-                                        <form class="form-horizontal" method="post" action="" id="form-tab-<?= $cate['id'] ?>">
-                                            <?php foreach ($cate['-'] as $item){ ?>
-                                                <h2 style="font-size: 20px;"><i class="fa fa-share-alt"></i> <?= $item['title']?></h2>
-                                                <?php if(isset($item['config'])){ ?>
-                                                    <div class="col-sm-12" style="padding-left: 37px;">
-                                                            <?php foreach ($item['config'] as $row){ ?>
-                                                                <?php if($row['type'] == 1){ ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <?= Html::input('text','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control']);?>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 2){ ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <?= Html::input('password','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control']);?>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 3){ ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <div class="input-group">
-                                                                            <?= Html::input('text','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control','id' => $row['id']]);?>
-                                                                            <span class="input-group-btn">
+                                    <form class="form-horizontal" method="post" action="" id="form-tab-<?= $cate['id'] ?>">
+                                        <?php foreach ($cate['-'] as $item){ ?>
+                                            <h2 style="font-size: 20px;"><i class="fa fa-share-alt"></i> <?= $item['title']?></h2>
+                                            <?php if(isset($item['config'])){ ?>
+                                                <div class="col-sm-12" style="padding-left: 37px;">
+                                                    <?php foreach ($item['config'] as $row){ ?>
+                                                        <?php if($row['type'] == 1){ ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <?= Html::input('text','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control']);?>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 2){ ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <?= Html::input('password','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control']);?>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 3){ ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <div class="input-group">
+                                                                    <?= Html::input('text','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control','id' => $row['id']]);?>
+                                                                    <span class="input-group-btn">
                                                                             <span class="btn btn-white" onclick="createKey(<?= $row['extra']?>,<?= $row['id']?>)">生成新的</span>
                                                                         </span>
-                                                                        </div>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 4){ ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <?= Html::textarea('config[' . $row['name'] . ']',$row['value'],['class'=>'form-control']);?>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 5){
-                                                                    //获取数组
-                                                                    $option = Config::parseConfigAttr($row['extra']);
-                                                                    ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <?= Html::dropDownList('config[' . $row['name'] . ']',$row['value'],$option,['class'=>'form-control']);?>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 6){
-                                                                    //获取数组
-                                                                    $option = Config::parseConfigAttr($row['extra']);
-                                                                    ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <div class="col-sm-push-10">
-                                                                            <?php foreach ($option as $key => $v){ ?>
-                                                                                <label class="radio-inline">
-                                                                                    <input type="radio" name="config[<?= $row['name']?>]" class="radio" value="<?= $key?>" <?php if($key == $row['value']){ ?>checked<?php } ?>><?= $v?>
-                                                                                </label>
-                                                                            <?php } ?>
-                                                                        </div>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 7){ ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <?= UEditor::widget([
-                                                                            'id' => "config[".$row['name']."]",
-                                                                            'attribute' => $row['name'],
-                                                                            'name' => $row['name'],
-                                                                            'value' => $row['value'],
-                                                                            'clientOptions' => [
-                                                                                //编辑区域大小
-                                                                                'initialFrameHeight' => '200',
-                                                                                //定制菜单
-                                                                                'toolbars' => [
-                                                                                    [
-                                                                                        'fullscreen', 'source', '|', 'undo', 'redo', '|',
-                                                                                        'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
-                                                                                        'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
-                                                                                        'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
-                                                                                        'directionalityltr', 'directionalityrtl', 'indent', '|',
-                                                                                        'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
-                                                                                        'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-                                                                                        'simpleupload', 'insertimage', 'emotion', 'insertvideo', 'music', 'attachment', 'map', 'insertframe', 'insertcode', 'pagebreak', 'template', 'background', '|',
-                                                                                        'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
-                                                                                        'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
-                                                                                        'searchreplace', 'help', 'drafts'
-                                                                                    ],
-                                                                                ],
-                                                                            ]
-                                                                        ]);?>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 8){ ?>
-                                                                    <div class="form-group">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <div class="col-sm-push-10">
-                                                                            <?= \backend\widgets\webuploader\Image::widget([
-                                                                                'boxId' => $row['name'],
-                                                                                'name'  =>"config[".$row['name']."]",
-                                                                                'value' => $row['value'],
-                                                                                'options' => [
-                                                                                    'multiple'   => false,
-                                                                                ]
-                                                                            ])?>
-                                                                        </div>
-                                                                    </div>
-                                                                <?php }elseif($row['type'] == 9){ ?>
-                                                                    <div class="form-group" style="padding-left: -15px">
-                                                                        <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                        <div class="col-sm-push-10">
-                                                                            <?= \backend\widgets\webuploader\Image::widget([
-                                                                                'boxId' => $row['name'],
-                                                                                'name'  => "config[".$row['name']."][]",
-                                                                                'value' => $row['value'],
-                                                                                'options' => [
-                                                                                    'multiple'   => true,
-                                                                                ]
-                                                                            ])?>
-                                                                        </div>
-                                                                    </div>
-                                                                <?php }
-                                                            }
+                                                                </div>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 4){ ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <?= Html::textarea('config[' . $row['name'] . ']',$row['value'],['class'=>'form-control']);?>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 5){
+                                                            //获取数组
+                                                            $option = Config::parseConfigAttr($row['extra']);
                                                             ?>
-                                                    </div>
-                                                <?php }
-                                            } ?>
-                                            <?= Html::input('hidden','_csrf',Yii::$app->request->csrfToken,['id' => '_csrf']);?>
-                                            <div class="form-group">
-                                                <div class="col-sm-12 text-center">
-                                                    <span type="submit" class="btn btn-primary" onclick="present(<?= $cate['id'] ?>)">保存内容</span>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <?= Html::dropDownList('config[' . $row['name'] . ']',$row['value'],$option,['class'=>'form-control']);?>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 6){
+                                                            //获取数组
+                                                            $option = Config::parseConfigAttr($row['extra']);
+                                                            ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <div class="col-sm-push-10">
+                                                                    <?php foreach ($option as $key => $v){ ?>
+                                                                        <label class="radio-inline">
+                                                                            <input type="radio" name="config[<?= $row['name']?>]" class="radio" value="<?= $key?>" <?php if($key == $row['value']){ ?>checked<?php } ?>><?= $v?>
+                                                                        </label>
+                                                                    <?php } ?>
+                                                                </div>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 7){ ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <?= UEditor::widget([
+                                                                    'id' => "config[".$row['name']."]",
+                                                                    'attribute' => $row['name'],
+                                                                    'name' => $row['name'],
+                                                                    'value' => $row['value'],
+                                                                    'clientOptions' => [
+                                                                        //编辑区域大小
+                                                                        'initialFrameHeight' => '200',
+                                                                        //定制菜单
+                                                                        'toolbars' => [
+                                                                            [
+                                                                                'fullscreen', 'source', '|', 'undo', 'redo', '|',
+                                                                                'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+                                                                                'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+                                                                                'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+                                                                                'directionalityltr', 'directionalityrtl', 'indent', '|',
+                                                                                'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+                                                                                'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+                                                                                'simpleupload', 'insertimage', 'emotion', 'insertvideo', 'music', 'attachment', 'map', 'insertframe', 'insertcode', 'pagebreak', 'template', 'background', '|',
+                                                                                'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
+                                                                                'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+                                                                                'searchreplace', 'help', 'drafts'
+                                                                            ],
+                                                                        ],
+                                                                    ]
+                                                                ]);?>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 8){ ?>
+                                                            <div class="form-group">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <div class="col-sm-push-10">
+                                                                    <?= \backend\widgets\webuploader\Image::widget([
+                                                                        'boxId' => $row['name'],
+                                                                        'name'  =>"config[".$row['name']."]",
+                                                                        'value' => $row['value'],
+                                                                        'options' => [
+                                                                            'multiple'   => false,
+                                                                        ]
+                                                                    ])?>
+                                                                </div>
+                                                            </div>
+                                                        <?php }elseif($row['type'] == 9){ ?>
+                                                            <div class="form-group" style="padding-left: -15px">
+                                                                <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
+                                                                <div class="col-sm-push-10">
+                                                                    <?= \backend\widgets\webuploader\Image::widget([
+                                                                        'boxId' => $row['name'],
+                                                                        'name'  => "config[".$row['name']."][]",
+                                                                        'value' => $row['value'],
+                                                                        'options' => [
+                                                                            'multiple'   => true,
+                                                                        ]
+                                                                    ])?>
+                                                                </div>
+                                                            </div>
+                                                        <?php }
+                                                    }
+                                                    ?>
                                                 </div>
+                                            <?php }
+                                        } ?>
+                                        <?= Html::input('hidden','_csrf',Yii::$app->request->csrfToken,['id' => '_csrf']);?>
+                                        <div class="form-group">
+                                            <div class="col-sm-12 text-center">
+                                                <span type="submit" class="btn btn-primary" onclick="present(<?= $cate['id'] ?>)">保存内容</span>
                                             </div>
-                                        </form>
-                                    </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         <?php } ?>
@@ -176,7 +174,6 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script type="text/javascript">
-
     //单击
     $('.demo').click(function(){
         $('#demo').val($(this).attr('for'));
@@ -194,9 +191,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             data: values,
             success: function(data){
                 if(data.flg == 2) {
-                    swalAlert(data.msg,'warning');
+                    rfAffirm(data.msg,'warning');
                 }else{
-                    swalAlert(data.msg);
+                    rfAffirm(data.msg);
                 }
             }
         });

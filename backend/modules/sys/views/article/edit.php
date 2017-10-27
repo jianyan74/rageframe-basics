@@ -25,14 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-md-12">
                             <?= $form->field($model, 'title')->textInput() ?>
                             <?= $form->field($model, 'sort')->textInput()?>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <?= $form->field($model, 'cate_stair')->dropDownList(Cate::getList(),['prompt'=>'请选择一级分类',]) ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?= $form->field($model, 'cate_second')->dropDownList(Cate::getList($model->cate_stair), ['prompt'=>'请选择二级分类']) ?>
-                                </div>
-                            </div>
+                            <?= $form->field($model, 'cate_id')->dropDownList(Cate::getTree(),['prompt'=>'请选择分类',]) ?>
                             <?= $form->field($model, 'cover')->widget('backend\widgets\webuploader\Image', [
                                 'boxId' => 'cover',
                                 'options' => [

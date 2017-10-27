@@ -7,6 +7,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::$app->params['addon']['info'][
 $this->params['breadcrumbs'][] = ['label' => $this->title];
 ?>
 
-<div class="col-sm-2" style="width: 13%; height: 100%;background:#fff;">
+<div class="col-sm-2" style="width: 15%; height: 100%;background:#fff;">
     <?= AddonLeftWidget::widget(); ?>
 </div>

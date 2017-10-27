@@ -47,7 +47,7 @@ class Article extends ActiveRecord
             [['title','status','view','content'], 'required'],
             [['manager_id', 'deadline', 'view', 'comment', 'bookmark', 'incontent','sort', 'status', 'append', 'updated'], 'integer'],
             [['content'], 'string'],
-            [['cate_stair','cate_second'],'safe'],
+            [['cate_id'],'safe'],
             [['title','seo_key'], 'string', 'max' => 50],
             [['name','author'], 'string', 'max' => 40],
             [['seo_content'], 'string', 'max' => 1000],
@@ -69,8 +69,7 @@ class Article extends ActiveRecord
             'title'         => '文章名称',
             'seo_key'       => 'SEO关键字',
             'seo_content'   => 'SEO内容',
-            'cate_stair'    => '一级分类',
-            'cate_second'   => '二级分类',
+            'cate_id'       => '分类',
             'name'          => '标示',
             'cover'         => '封面',
             'description'   => '描述',
@@ -114,7 +113,7 @@ class Article extends ActiveRecord
 
     /**
      * 上一篇
-     * @param $id 当前文章id
+     * @param int $id 当前文章id
      * @return false|null|string
      */
     public static function getPrev($id)
@@ -128,7 +127,7 @@ class Article extends ActiveRecord
 
     /**
      * 下一篇
-     * @param $id 当前文章id
+     * @param int $id 当前文章id
      * @return false|null|string
      */
     public static function getNext($id)
@@ -166,6 +165,14 @@ class Article extends ActiveRecord
         }
         
         return $pos;
+    }
+
+    /**
+     * 关联分类
+     */
+    public function getCate()
+    {
+        return $this->hasOne(Cate::className(),['id' => 'cate_id']);
     }
 
     /**

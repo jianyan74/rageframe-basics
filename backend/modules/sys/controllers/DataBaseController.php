@@ -1,7 +1,7 @@
 <?php
 namespace jianyan\basics\backend\modules\sys\controllers;
 
-use yii;
+use Yii;
 use yii\web\Response;
 use jianyan\basics\common\models\sys\Database;
 use backend\controllers\MController;
@@ -42,7 +42,7 @@ class DataBaseController extends MController
      */
     public function actionBackups()
     {
-        $db      = \Yii::$app->db;
+        $db      = Yii::$app->db;
         $models  = $db->createCommand('SHOW TABLE STATUS')->queryAll();
         $models  = array_map('array_change_key_case', $models);
 
@@ -57,16 +57,14 @@ class DataBaseController extends MController
      */
     public function actionExport()
     {
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "";
+        $result = $this->setResult();
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         $tables = Yii::$app->request->post('tables');
         if(empty($tables))
         {
-            $result['msg'] = "请选择要备份的表！";
-            return $result;
+            $result->message = "请选择要备份的表！";
+            return $this->getResult();
         }
 
         //读取备份配置
@@ -77,8 +75,8 @@ class DataBaseController extends MController
 
         if(is_file($lock))
         {
-            $result['msg'] = "检测到有一个备份任务正在执行，请稍后或清理缓存后再试！";
-            return $result;
+            $result->message = "检测到有一个备份任务正在执行，请稍后或清理缓存后再试！";
+            return $this->getResult();
         }
         else
         {
@@ -89,8 +87,8 @@ class DataBaseController extends MController
         //检查备份目录是否可写
         if (!is_writeable($config['path']))
         {
-            $result['msg'] = "备份目录不存在或不可写，请检查后重试！";
-            return $result;
+            $result->message = "备份目录不存在或不可写，请检查后重试！";
+            return $this->getResult();
         }
 
         //生成备份文件信息
@@ -98,6 +96,8 @@ class DataBaseController extends MController
             'name' => date('Ymd-His', time()),
             'part' => 1,
         ];
+
+        $result->message =  "初始化失败，备份文件创建失败！";
 
         //创建备份文件
         $Database = new Database($file, $config);
@@ -111,18 +111,18 @@ class DataBaseController extends MController
             Yii::$app->session->set('backup_tables', $tables);
 
             $tab = ['id' => 0, 'start' => 0];
-            return [
-                'flg'       => 1,
-                'msg'       => '初始化成功！',
+
+            $result->code = 200;
+            $result->message = "初始化成功！";
+            $result->data = [
                 'tables'    => $tables,
                 'tab'       => $tab
             ];
+
+            return $this->getResult();
         }
-        else
-        {
-            $result['msg'] = "初始化失败，备份文件创建失败！";
-            return $result;
-        }
+
+        return $this->getResult();
     }
 
     /**
@@ -131,10 +131,7 @@ class DataBaseController extends MController
      */
     public function actionExportStart()
     {
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "";
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = $this->setResult();
 
         $tables = Yii::$app->session->get('backup_tables');
         $file   = Yii::$app->session->get('backup_file');
@@ -148,21 +145,25 @@ class DataBaseController extends MController
         $start    = $Database->backup($tables[$id], $start);
         if($start === false)
         {
-            $result['msg'] = "备份出错";
-            return $result;
+            $result->message = "备份出错";
+            return $this->getResult();
         }
         elseif ($start === 0)
         {
             //下一表
             if(isset($tables[++$id]))
             {
-                $tab = array('id' => $id, 'start' => 0);
-                $result['flg'] = 1;
-                $result['msg'] = "备份完成";//对下一个表进行备份
-                $result['tablename'] = $tables[--$id];
-                $result['tab'] = $tab;
-                $result['achieveStatus'] = 0;
-                return $result;
+                $tab = ['id' => $id, 'start' => 0];
+
+                $result->code = 200;
+                $result->message = "备份完成";//对下一个表进行备份
+                $result->data = [
+                    'tablename' => $tables[--$id],
+                    'achieveStatus' => 0,
+                    'tab' => $tab,
+                ];
+
+                return $this->getResult();
             }
             else
             {
@@ -172,39 +173,43 @@ class DataBaseController extends MController
                 Yii::$app->session->set('backup_file', null);
                 Yii::$app->session->set('backup_config', null);
 
-                $result['flg'] = 1;
-                $result['msg'] = "备份完成";
-                $result['tablename'] = $tables[--$id];
-                $result['achieveStatus'] = 1;
-                return $result;
+                $result->code = 200;
+                $result->message = "备份完成";
+                $result->data = [
+                    'tablename' => $tables[--$id],
+                    'achieveStatus' => 1
+                ];
+
+                return $this->getResult();
             }
         }
         else
         {
-            $tab  = array('id' => $id, 'start' => $start[0]);
+            $tab  = ['id' => $id, 'start' => $start[0]];
             $rate = floor(100 * ($start[0] / $start[1]));
 
-            $result['flg'] = 1;
-            $result['msg'] = "正在备份...({$rate}%)";
-            $result['tablename'] = $tables[$id];
-            $result['tab'] = $tab;
-            $result['achieveStatus'] = 0;
+            $result->code = 200;
+            $result->message = "正在备份...({$rate}%)";//对下一个表进行备份
+            $result->data = [
+                'tablename' => $tables[$id],
+                'achieveStatus' => 0,
+                'tab' => $tab,
+            ];
 
-            return $result;
+            return $this->getResult();
         }
     }
 
     /**
      * 优化表
-     * @param  String $tables 表名
+     * @param String $tables 表名
      */
     public function actionOptimize()
     {
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "";
+        $result = $this->setResult();
 
         $tables  = Yii::$app->request->post('tables','');
+        $result->message = "请指定要优化的表";
         if($tables)
         {
             $Db      = \Yii::$app->db;
@@ -214,50 +219,42 @@ class DataBaseController extends MController
                 $tables = implode('`,`', $tables);
                 $list = $Db->createCommand("OPTIMIZE TABLE `{$tables}`")->queryAll();
 
+                $result->message = "数据表优化出错请重试";
                 if($list)
                 {
-                    $result['flg'] = 1;
-                    $result['msg'] = "数据表优化完成！";
+                    $result->code = 200;
+                    $result->message = "数据表优化完成";
                 }
-                else
-                {
-                    $result['msg'] = "数据表优化出错请重试！";
-                }
+
+                return $this->getResult();
             }
             else
             {
                 $list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
+
                 //判断是否成功
+                $result->message = "数据表'{$tables}'优化出错！错误信息:". $list['Msg_text'];
                 if($list['Msg_text'] == "OK")
                 {
-                    $result['flg'] = 1;
-                    $result['msg'] = "数据表'{$tables}'优化完成！";
-                }
-                else
-                {
-                    $result['msg'] = "数据表'{$tables}'优化出错！错误信息:". $list['Msg_text'];
+                    $result->code = 200;
+                    $result->message = "数据表'{$tables}'优化完成！";
                 }
             }
         }
-        else
-        {
-            $result['msg'] = "请指定要优化的表";
-        }
 
-        echo json_encode($result);
+        return $this->getResult();
     }
 
     /**
      * 修复表
-     * @param  String $tables 表名
+     * @param String $tables 表名
      */
     public function actionRepair()
     {
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "";
+        $result = $this->setResult();
         $tables  = Yii::$app->request->post('tables','');
 
+        $result->message = "请指定要修复的表";
         if($tables)
         {
             $Db      = \Yii::$app->db;
@@ -265,39 +262,26 @@ class DataBaseController extends MController
             if(is_array($tables))
             {
                 $tables = implode('`,`', $tables);
-                $list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryAll();
-
-                if($list)
+                $result->message = "数据表修复出错请重试";
+                if($list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryAll())
                 {
-                    $result['flg'] = 1;
-                    $result['msg'] = "数据表修复完成！";
-                }
-                else
-                {
-                    $result['msg'] = "数据表修复出错！";
+                    $result->code = 200;
+                    $result->message = "数据表修复化完成";
                 }
             }
             else
             {
                 $list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
-
+                $result->message = "数据表'{$tables}'修复出错！错误信息:". $list['Msg_text'];
                 if($list['Msg_text'] == "OK")
                 {
-                    $result['flg'] = 1;
-                    $result['msg'] = "数据表'{$tables}'修复完成！";
-                }
-                else
-                {
-                    $result['msg'] = "数据表'{$tables}'修复出错！错误信息:". $list['Msg_text'];
+                    $result->code = 200;
+                    $result->message = "数据表'{$tables}'修复完成！";
                 }
             }
         }
-        else
-        {
-            $result['msg'] = "请指定要修复的表";
-        }
 
-        echo json_encode($result);
+        return $this->getResult();
     }
 
     /********************************************************************************/
@@ -360,11 +344,7 @@ class DataBaseController extends MController
      */
     public function actionRestoreInit()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "";
+        $result = $this->setResult();
 
         $time = Yii::$app->request->post('time');
 
@@ -387,24 +367,23 @@ class DataBaseController extends MController
         //排序数组
         ksort($list);
 
+        $result->message = "备份文件可能已经损坏，请检查！";
+
         //检测文件正确性
         $last = end($list);
         if(count($list) === $last[0])
         {
             Yii::$app->session->set('backup_list', $list); //缓存备份列表
 
-            $result['flg']   = 1;
-            $result['msg']   = "初始化完成";
-            $result['part']  = 1;
-            $result['start'] = 0;
-            return $result;
+            $result->code = 200;
+            $result->message = "初始化完成";
+            $result->data = [
+                'part' => 1,
+                'start' => 0,
+            ];
         }
-        else
-        {
-            $result['flg']   = 2;
-            $result['msg']   = "备份文件可能已经损坏，请检查！";
-            return $result;
-        }
+
+        return $this->getResult();
     }
 
     /**
@@ -413,17 +392,13 @@ class DataBaseController extends MController
     public function actionRestoreStart()
     {
         set_time_limit(0);
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = $this->setResult();
 
         $config = $this->config;
-
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "";
         $part  = Yii::$app->request->post('part');
         $start = Yii::$app->request->post('start');
 
-        $list  = \Yii::$app->session->get('backup_list');
+        $list  = Yii::$app->session->get('backup_list');
         $arr   = [
             'path'     => realpath($config['path']).DIRECTORY_SEPARATOR,
             'compress' => $list[$part][2]
@@ -433,30 +408,35 @@ class DataBaseController extends MController
 
         if (false === $start)
         {
-            $result['flg']   = 2;
-            $result['msg']   = "还原数据出错";
-            return $result;
+            $result->message = "备份文件可能已经损坏，请检查！";
+            return $this->getResult();
         }
         elseif(0 === $start)
         {
             //下一卷
             if(isset($list[++$part]))
             {
-                $result['flg']   = 1;
-                $result['msg']   = "正在还原...#{$part}";
-                $result['part']  = $part;
-                $result['start1'] = $start;
-                $result['start'] = 0;
-                $result['achieveStatus'] = 0;
-                return $result;
+                $result->code = 200;
+                $result->message   = "正在还原...#{$part}";
+                $result->data = [
+                    'part' => $part,
+                    'start1' => $start,
+                    'start' => 0,
+                    'achieveStatus' => 0,
+                ];
+
+                return $this->getResult();
             }
             else
             {
                 Yii::$app->session->set('backup_list', null);
-                $result['flg']   = 1;
-                $result['msg']   = "还原完成";
-                $result['achieveStatus'] = 1;
-                return $result;
+                $result->code = 200;
+                $result->message = "还原完成";
+                $result->data = [
+                    'achieveStatus' => 1
+                ];
+
+                return $this->getResult();
             }
         }
         else
@@ -493,7 +473,6 @@ class DataBaseController extends MController
         $config = $this->config;
         $time   = Yii::$app->request->get('time');
 
-
         if($time)
         {
             $name  = date('Ymd-His', $time) . '-*.sql*';
@@ -501,19 +480,16 @@ class DataBaseController extends MController
             array_map("unlink", glob($path));
             if(count(glob($path)))
             {
-                $this->message('文件删除失败，请检查权限!',$this->redirect(['restore']),'error');
+                return $this->message('文件删除失败，请检查权限!',$this->redirect(['restore']),'error');
             }
             else
             {
-                $this->message('文件删除成功',$this->redirect(['restore']));
+                return $this->message('文件删除成功',$this->redirect(['restore']));
             }
         }
         else
         {
-            $this->message('文件删除失败',$this->redirect(['restore']),'error');
-            return false;
+            return $this->message('文件删除失败',$this->redirect(['restore']),'error');
         }
     }
-
-
 }

@@ -2,9 +2,8 @@
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
-use common\helpers\SysArrayHelper;
-use yii\web\NotFoundHttpException;
 use jianyan\basics\backend\modules\sys\models\AuthItem;
+use common\helpers\SysArrayHelper;
 use backend\controllers\MController;
 
 /**
@@ -19,7 +18,7 @@ class AuthAccreditController extends MController
      */
     public function actionIndex()
     {
-        $models   = AuthItem::find()->where(['type'=>AuthItem::AUTH])
+        $models = AuthItem::find()->where(['type' => AuthItem::AUTH])
             ->asArray()
             ->orderBy('sort asc')
             ->all();
@@ -37,11 +36,13 @@ class AuthAccreditController extends MController
         $request  = Yii::$app->request;
         $name     = $request->get('name');
         $model    = $this->findModel($name);
+        //父级key
+        $parent_key = $request->get('parent_key',0);
+        $level = $request->get('level',1);
+        $model->level = $level;//等级
+        $model->parent_key = $parent_key;
+        $model->type = AuthItem::AUTH;
 
-        $level    = $request->get('level',1);
-        !empty($level) && $model->level = $level;//等级
-
-        //表单提交
         if($model->load($request->post()))
         {
             if($request->isAjax)
@@ -57,13 +58,8 @@ class AuthAccreditController extends MController
             }
         }
 
-        //父级key
-        $parent_key = $request->get('parent_key',0);
-        if($parent_key == 0)
-        {
-            $parent_name = "暂无";
-        }
-        else
+        $parent_name = "暂无";
+        if($parent_key != 0)
         {
             $prent = AuthItem::find()->where(['key'=>$parent_key])->one();
             $parent_name = $prent['description'];
@@ -71,7 +67,6 @@ class AuthAccreditController extends MController
 
         return $this->renderAjax('edit', [
             'model'       => $model,
-            'parent_key'  => $parent_key,
             'parent_name' => $parent_name,
         ]);
     }
@@ -95,10 +90,23 @@ class AuthAccreditController extends MController
      * ajax修改
      * @return array
      */
-    public function actionUpdateAjax()
+    public function actionAjaxUpdate($id)
     {
-        $name = Yii::$app->request->get('name');
-        return $this->updateModelData($this->findModel($name));
+        $result = $this->setResult();
+        $model = AuthItem::findOne(['key' => $id]);
+        $model->sort = Yii::$app->request->get('sort');
+        if(!$model->save())
+        {
+            $result->code = 422;
+            $result->message = $this->analysisError($model->getFirstErrors());
+        }
+        else
+        {
+            $result->code = 200;
+            $result->message = '修改成功';
+        }
+
+        return $this->getResult();
     }
 
     /**

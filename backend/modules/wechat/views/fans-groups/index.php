@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     <td><?= $group['count'] ?></td>
                                     <td>
                                         <?php if($key > 2){ ?>
-                                            <a href="<?= Url::to(['delete','id'=> $group['id']])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                            <a href="<?= Url::to(['delete','id'=> $group['id']])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                         <?php } ?>
                                     </td>
                                 </tr>

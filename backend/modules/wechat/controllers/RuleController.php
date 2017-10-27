@@ -91,6 +91,7 @@ class RuleController extends WController
 
         if ($rule->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post()) && $keyword->load(Yii::$app->request->post()))
         {
+
             $transaction = Yii::$app->db->beginTransaction();
             try
             {
@@ -108,6 +109,14 @@ class RuleController extends WController
                         $transaction->commit();
                         return $this->redirect(['rule/index','module' => $rule->module]);
                     }
+                    else
+                    {
+                        throw new \Exception('插入失败');
+                    }
+                }
+                else
+                {
+                    throw new \Exception('插入失败！');
                 }
             }
             catch (\Exception $e)

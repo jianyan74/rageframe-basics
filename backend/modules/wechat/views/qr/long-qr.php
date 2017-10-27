@@ -57,10 +57,10 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
         var longurl = $('#longurl').val().trim();
         if(longurl == '') {
-            swalAlert('请输入长链接');
+            rfAffirm('请输入长链接');
             return;
         } else if(longurl.indexOf("http://") == -1 && longurl.indexOf("https://") == -1 && longurl.indexOf("weixin://") == -1) {
-            swalAlert('请输入有效的长链接');
+            rfAffirm('请输入有效的长链接');
             return;
         }
         var change = $(this);

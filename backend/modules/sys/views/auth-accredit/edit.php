@@ -1,6 +1,7 @@
 <?php
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use jianyan\basics\backend\modules\sys\models\AuthRule;
 ?>
 
 <?php $form = ActiveForm::begin([
@@ -19,9 +20,8 @@ use yii\helpers\Url;
                     <div class="col-sm-12">
                         <?= $form->field($model, 'description')->textInput() ?>
                         <?= $form->field($model, 'name')->textInput()->hint('例如 main/index') ?>
+                        <?= $form->field($model, 'rule_name')->dropDownList(AuthRule::getRoutes(),['prompt' => '请选择']) ?>
                         <?= $form->field($model, 'sort')->textInput() ?>
-                        <?= $form->field($model, 'parent_key')->hiddenInput(['value'=>$parent_key])->label(false) ?>
-                        <?= $form->field($model, 'type')->hiddenInput(['value'=>jianyan\basics\backend\modules\sys\models\AuthItem::AUTH])->label(false) ?>
                     </div>
                 </div>
             </div>

@@ -43,7 +43,6 @@ class AuthItem extends \jianyan\basics\common\models\base\AuthItem
      * @var
      */
     protected $auth_item_child;
-
     /**
      * @inheritdoc
      */
@@ -60,5 +59,19 @@ class AuthItem extends \jianyan\basics\common\models\base\AuthItem
         $this->auth_item_child = AuthItemChild::className();
 
         parent::init();
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if(empty($this->rule_name))
+        {
+            $this->rule_name = null;
+        }
+
+        return parent::beforeSave($insert);
     }
 }

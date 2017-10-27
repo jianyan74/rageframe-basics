@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Url;
+use common\helpers\SysArrayHelper;
+
 ?>
 <?php foreach($models as $k => $model){ ?>
     <tr id="<?= $model['id']?>" class="<?php echo $pid?>">
@@ -9,20 +11,8 @@ use yii\helpers\Url;
             <?php } ?>
         </td>
         <td>
-            <?php for($i = 1;$i < $model['level'];$i++){ ?>　　
-                <?php if($i == $model['level']-1) {
-                    if(isset($models[$k+1])){
-                        echo "├──";
-                    }else{
-                        echo "└──";
-                    }
-                }?>
-            <?php } ?>
-            <?php if($model['pid']==0){ ?>
-                <b><?= $model['title']?></b>&nbsp;
-            <?php }else{ ?>
-                <?= $model['title']?>&nbsp;
-            <?php } ?>
+            <?= SysArrayHelper::itemsLevel($model['level'], $models, $k)?>
+            <?= $model['title']?>&nbsp;
             <!--禁止显示二级分类再次添加三级分类-->
             <?php if($model['level'] <= Yii::$app->config->info('SYS_MAX_LEVEL')){ ?>
                 <a href="<?= Url::to(['edit','type' => $type,'pid'=>$model['id'],'parent_title'=>$model['title'],'level'=>$model['level']+1])?>" data-toggle='modal' data-target='#ajaxModal'>
@@ -32,12 +22,12 @@ use yii\helpers\Url;
         </td>
         <td><?= $model['url']?></td>
         <td><div class="fa <?= $model['menu_css']?>"></div></td>
-        <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="sort(this)"></td>
+        <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="rfSort(this)"></td>
         <td>
-            <a href="<?= Url::to(['edit','id'=>$model['id'],'parent_title'=>$parent_title,'type'=>$type])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
-            <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="status(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="status(this)">禁用</span>' ;?>
+            <a href="<?= Url::to(['edit','id' => $model['id'], 'parent_title' => $parent_title, 'type' => $type, 'level' => $model['level']])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
+            <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>' ;?>
             <?php if(!in_array($model['id'],Yii::$app->params['noDeleteMenu'])){?>
-                <a href="<?= Url::to(['delete','id'=>$model['id'],'type'=>$type])?>"  onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                <a href="<?= Url::to(['delete','id'=>$model['id'],'type'=>$type])?>"  onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
             <?php } ?>
         </td>
     </tr>

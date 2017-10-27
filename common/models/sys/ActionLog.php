@@ -87,16 +87,16 @@ class ActionLog extends \yii\db\ActiveRecord
         //判断是否登录
         if (!Yii::$app->user->isGuest)
         {
-            $logModel->manager_id   = Yii::$app->user->identity->id;
-            $logModel->username     = Yii::$app->user->identity->username;
+            $logModel->manager_id = Yii::$app->user->id;
+            $logModel->username = Yii::$app->user->identity->username;
         }
 
-        $logModel->action_ip    = ip2long(Yii::$app->request->userIP);
-        $logModel->action       = $action;
-        $logModel->model        = $model;
-        $logModel->record_id    = $record_id;
-        $logModel->log_url      = Yii::$app->request->getUrl();
-        $logModel->remark       = $remark;
+        $logModel->action_ip = ip2long(Yii::$app->request->userIP);
+        $logModel->action = $action;
+        $logModel->model = $model;
+        $logModel->record_id = $record_id;
+        $logModel->log_url = Yii::$app->request->getUrl();
+        $logModel->remark = $remark;
 
         //IP地址信息来源
         $ipInfo = \common\helpers\ApiHelper::IpInfoSina(Yii::$app->request->userIP);

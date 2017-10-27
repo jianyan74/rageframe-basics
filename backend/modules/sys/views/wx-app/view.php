@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <h2>消息推送</h2>
                         <div class="form-group field-account-token">
                             <label class="control-label" for="account-token">URL(服务器地址)</label>
-                            <input class="form-control" value="<?= AddonsUrl::toWechat(['pages/index','account_id' => $model->id,'addon'=>$model->addon_name]) ?>" type="text" >
+                            <input class="form-control" value="<?= AddonsUrl::toWechatApi(['pages/index','account_id' => $model->id,'addon'=>$model->addon_name]) ?>" type="text" >
                             <div class="help-block"></div>
                         </div>
                         <div class="form-group field-account-token">

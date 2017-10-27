@@ -75,6 +75,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                 <th>是否关注</th>
                                                 <th>关注/取消时间</th>
                                                 <th>粉丝分组</th>
+                                                <th>openid</th>
                                                 <th>操作</th>
                                             </tr>
                                             </thead>
@@ -108,6 +109,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                             <?php } ?>
                                                         </select>
                                                     </td>
+                                                    <td><?= $model->openid ?></td>
                                                     <td>
                                                         <a href="<?= Url::to(['view','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">用户详情</span></a>
                                                     </td>
@@ -159,7 +161,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
     //同步所有粉丝openid
     function getAllFans() {
 
-        swalAlert('同步中,请不要关闭当前页面');
+        rfAffirm('同步中,请不要关闭当前页面');
 
         $.ajax({
             type:"get",
@@ -184,7 +186,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 if(data.flg == 1) {
                     sync(type,data.page);
                 }else{
-                    swalAlert(data.msg);
+                    rfAffirm(data.msg);
                     window.location.reload();
                 }
             }

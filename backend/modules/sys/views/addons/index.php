@@ -87,12 +87,12 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             dataType: "json",
             data: {keyword:value,type:addonsName},
             success: function(data){
-                if(data.flg == 1) {
+                if(data.code == 200) {
                     $('#'+type).parent().parent().find('.shortcut').html('');
                     var html = template('listModel', data);
                     $('#'+type).parent().parent().find('.shortcut').append(html);
                 }else{
-                    alert(data.msg);
+                    rfAffirm(data.message);
                 }
             }
         });

@@ -19,14 +19,13 @@ use yii\behaviors\TimestampBehavior;
  */
 class QrcodeStat extends ActiveRecord
 {
-    /**
-     * 关注
-     */
     const TYPE_ATTENTION = 1;
-    /**
-     * 扫描
-     */
     const TYPE_SCAN = 2;
+
+    public static $typeExplain = [
+        self::TYPE_ATTENTION => '关注',
+        self::TYPE_SCAN => '扫描',
+    ];
 
     /**
      * @inheritdoc
@@ -128,7 +127,7 @@ class QrcodeStat extends ActiveRecord
      */
     public function getFans()
     {
-        return $this->hasOne(Fans::className(), ['openid' => 'openid']);
+        return $this->hasOne(Fans::className(), ['openid' => 'openid'])->select('openid,nickname');
     }
 
     /**

@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     <a href="<?= Url::to(['edit','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">账号管理</span></a>&nbsp
                                     <?php if($model->id != Yii::$app->params['adminAccount']){ ?>
                                         <a href="<?= Url::to(['auth-role','user_id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">授权角色</span></a>&nbsp
-                                        <a href="<?= Url::to(['delete','id'=>$model->id])?>"  onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                        <a href="<?= Url::to(['delete','id'=>$model->id])?>"  onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                     <?php } ?>
                                 </td>
                             </tr>

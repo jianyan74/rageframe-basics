@@ -80,14 +80,21 @@ class WxApp extends BaseController
 
         if($this->_app)
         {
-            $oauth = $this->_app->mini_program->sns->getSessionKey($code);
+            try
+            {
+                $oauth = $this->_app->mini_program->sns->getSessionKey($code);
+                $result->code = 200;
+                $result->message = '获取成功';
+                $result->data = [
+                    'auth_key' => $this->setAuth($oauth)
+                ];
+            }
+            catch (\Exception $e)
+            {
+                $result->message = $e->getMessage();
+            }
 
-            $result->code = 200;
-            $result->message = '获取成功';
-            $result->data = [
-                'auth_key' => $this->setAuth($oauth)
-            ];
-            return $this->result;
+            return $this->getResult();
         }
 
         $result->message = '小程序找不到了';

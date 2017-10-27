@@ -1,6 +1,7 @@
 <?php
-use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
+use jianyan\basics\common\models\wechat\Attachment;
 
 $this->title = $model->isNewRecord ? '创建' : '编辑';
 $this->params['breadcrumbs'][] = ['label' => '自动回复', 'url' => ['rule/index']];
@@ -25,8 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-content">
                     <div class="col-sm-12">
                         <?= $form->field($model, 'title')->textInput() ?>
-                        <?= $form->field($model, 'mediaid')->textInput()->hint('永久视频只支持rm/rmvb/wmv/avi/mpg/mpeg/mp4格式,大小不超过为20M.<br>注 :临时视频只支持mp4格式,大小不超过为10M') ?>
-                        <?= $form->field($model, 'description')->textarea()->hint('描述内容将出现在视频名称下方，建议控制在20个汉字以内最佳') ?>
+                        <?= $form->field($model, 'mediaid')->dropDownList(ArrayHelper::map(Attachment::getList('video'),'media_id','file_name')) ?>
+                        <?= $form->field($model, 'description')->textarea() ?>
                         <div class="hr-line-dashed"></div>
                     </div>
                     <div class="form-group">　

@@ -51,4 +51,17 @@ class AuthAssignment extends \jianyan\basics\common\models\base\AuthAssignment
 
         parent::init();
     }
+
+    /**
+     * @param $id
+     * @return array|null|\yii\db\ActiveRecord
+     */
+    public static function getUserItemName($id)
+    {
+        return self::find()
+            ->where(['user_id' => $id])
+            ->with('itemNameChild')
+            ->asArray()
+            ->one();
+    }
 }

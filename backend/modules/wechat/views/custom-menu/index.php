@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td>
                                     <a href="<?php echo Url::to(['edit','id'=>$model->id])?>"><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
                                     <?php if($model->status == -1){ ?>
-                                        <a href="<?php echo Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                        <a href="<?php echo Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                     <?php } ?>
                                 </td>
                             </tr>

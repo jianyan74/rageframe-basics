@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td>/<?= $model->addon_name ?>/pages/index/index</td>
                                 <td>
                                     <a href="<?= Url::to(['view','id'=>$model->id])?>"><span class="btn btn-info btn-sm">信息管理</span></a>&nbsp
-                                    <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="status(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="status(this)">停用</span>' ;?>
-                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                    <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">停用</span>' ;?>
+                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                 </td>
                             </tr>
                         <?php } ?>

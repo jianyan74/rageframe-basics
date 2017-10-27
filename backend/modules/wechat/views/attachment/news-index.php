@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <?php }else{ ?>
                                     <div class="flex-col"><a href="<?= Url::to(['news-link-edit','attach_id'=> $item['id']])?>" title="编辑"><i class="fa fa-edit"></i></a></div>
                                 <?php } ?>
-                                <div class="flex-col"><a href="<?= Url::to(['delete','attach_id'=> $item['id']])?>" onclick="deleted(this);return false;" title="删除"><i class="fa fa-trash"></i></a></div>
+                                <div class="flex-col"><a href="<?= Url::to(['delete','attach_id'=> $item['id']])?>" onclick="rfDelete(this);return false;" title="删除"><i class="fa fa-trash"></i></a></div>
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 <script>
     //获取资源
     $("#getAllAttachment").click(function(){
-        swalAlert('同步中,请不要关闭当前页面');
+        rfAffirm('同步中,请不要关闭当前页面');
         sync();
     });
 
@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 if(data.flg == 1) {
                     sync(data.offset,data.count);
                 }else{
-                    swalAlert(data.msg);
+                    rfAffirm(data.msg);
                     window.location.reload();
                 }
             }

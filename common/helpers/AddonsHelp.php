@@ -125,6 +125,27 @@ class AddonsHelp
     }
 
     /**
+     * 重组小程序入口
+     * @param array $url
+     * @return array
+     */
+    public static function regroupApiUrl(array $url)
+    {
+        $addonsUrl = ['api/execute'];
+        $addonsUrl['route'] = self::regroupRoute($url);
+        $addonsUrl['addon'] = Yii::$app->request->get('addon');
+
+        //删除默认跳转url
+        unset($url[0]);
+        foreach ($url as $key => $vo)
+        {
+            $addonsUrl[$key] = $vo;
+        }
+
+        return $addonsUrl;
+    }
+
+    /**
      * 重组路由
      * @param $url
      * @return string

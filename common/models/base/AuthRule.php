@@ -3,6 +3,8 @@
 namespace jianyan\basics\common\models\base;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%auth_rule}}".
@@ -14,7 +16,7 @@ use Yii;
  *
  * @property AuthItem[] $authItems
  */
-class AuthRule extends \yii\db\ActiveRecord
+class AuthRule extends ActiveRecord
 {
     /**
      * 规则类名
@@ -56,8 +58,8 @@ class AuthRule extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => 'Name',
-            'data' => 'Data',
+            'name' => '规则名称',
+            'data' => '序列化数据',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -69,5 +71,22 @@ class AuthRule extends \yii\db\ActiveRecord
     public function getAuthItems()
     {
         return $this->hasMany($this->auth_item, ['rule_name' => 'name']);
+    }
+
+    /**
+     * 行为
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
     }
 }

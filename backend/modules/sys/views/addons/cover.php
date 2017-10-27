@@ -9,10 +9,10 @@ $this->params['breadcrumbs'][] = ['label' =>  $model['title'],'url' => ['binding
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 ?>
 
-<div class="col-sm-2" style="width: 13%; height: 100%;background:#fff;">
+<div class="col-sm-2" style="width: 15%; height: 100%;background:#fff;">
     <?= AddonLeftWidget::widget(); ?>
 </div>
-<div class="col-sm-10" style="width: 87%;padding-left: 0px;padding-right: 0px;">
+<div class="col-sm-10" style="width: 85%;padding-left: 0;padding-right: 0;">
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-sm-12">

@@ -25,8 +25,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <div class="input-group m-b">
                                             <input type="text" class="form-control" name="keyword" value="" placeholder="<?= $keyword ? $keyword : '场景名称'?>"/>
                                             <span class="input-group-btn">
-                                                    <button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button>
-                                                </span>
+                                                <button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button>
+                                            </span>
                                         </div>
                                     </form>
                                 </div>
@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                         <img src="<?= Url::to(['qr','shortUrl'=>Yii::$app->request->hostInfo])?>" alt="" width="45">
                                                     </a>
                                                 </td>
-                                                <td><?= $model->name ?></td>
+                                                <td><a href="<?= Url::to(['qr-stat/index','keyword' =>  $model->name])?>"><?= $model->name ?></a></td>
                                                 <td><?= $model->keyword ?></td>
                                                 <td><?= $model->model == Qrcode::MODEL_TEM ? $model->scene_id : $model->scene_str ;?></td>
                                                 <td><?= Yii::$app->formatter->asDatetime($model->append) ?></td>
@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                     <a href="<?= Url::to(['down-qr','id'=>$model->id])?>"><span class="btn btn-info btn-sm">下载</span></a>&nbsp
                                                     <a href="<?= Url::to(['edit','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
                                                     <?php if($model->model == Qrcode::MODEL_PERPETUAL){ ?>
-                                                        <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                                        <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                                     <?php } ?>
                                                 </td>
                                             </tr>

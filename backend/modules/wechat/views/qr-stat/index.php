@@ -1,5 +1,7 @@
 <?php
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\LinkPager;
 use kartik\daterange\DateRangePicker;
 use jianyan\basics\common\models\wechat\QrcodeStat;
@@ -27,9 +29,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                     <div class="tab-pane active">
                         <div class="panel-body">
                             <div class="ibox float-e-margins">
-                                <div class="col-sm-6">
+                                <div class="col-sm-9">
                                     <form action="" method="get" class="form-horizontal" role="form" id="form">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="input-group drp-container">
                                                 <?php echo DateRangePicker::widget([
                                                         'name'              => 'queryDate',
@@ -38,25 +40,33 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                         'convertFormat'     => true,
                                                         'startAttribute'    => 'from_date',
                                                         'endAttribute'      => 'to_date',
-                                                        'startInputOptions' => ['value' => $from_date ? $from_date : date('Y-m-d',strtotime("-30 day"))],
-                                                        'endInputOptions'   => ['value' => $to_date ? $to_date :  date('Y-m-d')],
+                                                        'startInputOptions' => ['value' => $from_date],
+                                                        'endInputOptions'   => ['value' => $to_date],
                                                         'pluginOptions'     => [
                                                             'locale' => ['format' => 'Y-m-d'],
                                                         ]
                                                     ]) . $addon;?>
                                             </div>
                                         </div>
-                                        <div class="input-group m-b">
-                                            <input type="text" class="form-control" name="keyword" value="" placeholder="<?= $keyword ? $keyword : '场景名称'?>"/>
-                                            <span class="input-group-btn">
-                                                    <button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button>
-                                                </span>
+                                        <div class="col-sm-2">
+                                            <?= Html::dropDownList('type', $type,ArrayHelper::merge(['' => '全部'],QrcodeStat::$typeExplain), ['class'=>'form-control']);?>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="input-group m-b">
+                                                <input type="text" class="form-control" name="keyword" placeholder="<?= $keyword ? $keyword : '场景名称'?>"/>
+                                                <span class="input-group-btn">
+                                                 <button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button>
+                                            </span>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <div class="ibox-tools">
-                                        【总计】关注扫描 <strong class="text-danger"><?= $attention_count ?></strong> 次 已关注扫描 <strong class="text-danger"><?= $scan_count ?></strong> 次 扫描 <strong class="text-danger"><?= $pages->totalCount ?></strong> 次
+                                        【总计】关注扫描 <strong class="text-danger"><?= $attention_count ?></strong> 次
+                                        已关注扫描 <strong class="text-danger"><?= $scan_count ?></strong> 次
+                                        扫描 <strong class="text-danger"><?= $pages->totalCount ?></strong> 次
+                                        <a href="<?= Url::to(['export','from_date' => $from_date,'to_date' => $to_date,'type' => $type,'keyword' => $keyword]);?>">导出Excel</a>
                                     </div>
                                 </div>
                                 <div class="ibox-content">
@@ -64,10 +74,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>粉丝</th>
+                                            <th>昵称</th>
                                             <th>场景名称</th>
                                             <th>场景ID/场景值</th>
                                             <th>关注扫描</th>
+                                            <th>openid</th>
                                             <th>扫描时间</th>
                                             <th>操作</th>
                                         </tr>
@@ -76,10 +87,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <?php foreach($models as $model){ ?>
                                             <tr>
                                                 <td><?= $model->id ?></td>
-                                                <td><?= $model->fans->nickname ?></td>
+                                                <td><?= isset($model->fans->nickname) ? $model->fans->nickname : ''; ?></td>
                                                 <td><?= $model->name ?></td>
                                                 <td><?= $model->scene_id ? $model->scene_id : $model->scene_str ;?></td>
-                                                <td><?= $model->type == QrcodeStat::TYPE_ATTENTION ? '关注' : '扫描' ;?></td>
+                                                <td><?= QrcodeStat::$typeExplain[$model->type]; ?></td>
+                                                <td><?= $model->openid ?></td>
                                                 <td><?= Yii::$app->formatter->asDatetime($model->append) ?></td>
                                                 <td>
                                                     <a href="<?= Url::to(['delete','id'=>$model->id])?>"><span class="btn btn-warning btn-sm">删除</span></a>

@@ -1,10 +1,6 @@
 <?php
 use yii\widgets\ActiveForm;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 
-$this->title = '群发消息';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $form = ActiveForm::begin([]); ?>
@@ -18,12 +14,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-content">
                     <div class="col-sm-12">
                         <?= $form->field($model, 'attachment')->widget('backend\widgets\webuploader\Image', [
-                            'boxId' => 'cover',
+                            'boxId' => 'attachment',
                             'options' => [
                                 'multiple'   => false,
                             ],
                             'pluginOptions' => [
-                                'uploadMaxSize' => 1024,
+                                'uploadMaxSize' => 1024 * 1024,
                             ]
                         ])->label('图片')->hint('最大1M，支持 bmp/png/jpeg/jpg/gif 格式') ?>
                     </div>

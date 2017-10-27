@@ -32,12 +32,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <label class="col-xs-12 col-sm-2 col-md-2 control-label">文章分类</label>
                             <div class="col-sm-8">
                                 <div class="row row-fix tpl-category-container">
-                                    <div class="col-sm-6">
-                                        <?= Html::dropDownList('cate_stair',$cate_stair,Cate::getList(),['class' => 'form-control tpl-category-parent','prompt' =>'请选择一级分类']); ?>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <?= Html::dropDownList('cate_second',$cate_second,Cate::getList(-1),['class' => 'form-control tpl-category-parent','prompt' =>'请选择二级分类']); ?>
-                                    </div>
+                                    <?= Html::dropDownList('cate_id',$cate_id,Cate::getTree(),['class' => 'form-control tpl-category-parent','prompt' =>'请选择分类']); ?>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +58,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <tr>
                             <th>#</th>
                             <th>文章标题</th>
-                            <th>作者</th>
+                            <th>分类</th>
                             <th>排序</th>
                             <th>浏览量</th>
                             <th>推荐位</th>
@@ -75,8 +70,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <tr id = <?= $model->id ?>>
                                 <td><?= $model->id ?></td>
                                 <td><?= $model->title ?></td>
-                                <td><?= $model->author ?></td>
-                                <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="sort(this)"></td>
+                                <td><?= isset($model->cate->title) ? $model->cate->title : '' ?></td>
+                                <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="rfSort(this)"></td>
                                 <td><?= $model->view ?></td>
                                 <td>
                                     <?php foreach (Yii::$app->params['recommend'] as $key => $value){ ?>
@@ -85,8 +80,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 </td>
                                 <td>
                                     <a href="<?= Url::to(['edit','id'=>$model->id])?>"><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
-                                    <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="status(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="status(this)">禁用</span>' ;?>
-                                    <a href="<?= Url::to(['hide','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                    <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>' ;?>
+                                    <a href="<?= Url::to(['hide','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                 </td>
                             </tr>
                         <?php } ?>

@@ -13,7 +13,7 @@ class AddonsUrl
 {
     /**
      * 生成模块Url
-     * @param string $url
+     * @param array $url
      * @param bool $scheme
      * @return bool|string
      */
@@ -47,6 +47,15 @@ class AddonsUrl
     public static function toWechat(array $url, $scheme = false)
     {
         return urldecode(Yii::$app->urlManagerWechat->createAbsoluteUrl(AddonsHelp::regroupUrl($url),$scheme));
+    }
+
+    /**
+     * 生成插件微信Url
+     * @return string
+     */
+    public static function toWechatApi(array $url, $scheme = false)
+    {
+        return urldecode(Yii::$app->urlManagerWechat->createAbsoluteUrl(AddonsHelp::regroupApiUrl($url),$scheme));
     }
 
     /**

@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     <table class="table table-hover">
                                         <thead>
                                         <tr>
-                                            <th width="42">折叠</th>
+                                            <th width="50">折叠</th>
                                             <th>分类名称</th>
                                             <th>排序</th>
                                             <th>操作</th>
@@ -56,61 +56,6 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script type="text/javascript">
-    //status => 1:启用;-1禁用;
-    function status(obj){
-
-        var status = -1;
-        var id = $(obj).parent().parent().attr('id');
-        var self = $(obj);
-
-        if(self.hasClass("btn-primary")){
-            status = 1;
-        }
-
-        $.ajax({
-            type     : "get",
-            url      : "<?= Url::to(['update-ajax'])?>",
-            dataType : "json",
-            data     : {id:id,status:status},
-            success: function(data){
-                if(data.flg == 1) {
-                    if(self.hasClass("btn-primary")){
-                        self.removeClass("btn-primary").addClass("btn-default");
-                        self.text('禁用');
-                    } else {
-                        self.removeClass("btn-default").addClass("btn-primary");
-                        self.text('启用');
-                    }
-                }else{
-                    alert(data.msg);
-                }
-            }
-        });
-    }
-
-    function sort(obj){
-        var id = $(obj).parent().parent().attr('id');
-        var sort = $(obj).val();
-
-        if(isNaN(sort)){
-            alert('排序只能为数字');
-            return false;
-        }else{
-            $.ajax({
-                type:"get",
-                url:"<?= Url::to(['update-ajax'])?>",
-                dataType: "json",
-                data: {id:id,sort:sort},
-                success: function(data){
-
-                    if(data.flg == 2) {
-                        alert(data.msg);
-                    }
-                }
-            });
-        }
-    }
-
     //折叠
     $('.cf').click(function(){
         var self = $(this);

@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td><?= long2ip($model->action_ip)?></td>
                                 <td><?= $model->country." ".$model->province." ".$model->city ?></td>
                                 <td>
-                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>
+                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>
                                 </td>
                             </tr>
                         <?php } ?>

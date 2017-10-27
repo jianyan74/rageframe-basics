@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script type="text/javascript">
-    function sort(obj){
+    function rfSort(obj){
         var name = $(obj).parent().parent().attr('name');
         var sort = $(obj).val();
 

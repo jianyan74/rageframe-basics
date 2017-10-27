@@ -3,7 +3,6 @@ use yii\helpers\Url;
 
 $this->title = '分类管理';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
-
 ?>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -30,7 +29,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         </thead>
                         <tbody>
                         <?= $this->render('tree', [
-                            'models'=>$models,
+                            'models' => $models,
                             'parent_title' =>"无",
                             'pid' => 0,
                         ])?>

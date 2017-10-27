@@ -1,7 +1,6 @@
 <?php
 namespace jianyan\basics\backend\modules\sys\controllers;
 
-use Monolog\Handler\IFTTTHandler;
 use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -778,7 +777,7 @@ HTML;
 
     /**
      * 插件首页
-     * @return string
+     * @return array|string
      */
     public function actionIndex()
     {
@@ -788,12 +787,13 @@ HTML;
             $keyword = $request->get('keyword');
             $type = $request->get('type');
 
-            $list = Addons::find()
+            $data = Addons::find()
                 ->where(['status' => StatusEnum::ENABLED])
                 ->andFilterWhere(['like','title',$keyword])
-                ->andFilterWhere(['type' => $type])
-                ->andFilterWhere(['<>','type','plug'])
-                ->asArray()
+                ->andFilterWhere(['type' => $type]);
+
+            $type != 'plug' && $list = $data->andFilterWhere(['<>','type','plug']);
+            $list = $data->asArray()
                 ->all();
 
             foreach ($list as &$vo)
@@ -807,18 +807,17 @@ HTML;
                     $vo['cover'] = "/resource/backend/img/icon.jpg";
                 }
 
-                $vo['link'] = Url::to(['binding','addons'=>$vo['name']]);
-                $vo['upgrade'] = Url::to(['upgrade','name'=>$vo['name']]);
-                $vo['uninstall'] = Url::to(['uninstall','name'=>$vo['name']]);
+                $vo['link'] = Url::to(['binding','addons' => $vo['name']]);
+                $vo['upgrade'] = Url::to(['upgrade','name' => $vo['name']]);
+                $vo['uninstall'] = Url::to(['uninstall','name' => $vo['name']]);
             }
 
-            $res = [];
-            $res['flg'] = 1;
-            $res['msg'] = '获取成功';
-            $res['list'] = $list;
+            $result = $this->setResult();
+            $result->code = 200;
+            $result->message = '获取成功';
+            $result->data = $list;
 
-            echo json_encode($res);
-            return false;
+            return $this->getResult();
         }
         else
         {
@@ -972,7 +971,7 @@ HTML;
     /**
      * 返回模型
      * @param $id
-     * @return null|static
+     * @return Addons|static
      */
     protected function findModel($id)
     {

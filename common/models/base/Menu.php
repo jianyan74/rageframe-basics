@@ -24,18 +24,12 @@ use jianyan\basics\backend\modules\sys\models\AuthAssignment as SysAuthAssignmen
  */
 class Menu extends ActiveRecord
 {
-    /**
-     * 状态启用
-     */
-    const STATUS_ON  = 1;
-    /**
-     * 状态禁用
-     */
-    const STATUS_OFF = -1;
-
     const TYPE_MENU  = 'menu';
     const TYPE_SYS = 'sys';
 
+    /**
+     * @var array
+     */
     public static $type = [
         self::TYPE_MENU => "导航菜单",
         self::TYPE_SYS => "系统菜单",
@@ -57,21 +51,15 @@ class Menu extends ActiveRecord
         return [
             ['title','trim'],
             ['title','required'],
-
             ['type','trim'],
-
             ['status','required'],
-
             ['url','trim'],
             ['url', 'default', 'value' => "#"],
-
             ['sort','trim'],
             ['sort', 'number'],
-
             [['menu_css','append', 'updated'], 'trim'],
             [['pid','sort'], 'default', 'value' => 0],
             [['level'], 'default', 'value' => 1],
-
         ];
     }
 

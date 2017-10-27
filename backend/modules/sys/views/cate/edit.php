@@ -2,15 +2,12 @@
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 
-$this->title = $model->isNewRecord ? '创建' : '编辑';
-$this->params['breadcrumbs'][] = ['label' => '分类管理', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?php $form = ActiveForm::begin([
     'id' => $model->formName(),
     'enableAjaxValidation' => true,
-    'validationUrl' => Url::toRoute(['edit','cate_id' => $model['cate_id']]),
+    'validationUrl' => Url::toRoute(['edit','id' => $model['id']]),
 ]); ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>

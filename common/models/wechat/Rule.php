@@ -46,15 +46,15 @@ class Rule extends ActiveRecord
      * 说明
      */
     public static $moduleExplain = [
-        self::RULE_MODULE_BASE      => '文字回复',
-        self::RULE_MODULE_IMAGES    => '图片回复',
-        self::RULE_MODULE_NEWS      => '图文回复',
-        //self::RULE_MODULE_MUSIC     => '音乐回复',
-        //self::RULE_MODULE_VOICE     => '语音回复',
-        //self::RULE_MODULE_VIDEO     => '视频回复',
-        self::RULE_MODULE_USER_API  => '自定义接口回复',
-        //self::RULE_MODULE_WX_CARD   => '微信卡卷回复',
-        //self::RULE_MODULE_DEFAULT   => '默认回复',
+        self::RULE_MODULE_BASE => '文字回复',
+        self::RULE_MODULE_IMAGES => '图片回复',
+        self::RULE_MODULE_NEWS => '图文回复',
+        //self::RULE_MODULE_MUSIC => '音乐回复',
+        self::RULE_MODULE_VOICE => '语音回复',
+        self::RULE_MODULE_VIDEO => '视频回复',
+        self::RULE_MODULE_USER_API => '自定义接口回复',
+        //self::RULE_MODULE_WX_CARD => '微信卡卷回复',
+        //self::RULE_MODULE_DEFAULT => '默认回复',
     ];
 
     /**

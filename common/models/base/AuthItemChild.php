@@ -55,7 +55,7 @@ class AuthItemChild extends \yii\db\ActiveRecord
      * @param $auth    -所有权限
      * @return bool
      */
-    public function accredit($parent,$auth)
+    public function accredit($parent, $auth)
     {
         //删除原先所有权限
         $this::deleteAll(['parent' => $parent]);

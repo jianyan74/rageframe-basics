@@ -34,8 +34,7 @@ class ArticleController extends MController
         $request  = Yii::$app->request;
         $type     = $request->get('type',1);
         $keyword  = $request->get('keyword');
-        $cate_stair  = $request->get('cate_stair','');
-        $cate_second  = $request->get('cate_second','');
+        $cate_id  = $request->get('cate_id','');
 
         $where = [];
         if($keyword)
@@ -47,9 +46,8 @@ class ArticleController extends MController
         }
 
         $data = Article::find()->where($where)->andFilterWhere(['>=','status',StatusEnum::DISABLED]);
-        !empty($cate_stair) && $data->andWhere(['cate_stair'=>$cate_stair]);
-        !empty($cate_second) && $data->andWhere(['cate_second'=>$cate_second]);
-        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        !empty($cate_id) && $data->andWhere(['cate_id' => $cate_id]);
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => $this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('sort asc,append desc')
             ->limit($pages->limit)
@@ -60,9 +58,7 @@ class ArticleController extends MController
             'pages'   => $pages,
             'type'    => $type,
             'keyword' => $keyword,
-            'cate_stair' => $cate_stair,
-            'cate_second' => $cate_second,
-
+            'cate_id' => $cate_id,
         ]);
     }
 
@@ -78,18 +74,14 @@ class ArticleController extends MController
 
         //文章标签
         $tags = Tag::find()->with([
-            'tagMap' => function($query) {
-                $article_id  = Yii::$app->request->get('id');
-                $query->andWhere(['article_id' => $article_id]);
+            'tagMap' => function($query) use ($id){
+                $query->andWhere(['article_id' => $id]);
             },])->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             //更新文章标签
-            $article_id = $id ? $id : Yii::$app->db->getLastInsertID();
-
-            TagMap::addTags($article_id,$request->post('tag'));
-
+            TagMap::addTags($model->id,$request->post('tag'));
             return $this->redirect(['index']);
         }
 
@@ -148,8 +140,7 @@ class ArticleController extends MController
         $request  = Yii::$app->request;
         $type     = $request->get('type',1);
         $keyword  = $request->get('keyword');
-        $cate_stair  = $request->get('cate_stair','');
-        $cate_second  = $request->get('cate_second','');
+        $cate_id  = $request->get('cate_id','');
 
         $where = [];
         if($keyword)
@@ -160,12 +151,9 @@ class ArticleController extends MController
             }
         }
 
-        $data = Article::find()
-            ->where($where)
-            ->andFilterWhere(['status' => StatusEnum::DELETE]);
-        !empty($cate_stair) && $data->andWhere(['cate_stair' => $cate_stair]);
-        !empty($cate_second) && $data->andWhere(['cate_second' => $cate_second]);
-        $pages = new Pagination(['totalCount' => $data->count(), 'pageSize' => $this->_pageSize]);
+        $data = Article::find()->where($where)->andFilterWhere(['>=','status',StatusEnum::DELETE]);
+        !empty($cate_id) && $data->andWhere(['cate_id' => $cate_id]);
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => $this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('sort asc,append desc')
             ->limit($pages->limit)
@@ -176,9 +164,7 @@ class ArticleController extends MController
             'pages'   => $pages,
             'type'    => $type,
             'keyword' => $keyword,
-            'cate_stair' => $cate_stair,
-            'cate_second' => $cate_second,
-
+            'cate_id' => $cate_id,
         ]);
     }
 
@@ -224,7 +210,8 @@ class ArticleController extends MController
 
         if (empty(($model = Article::findOne($id))))
         {
-            return new Article;
+            $model = new Article;
+            return $model->loadDefaultValues();
         }
 
         return $model;

@@ -29,8 +29,7 @@ class ReplyVoice extends \yii\db\ActiveRecord
     {
         return [
             [['rule_id'], 'integer'],
-            [['title', 'mediaid'], 'required'],
-            [['title'], 'string', 'max' => 50],
+            [['mediaid'], 'required'],
             [['mediaid'], 'string', 'max' => 255],
         ];
     }

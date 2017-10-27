@@ -62,6 +62,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                             <div class="panel-heading">
                                                 <span class="collapsed"><?= $model->name ?></span>
                                                 <span class="pull-right" id="<?= $model->id ?>">
+                                                    <span class="label label-info">优先级：<?= $model->displayorder; ?></span>
                                                    <?php if(RuleKeyword::verifyTake($model->ruleKeyword)){ ?>
                                                        <?php if($model->status == Rule::STATUS_ON){ ?>
                                                            <span class="label label-info">直接接管</span>
@@ -76,11 +77,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                             </div>
                                             <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true" style="">
                                                 <div class="panel-body">
-                                                    <div class="col-lg-9">
+                                                    <div class="col-lg-9 tooltip-demo">
                                                     <?php if($model->ruleKeyword){ ?>
                                                         <?php foreach($model->ruleKeyword as $rule){
                                                             if($rule->type != RuleKeyword::TYPE_TAKE){ ?>
-                                                                <span class="simple_tag"><?= $rule->content?></span>
+                                                                <span class="simple_tag" data-toggle="tooltip" data-placement="bottom" title="<?= RuleKeyword::$typeExplain[$rule->type]; ?>"><?= $rule->content?></span>
                                                             <?php }
                                                         }
                                                     } ?>
@@ -88,7 +89,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                     <div class="col-lg-3">
                                                         <div class="btn-group pull-right">
                                                             <a class="btn btn-white btn-sm" href="<?= Url::to(['reply-'.$model->module.'/edit','id'=>$model->id])?>"><i class="fa fa-edit"></i> 编辑</a>
-                                                            <a class="btn btn-white btn-sm" href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><i class="fa fa-times"></i> 删除</a>
+                                                            <a class="btn btn-white btn-sm" href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><i class="fa fa-times"></i> 删除</a>
 <!--                                                            <a class="btn btn-white btn-sm" href="#"><i class="fa fa-bar-chart-o"></i> 使用率走势</a>-->
                                                         </div>
                                                     </div>
@@ -146,3 +147,6 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         });
     }
 </script>
+
+<?= \yii\helpers\Html::jsFile('/resource/backend/js/bootstrap.min.js?v=3.3.7')?>
+<?= \yii\helpers\Html::jsFile('/resource/backend/js/content.min.js?v=1.0.0')?>

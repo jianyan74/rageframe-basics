@@ -19,7 +19,6 @@ AppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <script src="/resource/backend/js/jquery-2.0.3.min.js"></script>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg">
 <?php $this->beginBody() ?>
@@ -77,7 +76,7 @@ AppAsset::register($this);
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
     $(function () {
         //小模拟框清除
         $('#ajaxModal').on('hide.bs.modal', function () {
@@ -92,7 +91,7 @@ AppAsset::register($this);
 
 <script type="text/javascript">
     //status => 1:启用;-1禁用;
-    function status(obj){
+    function rfStatus(obj){
         var id = $(obj).parent().parent().attr('id');
         var status; self = $(obj);
         if(self.hasClass("btn-primary")){
@@ -116,17 +115,17 @@ AppAsset::register($this);
                         self.text('启用');
                     }
                 }else{
-                    alert(data.message);
+                    rfAffirm(data.message);
                 }
             }
         });
     }
 
-    function sort(obj){
+    function rfSort(obj){
         var id = $(obj).parent().parent().attr('id');
         var sort = $(obj).val();
         if(isNaN(sort)){
-            alert('排序只能为数字');
+            rfAffirm('排序只能为数字');
             return false;
         }else{
             $.ajax({
@@ -136,7 +135,7 @@ AppAsset::register($this);
                 data: {id:id,sort:sort},
                 success: function(data){
                     if(data.code != 200) {
-                        alert(data.message);
+                        rfAffirm(data.message);
                     }
                 }
             });

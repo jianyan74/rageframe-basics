@@ -3,7 +3,7 @@ return [
     /**-------------------开发者信息-------------------**/
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
-    'exploitVersions'          => '1.1.21',
+    'exploitVersions'          => '1.3.10',
     'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',
@@ -59,8 +59,8 @@ return [
     'wechatMediaType' => [
         'news'  => '微信图文',
         'image' => '图片',
-//        'voice' => '语音',
-//        'video' => '视频',
+        'voice' => '语音',
+        'video' => '视频',
     ],
 
     //微信级别

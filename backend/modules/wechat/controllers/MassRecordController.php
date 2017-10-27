@@ -28,27 +28,34 @@ class MassRecordController extends WController
 
         if ($model->load(Yii::$app->request->post()))
         {
-            $broadcast = $this->_app->broadcast;
-
-            if(!$model['group'])
+            try
             {
-                $model->group_name = '全部粉丝';
-                $result = $broadcast->send($model['type'], $model['media_id']);
+                $broadcast = $this->_app->broadcast;
+                if(!$model['group'])
+                {
+                    $model->group_name = '全部粉丝';
+                    $result = $broadcast->send($model['type'], $model['media_id']);
+                }
+                else
+                {
+                    $model->group = $model['group'];
+                    $result = $broadcast->send($model['type'], $model['media_id'], $model['group']);
+
+                    //获取分组信息
+                    $group = FansGroups::getGroup($model['group']);
+                    $model->group_name = $group['name'];
+                    $model->fans_num = $group['count'];
+                }
+
+                $model->final_send_time = time();
+                $model->msg_id = $result['msg_id'];
+                $model->save();
             }
-            else
+            catch (\Exception $e)
             {
-                $model->group = $model['group'];
-                $result = $broadcast->send($model['type'], $model['media_id'], $model['group']);
-
-                //获取分组信息
-                $group = FansGroups::getGroup($model['group']);
-                $model->group_name = $group['name'];
-                $model->fans_num = $group['count'];
+                //接口调用错误提示
+                return $this->message($e->getMessage(),$this->redirect(['attachment/'.$model['type'].'-index']),'error');
             }
-
-            $model->final_send_time = time();
-            $model->msg_id = $result['msg_id'];
-            $model->save();
 
             return $this->message("发送成功",$this->redirect(['attachment/'.$model['type'].'-index']));
         }

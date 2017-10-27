@@ -3,7 +3,6 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use Yii;
 use yii\helpers\Html;
-use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\sys\Cate;
 use common\helpers\SysArrayHelper;
 use backend\controllers\MController;
@@ -26,7 +25,7 @@ class CateController extends MController
             ->asArray()
             ->all();
 
-        $models = SysArrayHelper::itemsMerge($models,'cate_id');
+        $models = SysArrayHelper::itemsMerge($models);
 
         return $this->render('index', [
             'models' => $models,
@@ -40,14 +39,14 @@ class CateController extends MController
     public function actionEdit()
     {
         $request  = Yii::$app->request;
-        $cate_id  = $request->get('cate_id');
-        $level    = $request->get('level');
-        $pid      = $request->get('pid');
+        $id = $request->get('id');
+        $level = $request->get('level');
+        $pid = $request->get('pid');
         $parent_title = $request->get('parent_title','无');
-        $model        = $this->findModel($cate_id);
+        $model = $this->findModel($id);
 
         !empty($level) && $model->level = $level;//等级
-        !empty($pid) && $model->pid   = $pid;//上级id
+        !empty($pid) && $model->pid = $pid;//上级id
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -58,7 +57,9 @@ class CateController extends MController
             }
             else
             {
-                return $model->save() ? $this->redirect(['index']) : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
+                return $model->save()
+                    ? $this->redirect(['index'])
+                    : $this->message($this->analysisError($model->getFirstErrors()),$this->redirect(['index']),'error');
             }
         }
 

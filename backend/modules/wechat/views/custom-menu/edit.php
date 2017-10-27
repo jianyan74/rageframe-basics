@@ -15,19 +15,38 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <style>
 	.menuView{
-		height: 480px;
+		height: 500px;
 		position: relative;
 		background-color: white;
 	}
+
+    .menuView .btn-white{
+        line-height: 25px;
+        font-size: 14px;
+        margin-bottom: 0;
+        border-radius: 0;
+        background: #FAFAFA;;
+    }
+
+    .menuView .btn-white:hover{
+        border: 1px solid #079200;
+        background-color: #fff;
+        color: #079200;
+    }
+
 	.custommenu{
 		position: relative;
 	}
 	.custommenu_sub_container{
 		position: absolute;
 		width: 100%;
-		top: -5px;
-		transform: translateY(-100%);
+		bottom: 100%;
 	}
+
+    .ng-binding {
+        font-size: 15px;
+        line-height: 30px;
+    }
 
     .phone-header {
         position: relative;
@@ -40,23 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
         color: #fff;
         border: 1px solid #e7e7eb;
     }
-    .ng-binding {
-        font-size: 15px;
-        line-height: 30px;
-    }
-
-    .btn-white{
-        line-height: 25px;
-    }
-    .btn-white:hover{
-        border: 1px solid #079200;
-        background-color: #fff;
-        color: #079200;
-    }
-    .phone-foot .btn {
-        margin-bottom: 0;
-        border-radius: 0;
-    }
 
     .phone-foot{
         position: absolute;
@@ -65,26 +67,18 @@ $this->params['breadcrumbs'][] = $this->title;
         right: 0;
         border-top: 1px solid #e7e7eb;
         background: url(/resource/backend/img/bg-mobile-foot-default.png);
-        background-position:0 0;
+        background-position:0 -3px;
         background-repeat: no-repeat;
         padding-left: 43px;
         margin-bottom: 0;
-    }
-
-    .custommenu_sub_container .btn {
-        font-size: 14px;
-    }
-
-    .flex-col .btn {
-        background: #FAFAFA;;
     }
 </style>
 
 <div id="vueArea" class="wrapper wrapper-content animated fadeInRight">
     <?php $form = ActiveForm::begin(); ?>
-    <div class="row  col-sm-offset-2">
+    <div class="row col-sm-offset-2">
     	<!-- 菜单编辑模式 -->
-        <div class="col-sm-3" style="width: 361px">
+        <div class="col-sm-3" style="width: 362px">
             <div class="ibox float-e-margins">
                 <div class="phone-header">
                     <span class="ng-binding">自定义菜单</span>
@@ -170,6 +164,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script>
     $(function(){
+        //兼容老IE
+        document.body.ondrop = function (event) {
+            event = event || window.event;
+            if (event.preventDefault) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                event.returnValue = false;
+                event.cancelBubble = true;
+            }
+        };
 
         var list = '<?php echo json_encode(unserialize($model->data)) ?>';
         list = JSON.parse(list);

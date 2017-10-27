@@ -38,10 +38,10 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                             <tr id = <?= $model->id?>>
                                                 <td><?= $model->id?></td>
                                                 <td><?= $model->title?></td>
-                                                <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="sort(this)"></td>
+                                                <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="rfSort(this)"></td>
                                                 <td>
                                                     <a href="<?= Url::to(['edit','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
-                                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="deleted(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+                                                    <a href="<?= Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                                 </td>
                                             </tr>
                                         <?php } ?>
@@ -68,28 +68,3 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    function sort(obj){
-        var id = $(obj).parent().parent().attr('id');
-        var sort = $(obj).val();
-
-        if(isNaN(sort)){
-            alert('排序只能为数字');
-            return false;
-        }else{
-            $.ajax({
-                type:"get",
-                url:"<?= Url::to(['update-ajax'])?>",
-                dataType: "json",
-                data: {id:id,sort:sort},
-                success: function(data){
-
-                    if(data.flg == 2) {
-                        alert(data.msg);
-                    }
-                }
-            });
-        }
-    }
-</script>

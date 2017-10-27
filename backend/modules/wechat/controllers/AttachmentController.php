@@ -300,10 +300,9 @@ class AttachmentController extends WController
 
         if ($model->load(Yii::$app->request->post()))
         {
-            $broadcast = $this->_app->broadcast;
-
             try
             {
+                $broadcast = $this->_app->broadcast;
                 if($model->type == 1)
                 {
                     //微信号预览
@@ -335,7 +334,6 @@ class AttachmentController extends WController
     public function actionImageIndex()
     {
         $mediaType = Attachment::TYPE_IMAGE;
-
         $data = Attachment::find()->where(['type'=>$mediaType]);
         $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => 15]);
         $models = $data->offset($pages->offset)
@@ -344,10 +342,10 @@ class AttachmentController extends WController
             ->all();
 
         return $this->render('image-index',[
-            'models'  => $models,
-            'pages'   => $pages,
-            'wechatMediaType'   => Yii::$app->params['wechatMediaType'],
-            'mediaType'   => $mediaType,
+            'models' => $models,
+            'pages' => $pages,
+            'wechatMediaType' => Yii::$app->params['wechatMediaType'],
+            'mediaType' => $mediaType,
         ]);
     }
 
@@ -379,27 +377,127 @@ class AttachmentController extends WController
     }
 
     /**
+     * 视频首页
+     * @return string
+     */
+    public function actionVideoIndex()
+    {
+        $mediaType = Attachment::TYPE_VIDEO;
+        $data = Attachment::find()->where(['type' => $mediaType]);
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' => 15]);
+        $models = $data->offset($pages->offset)
+            ->orderBy('append desc')
+            ->limit($pages->limit)
+            ->all();
+
+        return $this->render('video-index',[
+            'models'  => $models,
+            'pages'   => $pages,
+            'wechatMediaType'   => Yii::$app->params['wechatMediaType'],
+            'mediaType'   => $mediaType,
+        ]);
+    }
+
+    /**
+     * 视频添加
+     * @return string|Response
+     */
+    public function actionVideoAdd()
+    {
+        $model = $this->findModel('');
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if($model->attachment)
+            {
+                //本地图片前缀
+                $prefix =  Yii::getAlias("@rootPath/").'web';
+                $material = $this->_app->material;
+                $res_material = $material->uploadVideo($prefix . $model->attachment, $model->file_name, $model->description);
+
+                Attachment::addVideo($res_material, $prefix . $model->attachment, $model->file_name);
+
+                return $this->redirect(['video-index']);
+            }
+        }
+
+        return $this->renderAjax('video-add',[
+            'model' => $model
+        ]);
+    }
+
+    /**
+     * 声音首页
+     * @return string
+     */
+    public function actionVoiceIndex()
+    {
+        $mediaType = Attachment::TYPE_VOICE;
+
+        $data = Attachment::find()->where(['type' => $mediaType]);
+        $pages = new Pagination(['totalCount' => $data->count(), 'pageSize' => 15]);
+        $models = $data->offset($pages->offset)
+            ->orderBy('append desc')
+            ->limit($pages->limit)
+            ->all();
+
+        return $this->render('voice-index',[
+            'models' => $models,
+            'pages' => $pages,
+            'wechatMediaType' => Yii::$app->params['wechatMediaType'],
+            'mediaType' => $mediaType,
+        ]);
+    }
+
+    /**
+     * 声音添加
+     * @return string|Response
+     */
+    public function actionVoiceAdd()
+    {
+        $model = $this->findModel('');
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if($model->attachment)
+            {
+                //本地图片前缀
+                $prefix =  Yii::getAlias("@rootPath/").'web';
+                $material = $this->_app->material;
+                $res_material = $material->uploadVoice($prefix . $model->attachment);
+                //插入数据库
+                Attachment::addVoice($res_material, $prefix . $model->attachment);
+
+                return $this->redirect(['voice-index']);
+            }
+        }
+
+        return $this->renderAjax('voice-add',[
+            'model' => $model
+        ]);
+    }
+
+    /**
      * 删除永久素材
      */
     public function actionDelete($attach_id)
     {
+        //删除数据库
         $attachment = $this->findModel($attach_id);
-
+        $attachment->delete();
+        //删除微信服务器数据
         $material = $this->_app->material;
         $material->delete($attachment['media_id']);
 
-        $attachment->delete();
         return $this->message("删除成功",$this->redirect([$attachment['type'].'-index']));
     }
 
     /**
      * 同步微信素材
-     * @param $type - 素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
-     * @param int $offset - 从全部素材的该偏移位置开始返回，可选，默认 0，0 表示从第一个素材 返回
-     * @param int $count - 返回素材的数量，可选，默认 20, 取值在 1 到 20 之间
+     * @param string $type 素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
+     * @param int $offset 从全部素材的该偏移位置开始返回，可选，默认 0，0 表示从第一个素材 返回
+     * @param int $count 返回素材的数量，可选，默认 20, 取值在 1 到 20 之间
      * @return mixed
      */
-    public function actionGetAllAttachment($type,$offset = 0,$count = 20)
+    public function actionGetAllAttachment($type, $offset = 0, $count = 20)
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
@@ -412,7 +510,6 @@ class AttachmentController extends WController
         $list = ArrayHelper::toArray($lists['item']);
 
         $add_material = [];
-
         $sys_material = [];
         foreach ($list as $vo)
         {
@@ -432,51 +529,97 @@ class AttachmentController extends WController
             $new_system_material[$li['media_id']] = $li;
         }
 
-        //图文
-        if($type == Attachment::TYPE_NEWS)
+        switch ($type)
         {
-            foreach ($list as $vo)
-            {
-                if (empty($new_system_material) || empty($new_system_material[$vo['media_id']]))
-                {
-                    $attachment = new Attachment();
-                    $attachment->manager_id = Yii::$app->user->id;
-                    $attachment->media_id = $vo['media_id'];
-                    $attachment->model = Attachment::MODEL_PERM;
-                    $attachment->type = $type;
-                    $attachment->append = $vo['update_time'];
-                    $attachment->save();
+            //** 图文 **//
+            case Attachment::TYPE_NEWS :
 
-                    $attach_id = $attachment->id;
-                    //插入文章
-                    foreach ($vo['content']['news_item'] as $key => $content)
+                foreach ($list as $vo)
+                {
+                    if (empty($new_system_material) || empty($new_system_material[$vo['media_id']]))
                     {
-                        $news = new News();
-                        $news->attributes = $content;
-                        $news->content = str_replace("data-src","src",$news->content);
-                        $news->attach_id = $attach_id;
-                        $news->sort = $key;
-                        $news->save();
+                        $attachment = new Attachment();
+                        $attachment->manager_id = Yii::$app->user->id;
+                        $attachment->media_id = $vo['media_id'];
+                        $attachment->model = Attachment::MODEL_PERM;
+                        $attachment->type = $type;
+                        $attachment->append = $vo['update_time'];
+                        $attachment->save();
+
+                        $attach_id = $attachment->id;
+                        //插入文章
+                        foreach ($vo['content']['news_item'] as $key => $content)
+                        {
+                            $news = new News();
+                            $news->attributes = $content;
+                            $news->content = str_replace("data-src","src",$news->content);
+                            $news->attach_id = $attach_id;
+                            $news->sort = $key;
+                            $news->save();
+                        }
                     }
                 }
-            }
-        }
-        else
-        {
-            foreach ($list as $vo)
-            {
-                if (empty($new_system_material) || empty($new_system_material[$vo['media_id']]))
-                {
-                    $add_material[] = [Yii::$app->user->id, Attachment::MODEL_PERM, $vo['name'], $vo['media_id'], $type, $vo['url'], $vo['update_time'], time()];
-                }
-            }
 
-            if (!empty($add_material))
-            {
-                //批量插入数据
-                $field = ['manager_id','model','file_name','media_id','type','tag','append','updated'];
-                Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
-            }
+                break;
+
+            //** 图片 **//
+            case Attachment::TYPE_IMAGE :
+
+                foreach ($list as $vo)
+                {
+                    if (empty($new_system_material) || empty($new_system_material[$vo['media_id']]))
+                    {
+                        $add_material[] = [Yii::$app->user->id, Attachment::MODEL_PERM, $vo['name'], $vo['media_id'], $type, $vo['url'], $vo['update_time'], time()];
+                    }
+                }
+
+                if (!empty($add_material))
+                {
+                    //批量插入数据
+                    $field = ['manager_id','model','file_name','media_id','type','tag','append','updated'];
+                    Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
+                }
+
+                break;
+
+            //** 视频 **//
+            case Attachment::TYPE_VIDEO :
+
+                foreach ($list as $vo)
+                {
+                    if (empty($new_system_material) || empty($new_system_material[$vo['media_id']]))
+                    {
+                        $add_material[] = [Yii::$app->user->id, Attachment::MODEL_PERM, $vo['name'], $vo['media_id'], $type, $vo['update_time'], time()];
+                    }
+                }
+
+                if (!empty($add_material))
+                {
+                    //批量插入数据
+                    $field = ['manager_id','model','file_name','media_id','type','append','updated'];
+                    Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
+                }
+
+                break;
+            //** 语音 **//
+            case Attachment::TYPE_VOICE :
+
+                foreach ($list as $vo)
+                {
+                    if (empty($new_system_material) || empty($new_system_material[$vo['media_id']]))
+                    {
+                        $add_material[] = [Yii::$app->user->id, Attachment::MODEL_PERM, $vo['name'], $vo['media_id'], $type, $vo['update_time'], time()];
+                    }
+                }
+
+                if (!empty($add_material))
+                {
+                    //批量插入数据
+                    $field = ['manager_id','model','file_name','media_id','type','append','updated'];
+                    Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
+                }
+
+                break;
         }
 
         $result['flg'] = 2;

@@ -17,10 +17,10 @@ class AddonsHook
     const hookPath = 'Setting/hook';
 
     /**
-     * @param $addonsName 模块名字
-     * @param $params 传递的数组
+     * @param string $addonsName 模块名字
+     * @param bool $params 传递的数组
      */
-    public static function to($addonsName, $params=false)
+    public static function to($addonsName, $params = false)
     {
         return self::skip(AddonsHelp::analysisBaseRoute(self::hookPath,$addonsName),$params);
     }
@@ -31,7 +31,7 @@ class AddonsHook
      * @param $params
      * @return bool
      */
-    public static function skip($through,$params)
+    public static function skip($through, $params)
     {
         $class = $through['class'];
         $actionName = $through['actionName'];

@@ -127,41 +127,40 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 dataType: 'json',
                 data: {tables:tablename},
                 success: function(data) {
-                    if(data.flg == 1){
-                        var id    = data.tab.id;
-                        var start = data.tab.start;
+                    if(data.code == 200){
+                        var id = data.data.tab.id;
+                        var start = data.data.tab.start;
                         startExport(id,start);
                     }else{
-                        swalAlert(data.msg);
+                        rfAffirm(data.message);
                     }
                 }
             })
         }
 
         //开始备份
-        function startExport(id,start)
-        {
+        function startExport(id,start) {
             $.ajax({
                 type: "post",
                 url: "<?= Url::to(['export-start'])?>",
                 dataType: 'json',
                 data: {id:id,start:start},
                 success: function(data) {
-                    if(data.flg == 1){
+                    if(data.code == 200){
 
-                        var achieveStatus = data.achieveStatus;
-                        var tabName = data.tablename;
-                        $("#"+tabName).text(data.msg);
+                        var achieveStatus = data.data.achieveStatus;
+                        var tabName = data.data.tablename;
+                        $("#"+tabName).text(data.message);
 
                         if(achieveStatus == 0){
-                            startExport(data.tab.id,data.tab.start);
+                            startExport(data.data.tab.id,data.data.tab.start);
                         }else{
                             $('#reminder').hide();
-                            swalAlert(data.msg);
+                            rfAffirm(data.message);
                         }
 
                     }else{
-                        swalAlert(data.msg);
+                        rfAffirm(data.message);
                     }
                 }
             })
@@ -169,7 +168,6 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
         //优化表
         function optimize() {
-
             $.ajax({
                 type: "post",
                 url: "<?= Url::to(['optimize'])?>",
@@ -177,7 +175,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 data: {tables:tablename},
                 success: function(data) {
                     $('#reminder').hide();
-                    swalAlert(data.msg);
+                    rfAffirm(data.message);
                 }
             })
         }
@@ -191,7 +189,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 data: {tables:tablename},
                 success: function(data) {
                     $('#reminder').hide();
-                    swalAlert(data.msg);
+                    rfAffirm(data.message);
                 }
             })
         }
