@@ -147,6 +147,3 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         });
     }
 </script>
-
-<?= \yii\helpers\Html::jsFile('/resource/backend/js/bootstrap.min.js?v=3.3.7')?>
-<?= \yii\helpers\Html::jsFile('/resource/backend/js/content.min.js?v=1.0.0')?>
