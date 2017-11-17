@@ -50,12 +50,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script>
     $(document).ready(function(){
-        //复选框选中
+        // 复选框选中
         $('input').on('ifChecked', function(event){
             $(this).parent().parent().parent().parent().next('.check-list').iCheck('check');
             $(this).parent().parent().parent().next('.row').iCheck('check');
         });
-        //复选框移除
+        // 复选框移除
         $('input').on('ifUnchecked', function(event){
             $(this).parent().parent().parent().parent().next('.check-list').iCheck('uncheck');
             $(this).parent().parent().parent().next('.row').iCheck('uncheck');

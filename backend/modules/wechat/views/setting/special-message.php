@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <option value="" selected>不处理(使用系统默认回复)</option>
                                                 <!--<option value="custom">多客服转接</option>-->
                                                 <?php foreach ($row['module'] as $k => $item){ ?>
-                                                    <option value="<?= $k ?>" <?php if($k == $row['selected']){?>selected<?php } ?>><?= $item ?></option>
+                                                    <option value="<?= $k ?>" <?php if(isset($row['selected']) && $k == $row['selected']){?>selected<?php } ?>><?= $item ?></option>
                                                 <?php } ?>
                                             </select>
                                         </div>

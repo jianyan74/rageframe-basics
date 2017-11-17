@@ -6,12 +6,12 @@ use jianyan\basics\common\models\wechat\ReplyDefault;
 
 /**
  * 系统回复控制器
+ *
  * Class ReplyDefaultController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
 class ReplyDefaultController extends WController
 {
-
     /**
      * 首页
      */
@@ -31,6 +31,7 @@ class ReplyDefaultController extends WController
 
     /**
      * 返回模型
+     *
      * @return array|ReplyDefault|null|yii\db\ActiveRecord
      */
     protected function findModel()

@@ -8,6 +8,7 @@ use backend\controllers\MController;
 
 /**
  * 系统日志控制器控制器
+ *
  * Class ActionLogController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -33,6 +34,7 @@ class ActionLogController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -50,6 +52,7 @@ class ActionLogController extends MController
 
     /**
      * 一键清空
+     *
      * @return mixed
      */
     public function actionDeleteAll()
@@ -66,6 +69,7 @@ class ActionLogController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return ActionLog|static
      */

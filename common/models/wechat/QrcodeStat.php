@@ -5,6 +5,7 @@ namespace jianyan\basics\common\models\wechat;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+
 /**
  * This is the model class for table "{{%wechat_qrcode_stat}}".
  *
@@ -72,7 +73,7 @@ class QrcodeStat extends ActiveRecord
      */
     public static function scan($message)
     {
-        if($message->Event == Account::TYPE_SUBSCRIBE && !empty($message->Ticket))//关注
+        if($message->Event == Account::TYPE_SUBSCRIBE && !empty($message->Ticket))// 关注
         {
             $ticket = trim($message->Ticket);
             $qrCode = Qrcode::find()->where(['ticket'=>$ticket])->one();
@@ -82,7 +83,7 @@ class QrcodeStat extends ActiveRecord
                 return $qrCode->keyword;
             }
         }
-        elseif($message->Event == Account::TYPE_SCAN)//扫描
+        elseif($message->Event == Account::TYPE_SCAN)// 扫描
         {
             if(is_numeric($message->EventKey))
             {
@@ -127,7 +128,7 @@ class QrcodeStat extends ActiveRecord
      */
     public function getFans()
     {
-        return $this->hasOne(Fans::className(), ['openid' => 'openid'])->select('openid,nickname');
+        return $this->hasOne(Fans::className(), ['openid' => 'openid'])->select('openid,nickname,follow');
     }
 
     /**

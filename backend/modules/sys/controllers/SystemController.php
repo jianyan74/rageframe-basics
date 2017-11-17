@@ -11,6 +11,7 @@ use common\enums\StatusEnum;
 
 /**
  * 系统菜单控制器
+ *
  * Class SystemController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -35,14 +36,14 @@ class SystemController extends MController
         $models = $db->createCommand('SHOW TABLE STATUS')->queryAll();
         $models = array_map('array_change_key_case', $models);
 
-        //数据库大小
+        // 数据库大小
         $mysql_size = 0;
         foreach ($models as $model)
         {
             $mysql_size += $model['data_length'];
         }
 
-        //附件大小
+        // 附件大小
         $attachment_size = FileHelper::getDirSize(Yii::getAlias('@attachment'));
         return $this->render('info', [
             'models' => Menu::getMenus(Menu::TYPE_SYS, StatusEnum::ENABLED),
@@ -53,6 +54,7 @@ class SystemController extends MController
 
     /**
      * 服务器信息
+     *
      * @return string
      */
     public function actionServer()
@@ -84,8 +86,18 @@ class SystemController extends MController
             return $this->getResult();
         }
 
+        // 扩展安装情况
+        $extensions = get_loaded_extensions();
+        $extensions = implode('，',$extensions);
+
+        // 禁用函数
+        $disable_functions = ini_get('disable_functions');
+        $disable_functions = !empty($disable_functions) ? $disable_functions : '未禁用';
+
         return $this->render('server', [
-            'info' => $info
+            'info' => $info,
+            'extensions' => $extensions,
+            'disable_functions' => $disable_functions,
         ]);
     }
 }

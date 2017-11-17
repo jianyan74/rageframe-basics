@@ -9,6 +9,7 @@ use backend\controllers\MController;
 
 /**
  * 分类控制器
+ *
  * Class CateController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -16,6 +17,7 @@ class CateController extends MController
 {
     /**
      * 首页
+     *
      * @return string
      */
     public function actionIndex()
@@ -34,6 +36,7 @@ class CateController extends MController
 
     /**
      * 编辑
+     *
      * @return array|mixed|string|\yii\web\Response
      */
     public function actionEdit()
@@ -45,8 +48,8 @@ class CateController extends MController
         $parent_title = $request->get('parent_title','无');
         $model = $this->findModel($id);
 
-        !empty($level) && $model->level = $level;//等级
-        !empty($pid) && $model->pid = $pid;//上级id
+        !empty($level) && $model->level = $level;// 等级
+        !empty($pid) && $model->pid = $pid;// 上级id
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -72,7 +75,7 @@ class CateController extends MController
     /**
      * @param $pid
      */
-    public function actionList($pid, $typeid = 0)
+    public function actionList($pid)
     {
         $model = Cate::getList($pid);
 
@@ -94,6 +97,7 @@ class CateController extends MController
 
     /**
      * 删除
+     *
      * @param $cate_id
      * @return mixed
      */

@@ -8,6 +8,7 @@ use backend\controllers\MController;
 
 /**
  * 数据库备份还原控制器
+ *
  * Class DataBaseController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -19,7 +20,7 @@ class DataBaseController extends MController
     public function init()
     {
         $path   = Yii::$app->params['dataBackupPath'];
-        //读取备份配置
+        // 读取备份配置
         $config = [
             'path'     => realpath($path) . DIRECTORY_SEPARATOR,
             'part'     => Yii::$app->params['dataBackPartSize'],
@@ -30,7 +31,7 @@ class DataBaseController extends MController
         $this->path     = $path;
         $this->config   = $config;
 
-        //判断目测是否存在，不存在则创建
+        // 判断目测是否存在，不存在则创建
         if(!is_dir($path))
         {
             mkdir($path, 0755, true);
@@ -53,6 +54,7 @@ class DataBaseController extends MController
 
     /**
      * 备份检测
+     *
      * @return array
      */
     public function actionExport()
@@ -67,10 +69,10 @@ class DataBaseController extends MController
             return $this->getResult();
         }
 
-        //读取备份配置
+        // 读取备份配置
         $config = $this->config;
 
-        //检查是否有正在执行的任务
+        // 检查是否有正在执行的任务
         $lock = "{$config['path']}".$config['lock'];
 
         if(is_file($lock))
@@ -80,18 +82,18 @@ class DataBaseController extends MController
         }
         else
         {
-            //创建锁文件
+            // 创建锁文件
             file_put_contents($lock, time());
         }
 
-        //检查备份目录是否可写
+        // 检查备份目录是否可写
         if (!is_writeable($config['path']))
         {
             $result->message = "备份目录不存在或不可写，请检查后重试！";
             return $this->getResult();
         }
 
-        //生成备份文件信息
+        // 生成备份文件信息
         $file = [
             'name' => date('Ymd-His', time()),
             'part' => 1,
@@ -99,15 +101,15 @@ class DataBaseController extends MController
 
         $result->message =  "初始化失败，备份文件创建失败！";
 
-        //创建备份文件
+        // 创建备份文件
         $Database = new Database($file, $config);
         if(false !== $Database->create())
         {
-            //缓存配置信息
+            // 缓存配置信息
             Yii::$app->session->set('backup_config', $config);
-            //缓存文件信息
+            // 缓存文件信息
             Yii::$app->session->set('backup_file', $file);
-            //缓存要备份的表
+            // 缓存要备份的表
             Yii::$app->session->set('backup_tables', $tables);
 
             $tab = ['id' => 0, 'start' => 0];
@@ -140,7 +142,7 @@ class DataBaseController extends MController
         $id     = Yii::$app->request->post('id');
         $start  = Yii::$app->request->post('start');
 
-        //备份指定表
+        // 备份指定表
         $Database = new Database($file,$config);
         $start    = $Database->backup($tables[$id], $start);
         if($start === false)
@@ -150,13 +152,13 @@ class DataBaseController extends MController
         }
         elseif ($start === 0)
         {
-            //下一表
+            // 下一表
             if(isset($tables[++$id]))
             {
                 $tab = ['id' => $id, 'start' => 0];
 
                 $result->code = 200;
-                $result->message = "备份完成";//对下一个表进行备份
+                $result->message = "备份完成";// 对下一个表进行备份
                 $result->data = [
                     'tablename' => $tables[--$id],
                     'achieveStatus' => 0,
@@ -167,7 +169,7 @@ class DataBaseController extends MController
             }
             else
             {
-                //备份完成，清空缓存
+                // 备份完成，清空缓存
                 unlink($config['path'] . $config['lock']);
                 Yii::$app->session->set('backup_tables', null);
                 Yii::$app->session->set('backup_file', null);
@@ -189,7 +191,7 @@ class DataBaseController extends MController
             $rate = floor(100 * ($start[0] / $start[1]));
 
             $result->code = 200;
-            $result->message = "正在备份...({$rate}%)";//对下一个表进行备份
+            $result->message = "正在备份...({$rate}%)";// 对下一个表进行备份
             $result->data = [
                 'tablename' => $tables[$id],
                 'achieveStatus' => 0,
@@ -202,6 +204,7 @@ class DataBaseController extends MController
 
     /**
      * 优化表
+     *
      * @param String $tables 表名
      */
     public function actionOptimize()
@@ -213,7 +216,7 @@ class DataBaseController extends MController
         if($tables)
         {
             $Db      = \Yii::$app->db;
-            //判断是否是数组
+            // 判断是否是数组
             if(is_array($tables))
             {
                 $tables = implode('`,`', $tables);
@@ -232,7 +235,7 @@ class DataBaseController extends MController
             {
                 $list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
 
-                //判断是否成功
+                // 判断是否成功
                 $result->message = "数据表'{$tables}'优化出错！错误信息:". $list['Msg_text'];
                 if($list['Msg_text'] == "OK")
                 {
@@ -247,6 +250,7 @@ class DataBaseController extends MController
 
     /**
      * 修复表
+     *
      * @param String $tables 表名
      */
     public function actionRepair()
@@ -258,7 +262,7 @@ class DataBaseController extends MController
         if($tables)
         {
             $Db      = \Yii::$app->db;
-            //判断是否是数组
+            // 判断是否是数组
             if(is_array($tables))
             {
                 $tables = implode('`,`', $tables);
@@ -295,7 +299,7 @@ class DataBaseController extends MController
     {
         Yii::$app->language = "";
 
-        //文件夹路径
+        // 文件夹路径
         $path    = $this->path;
         $flag    = \FilesystemIterator::KEY_AS_FILENAME;
         $glob    = new \FilesystemIterator($path,  $flag);
@@ -303,7 +307,7 @@ class DataBaseController extends MController
         $list = [];
         foreach ($glob as $name => $file)
         {
-            //正则匹配文件名
+            // 正则匹配文件名
             if(preg_match('/^\d{8,8}-\d{6,6}-\d+\.sql(?:\.gz)?$/', $name))
             {
                 $name = sscanf($name, '%4s%2s%2s-%2s%2s%2s-%d');
@@ -349,7 +353,7 @@ class DataBaseController extends MController
         $time = Yii::$app->request->post('time');
 
         $config = $this->config;
-        //获取备份文件信息
+        // 获取备份文件信息
         $name  = date('Ymd-His', $time) . '-*.sql*';
         $path  = realpath($config['path']) . DIRECTORY_SEPARATOR . $name;
         $files = glob($path);
@@ -364,16 +368,16 @@ class DataBaseController extends MController
             $gz       = preg_match('/^\d{8,8}-\d{6,6}-\d+\.sql.gz$/', $basename);
             $list[$match[6]] = array($match[6], $file, $gz);
         }
-        //排序数组
+        // 排序数组
         ksort($list);
 
         $result->message = "备份文件可能已经损坏，请检查！";
 
-        //检测文件正确性
+        // 检测文件正确性
         $last = end($list);
         if(count($list) === $last[0])
         {
-            Yii::$app->session->set('backup_list', $list); //缓存备份列表
+            Yii::$app->session->set('backup_list', $list); // 缓存备份列表
 
             $result->code = 200;
             $result->message = "初始化完成";
@@ -413,7 +417,7 @@ class DataBaseController extends MController
         }
         elseif(0 === $start)
         {
-            //下一卷
+            // 下一卷
             if(isset($list[++$part]))
             {
                 $result->code = 200;
@@ -432,9 +436,6 @@ class DataBaseController extends MController
                 Yii::$app->session->set('backup_list', null);
                 $result->code = 200;
                 $result->message = "还原完成";
-                $result->data = [
-                    'achieveStatus' => 1
-                ];
 
                 return $this->getResult();
             }
@@ -444,23 +445,29 @@ class DataBaseController extends MController
             if($start[1])
             {
                 $rate = floor(100 * ($start[0] / $start[1]));
-                $result['flg']   = 1;
-                $result['msg']   = "正在还原...#{$part} ({$rate}%)";
-                $result['part']  = $part;
-                $result['start'] = $start[0];
-                $result['achieveStatus'] = 0;
-                return $result;
+                $result->code = 200;
+                $result->message = "正在还原...#{$part} ({$rate}%)";
+                $result->data = [
+                    'part' => $part,
+                    'start' => $start[0],
+                    'achieveStatus' => 0,
+                ];
+
+                return $this->getResult();
             }
             else
             {
-                $result['flg']   = 1;
-                $result['msg']   = "正在还原...#{$part}";
-                $result['part']  = $part;
-                $result['start'] = $start[0];
-                $result['start1'] = $start;
-                $result['gz']    = 1;
-                $result['achieveStatus'] = 0;
-                return $result;
+                $result->code = 200;
+                $result->message = "正在还原...#{$part}";
+                $result->data = [
+                    'part' => $part,
+                    'start' => $start[0],
+                    'gz' => 1,
+                    'start1' => $start,
+                    'achieveStatus' => 0,
+                ];
+
+                return $this->getResult();
             }
         }
     }

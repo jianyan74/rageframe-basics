@@ -44,29 +44,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script type="text/javascript">
-    function rfSort(obj){
-        var name = $(obj).parent().parent().attr('name');
-        var sort = $(obj).val();
-
-        if(isNaN(sort)){
-            alert('排序只能为数字');
-            return false;
-        }else{
-            $.ajax({
-                type:"get",
-                url:"<?= Url::to(['update-ajax'])?>",
-                dataType: "json",
-                data: {name:name,sort:sort},
-                success: function(data){
-                    if(data.flg == 2) {
-                        alert(data.msg);
-                    }
-                }
-            });
-        }
-    }
-
-    //折叠
+    // 折叠
     $('.cf').click(function(){
         var self = $(this);
         var id = self.parent().parent().attr('id');

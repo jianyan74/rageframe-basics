@@ -8,6 +8,7 @@ use backend\controllers\MController;
 
 /**
  * 前台导航控制器
+ *
  * Class DeskMenuController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -29,6 +30,7 @@ class DeskMenuController extends MController
 
     /**
      * 编辑
+     *
      * @return array|mixed|string|\yii\web\Response
      */
     public function actionEdit()
@@ -40,10 +42,10 @@ class DeskMenuController extends MController
         $parent_title = $request->get('parent_title','无');
         $model = $this->findModel($id);
 
-        !empty($level) && $model->level = $level;//等级
-        !empty($pid) && $model->pid = $pid;//上级id
+        !empty($level) && $model->level = $level;// 等级
+        !empty($pid) && $model->pid = $pid;// 上级id
 
-        //设置状态默认值
+        // 设置状态默认值
         !$model->status && $model->status = DeskMenu::STATUS_ON;
 
         if ($model->load(Yii::$app->request->post()))

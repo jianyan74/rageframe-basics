@@ -45,7 +45,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                             <?php echo $vo['brief_introduction'] ?> <a href="javascript:void(0);" class="show-description">详细介绍</a>
                                         </td>
                                         <td>
-                                            <a href="<?php echo Url::to(['upgrade','name' => $vo['name']])?>"><span class="btn btn-info btn-sm">更新</span></a>&nbsp
+                                            <a href="<?php echo Url::to(['update-config','name' => $vo['name']])?>"><span class="btn btn-info btn-sm">更新配置</span></a>
+                                            <a href="<?php echo Url::to(['upgrade','name' => $vo['name']])?>"><span class="btn btn-info btn-sm">更新数据</span></a>
                                             <?php echo $vo['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>' ;?>
                                             <a href="<?php echo Url::to(['uninstall','name' => $vo['name']])?>" data-method="post"><span class="btn btn-warning btn-sm">卸载</span></a>&nbsp
                                         </td>
@@ -94,13 +95,14 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             {{value.brief_introduction}} <a href="#" class="show-description">详细介绍</a>
         </td>
         <td>
-            <a href="{{value.upgrade}}"><span class="btn btn-info btn-sm">更新</span></a>&nbsp
+            <a href="{{value.updateConfig}}"><span class="btn btn-info btn-sm">更新配置</span></a>
+            <a href="{{value.upgrade}}"><span class="btn btn-info btn-sm">更新数据</span></a>
             {{if value.status == -1 }}
             <span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>
             {{else}}
             <span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>'
             {{/if}}
-            <a href="{{value.uninstall}}" data-method="post"><span class="btn btn-warning btn-sm">卸载</span></a>&nbsp
+            <a href="{{value.uninstall}}" data-method="post"><span class="btn btn-warning btn-sm">卸载</span></a>
         </td>
     </tr>
     <tr id ="description-{{value.id}}" style="display: none">
@@ -133,7 +135,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         });
     });
 
-    //显示或者隐藏介绍
+    // 显示或者隐藏介绍
     $(document).on("click",".show-description",function(){
         var id = $(this).parent().parent().attr('id');
 

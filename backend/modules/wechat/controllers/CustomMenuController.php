@@ -8,6 +8,7 @@ use jianyan\basics\common\models\wechat\CustomMenu;
 
 /**
  * 自定义菜单
+ *
  * Class CustomMenuController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -20,51 +21,56 @@ class CustomMenuController extends WController
      */
     public $menuTypes = [
         'click' => [
-            'name' => '触发关键字 ',
+            'name' => '发送消息 ',
             'meta' => 'key',
-            'alert' => '用户点击click类型按钮后，微信服务器会通过消息接口推送消息类型为event的结构给开发者（参考消息接口指南），并且带上按钮中开发者填写的key值，开发者可以通过自定义的key值与用户进行交互；'
+            'alert' => '微信服务器会通过消息接口推送消息类型为event的结构给开发者（参考消息接口指南），并且带上按钮中开发者填写的key值，开发者可以通过自定义的key值与用户进行交互；'
         ],
         'view' => [
-            'name' => '链接',
+            'name' => '跳转网页',
             'meta' => 'url',
-            'alert' => '用户点击view类型按钮后，微信客户端将会打开开发者在按钮中填写的网页URL，可与网页授权获取用户基本信息接口结合，获得用户基本信息。'
+            'alert' => '微信客户端将会打开开发者在按钮中填写的网页URL，可与网页授权获取用户基本信息接口结合，获得用户基本信息。'
         ],
         'scancode_waitmsg' => [
             'name' => '扫码',
             'meta' => 'key',
             'value' => 'rselfmenu_0_0',
-            'alert' => '用户点击按钮后，微信客户端将调起扫一扫工具，完成扫码操作后，将扫码的结果传给开发者，同时收起扫一扫工具，然后弹出“消息接收中”提示框，随后可能会收到开发者下发的消息。'
+            'alert' => '微信客户端将调起扫一扫工具，完成扫码操作后，将扫码的结果传给开发者，同时收起扫一扫工具，然后弹出“消息接收中”提示框。'
         ],
         'scancode_push' => [
             'name' => '扫码(等待信息)',
             'meta' => 'key',
             'value' => 'rselfmenu_0_1',
-            'alert' => '用户点击按钮后，微信客户端将调起扫一扫工具，完成扫码操作后显示扫描结果（如果是URL，将进入URL），且会将扫码的结果传给开发者，开发者可以下发消息。'
-        ],
-        'pic_sysphoto' => [
-            'name' => '系统拍照发图',
-            'meta' => 'key',
-            'value' => 'rselfmenu_1_0',
-            'alert' => '用户点击按钮后，微信客户端将调起系统相机，完成拍照操作后，会将拍摄的相片发送给开发者，并推送事件给开发者，同时收起系统相机，随后可能会收到开发者下发的消息。'
-        ],
-        'pic_photo_or_album' => [
-            'name' => '拍照或者相册发图 ',
-            'meta' => 'key',
-            'value' => 'rselfmenu_1_1',
-            'alert' => '用户点击按钮后，微信客户端将弹出选择器供用户选择“拍照”或者“从手机相册选择”。用户选择后即走其他两种流程。'
-        ],
-        'pic_weixin' => [
-            'name' => '微信相册发图 ',
-            'meta' => 'key',
-            'value' => 'rselfmenu_1_2',
-            'alert' => '用户点击按钮后，微信客户端将调起微信相册，完成选择操作后，将选择的相片发送给开发者的服务器，并推送事件给开发者，同时收起相册，随后可能会收到开发者下发的消息。'
+            'alert' => '微信客户端将调起扫一扫工具，完成扫码操作后显示扫描结果（如果是URL，将进入URL），且会将扫码的结果传给开发者。'
         ],
         'location_select' => [
             'name' => '地理位置',
             'meta' => 'key',
             'value' => 'rselfmenu_2_0',
-            'alert' => '用户点击按钮后，微信客户端将调起地理位置选择工具，完成选择操作后，将选择的地理位置发送给开发者的服务器，同时收起位置选择工具，随后可能会收到开发者下发的消息。'
-        ]
+            'alert' => '微信客户端将调起地理位置选择工具，完成选择操作后，将选择的地理位置发送给开发者的服务器，同时收起位置选择工具。'
+        ],
+        'pic_sysphoto' => [
+            'name' => '拍照发图',
+            'meta' => 'key',
+            'value' => 'rselfmenu_1_0',
+            'alert' => '微信客户端将调起系统相机，完成拍照操作后，会将拍摄的相片发送给开发者，并推送事件给开发者，同时收起系统相机。'
+        ],
+        'pic_photo_or_album' => [
+            'name' => '拍照相册 ',
+            'meta' => 'key',
+            'value' => 'rselfmenu_1_1',
+            'alert' => '微信客户端将弹出选择器供用户选择“拍照”或者“从手机相册选择”。用户选择后即走其他两种流程。'
+        ],
+        'pic_weixin' => [
+            'name' => '相册发图 ',
+            'meta' => 'key',
+            'value' => 'rselfmenu_1_2',
+            'alert' => '微信客户端将调起微信相册，完成选择操作后，将选择的相片发送给开发者的服务器，并推送事件给开发者，同时收起相册。'
+        ],
+//        'miniprogram' => [
+//            'name' => '关联小程序',
+//            'meta' => 'key',
+//            'alert' => '点击该菜单跳转到关联的小程序'
+//        ],
     ];
 
     /**
@@ -83,7 +89,7 @@ class CustomMenuController extends WController
             throw new NotFoundHttpException($e->getMessage());
         }
 
-        //关联角色查询
+        // 关联角色查询
         $data   = CustomMenu::find();
         $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)
@@ -109,8 +115,8 @@ class CustomMenuController extends WController
 
         if (Yii::$app->request->isPost)
         {
-            $result['flg'] = 2;
-            $result['msg'] = "修改失败!";
+            $result = $this->setResult();
+            $result->message = "修改失败!";
 
             $postInfo = Yii::$app->request->post();
             $model    = $this->findModel($postInfo['id']);
@@ -167,22 +173,37 @@ class CustomMenuController extends WController
                 $menu = $this->_app->menu;
                 $menu->add($buttons);
 
-                $result['flg'] = 1;
-                $result['msg'] = "修改成功!";
+                $result->code = 200;
+                $result->message = "修改成功!";
             }
             else
             {
-                $result['msg'] = $this->analysisError($model->getFirstErrors());
+                $result->message = $this->analysisError($model->getFirstErrors());
             }
 
-            echo json_encode($result);
-            return false;
+            return $this->getResult();
         }
 
         return $this->render('edit', [
             'model' => $model,
             'menuTypes' => $this->menuTypes,
         ]);
+    }
+
+    /**
+     * 个性化菜单
+     */
+    public function actionIndividuation()
+    {
+
+    }
+
+    /**
+     * 个性化菜单编辑
+     */
+    public function actionIndividuationEdit()
+    {
+
     }
 
     /**

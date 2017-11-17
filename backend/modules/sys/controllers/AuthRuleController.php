@@ -10,6 +10,7 @@ use backend\controllers\MController;
 
 /**
  * RBAC规则控制器
+ *
  * Class AuthRuleController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -17,6 +18,7 @@ class AuthRuleController extends MController
 {
     /**
      * 规则管理
+     *
      * @return string
      */
     public function actionIndex()
@@ -36,6 +38,7 @@ class AuthRuleController extends MController
 
     /**
      * 新增/编辑
+     *
      * @return string|\yii\web\Response
      */
     public function actionEdit()
@@ -68,6 +71,7 @@ class AuthRuleController extends MController
 
     /**
      * 角色删除
+     *
      * @param $name
      * @return mixed
      */
@@ -85,6 +89,7 @@ class AuthRuleController extends MController
 
     /**
      * 返回模型
+     *
      * @param $name
      * @return $this|AuthRule|static
      */

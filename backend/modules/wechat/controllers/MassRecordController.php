@@ -8,6 +8,7 @@ use jianyan\basics\common\models\wechat\FansGroups;
 
 /**
  * 群发记录控制器
+ *
  * Class MassRecordController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -15,6 +16,7 @@ class MassRecordController extends WController
 {
     /**
      * 获取粉丝分组 - 群发
+     *
      * @return string
      */
     public function actionSendFans($attach_id)
@@ -41,7 +43,7 @@ class MassRecordController extends WController
                     $model->group = $model['group'];
                     $result = $broadcast->send($model['type'], $model['media_id'], $model['group']);
 
-                    //获取分组信息
+                    // 获取分组信息
                     $group = FansGroups::getGroup($model['group']);
                     $model->group_name = $group['name'];
                     $model->fans_num = $group['count'];
@@ -53,7 +55,7 @@ class MassRecordController extends WController
             }
             catch (\Exception $e)
             {
-                //接口调用错误提示
+                // 接口调用错误提示
                 return $this->message($e->getMessage(),$this->redirect(['attachment/'.$model['type'].'-index']),'error');
             }
 
@@ -71,6 +73,7 @@ class MassRecordController extends WController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|MassRecord|static
      */

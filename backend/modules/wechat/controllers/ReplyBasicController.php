@@ -6,6 +6,7 @@ use jianyan\basics\common\models\wechat\ReplyBasic;
 
 /**
  * 文字回复控制器
+ *
  * Class ReplyBasicController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -15,6 +16,7 @@ class ReplyBasicController extends RuleController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return array|ReplyBasic|null|\yii\db\ActiveRecord
      */

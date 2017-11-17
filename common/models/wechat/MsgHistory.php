@@ -79,7 +79,7 @@ class MsgHistory extends ActiveRecord
     {
         $add = $reply ? ArrayHelper::merge($msg_history, $reply) : $msg_history;
 
-        //历史记录状态
+        // 历史记录状态
         $setting = Setting::getSetting('history');
         if($setting['is_msg_history']['status'] != StatusEnum::DELETE)
         {
@@ -97,13 +97,13 @@ class MsgHistory extends ActiveRecord
             $msgHistory->save();
         }
 
-        //统计状态
+        // 统计状态
         if($setting['is_utilization_stat']['status'] != StatusEnum::DELETE)
         {
-            //插入规则统计
+            // 插入规则统计
             !empty($add['rule_id']) && RuleStat::setStat($add['rule_id']);
-            //插入关键字统计
-            !empty($add['keyword_id']) && RuleKeywordStat::setStat($add['rule_id'],$add['keyword_id']);
+            // 插入关键字统计
+            !empty($add['keyword_id']) && RuleKeywordStat::setStat($add['rule_id'], $add['keyword_id']);
         }
     }
 
@@ -153,7 +153,7 @@ class MsgHistory extends ActiveRecord
 
             case Account::TYPE_LOCATION :
                 $messgae = unserialize($messgae);
-                return '经纬度【'.$messgae['Location_X'] . ',' . $messgae['Location_Y'] . "】地址:" . $messgae['Label'];
+                return '主动发送位置：经纬度【'.$messgae['Location_X'] . ',' . $messgae['Location_Y'] . "】地址:" . $messgae['Label'];
                 break;
 
             case Account::TYPE_CILCK :
@@ -170,7 +170,7 @@ class MsgHistory extends ActiveRecord
                 return isset($messgae['Recognition']) ? $messgae['Recognition'] : '语音消息';
                 break;
 
-                //触发事件
+                // 触发事件
             case Account::TYPE_EVENT :
 
                 $messgae = unserialize($messgae);
@@ -181,7 +181,7 @@ class MsgHistory extends ActiveRecord
                         break;
 
                     case Account::TYPE_EVENT_LOCATION :
-                        return '经纬度【'.$messgae['Latitude'] . ',' . $messgae['Longitude'] . "】精度:" . $messgae['Precision'];
+                        return '被动发送位置：经纬度【'.$messgae['Latitude'] . ',' . $messgae['Longitude'] . "】精度:" . $messgae['Precision'];
                         break;
 
                     case Account::TYPE_EVENT_VIEW :
@@ -190,6 +190,29 @@ class MsgHistory extends ActiveRecord
 
                     case Account::TYPE_SCAN :
                         return "二维码扫描：" . $messgae['EventKey'];
+                        break;
+
+                    case 'location_select' :
+                        $sendLocationInfo = $messgae['SendLocationInfo'];
+                        return "主动发送位置：" . '经纬度【'.$sendLocationInfo['Location_X'] . ',' . $sendLocationInfo['Location_Y'] . "】地址:" . $sendLocationInfo['Label'];
+                        break;
+
+                    case 'scancode_waitmsg' :
+                        $scanCodeInfo = $messgae['ScanCodeInfo'];
+                        return "调用二维码扫描等待返回地址:" . $scanCodeInfo['ScanResult'];
+                        break;
+
+                    case 'pic_sysphoto' :
+                        return "调用拍照发图";
+                        break;
+
+                    case 'pic_photo_or_album' :
+                        return "调用拍照相册";
+                        break;
+
+                    case 'scancode_push' :
+                        $scanCodeInfo = $messgae['ScanCodeInfo'];
+                        return "调用二维码直接扫描返回地址:" . $scanCodeInfo['ScanResult'];
                         break;
 
                     default :

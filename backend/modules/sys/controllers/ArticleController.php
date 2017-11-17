@@ -11,6 +11,7 @@ use backend\controllers\MController;
 
 /**
  * 文章管理控制器
+ *
  * Class ArticleController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -41,7 +42,7 @@ class ArticleController extends MController
         {
             if($type == 1)
             {
-                $where = ['like', 'title', $keyword];//标题
+                $where = ['like', 'title', $keyword];// 标题
             }
         }
 
@@ -64,6 +65,7 @@ class ArticleController extends MController
 
     /**
      * 编辑/新增
+     *
      * @return string|\yii\web\Response
      */
     public function actionEdit()
@@ -72,7 +74,7 @@ class ArticleController extends MController
         $id     = $request->get('id');
         $model          = $this->findModel($id);
 
-        //文章标签
+        // 文章标签
         $tags = Tag::find()->with([
             'tagMap' => function($query) use ($id){
                 $query->andWhere(['article_id' => $id]);
@@ -80,7 +82,7 @@ class ArticleController extends MController
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            //更新文章标签
+            // 更新文章标签
             TagMap::addTags($model->id,$request->post('tag'));
             return $this->redirect(['index']);
         }
@@ -93,6 +95,7 @@ class ArticleController extends MController
 
     /**
      * 逻辑删除
+     *
      * @param $id
      * @return mixed
      */
@@ -113,6 +116,7 @@ class ArticleController extends MController
 
     /**
      * 还原
+     *
      * @param $id
      * @return mixed
      */
@@ -133,6 +137,7 @@ class ArticleController extends MController
 
     /**
      * 回收站
+     *
      * @return string
      */
     public function actionRecycle()
@@ -147,7 +152,7 @@ class ArticleController extends MController
         {
             if($type == 1)
             {
-                $where = ['like', 'title', $keyword];//标题
+                $where = ['like', 'title', $keyword];// 标题
             }
         }
 
@@ -170,6 +175,7 @@ class ArticleController extends MController
 
     /**
      * 删除
+     *
      * @param null $id
      * @return mixed
      */
@@ -187,6 +193,7 @@ class ArticleController extends MController
 
     /**
      * 一键清空
+     *
      * @return mixed
      */
     public function actionDeleteAll()
@@ -197,6 +204,7 @@ class ArticleController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Article|static
      */

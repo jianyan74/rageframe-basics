@@ -70,24 +70,24 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script>
-    //获取资源
+    // 获取资源
     $("#getAllAttachment").click(function(){
         rfAffirm('同步中,请不要关闭当前页面');
         sync();
     });
 
-    //同步粉丝资料
-    function sync(offset=0,count=20){
+    // 同步粉丝资料
+    function sync(offset = 0,count = 20){
         $.ajax({
             type:"get",
             url:"<?= Url::to(['get-all-attachment','type' => $mediaType])?>",
             dataType: "json",
             data: {offset:offset,count:count},
             success: function(data){
-                if(data.flg == 1) {
-                    sync(data.offset,data.count);
+                if(data.code == 200) {
+                    sync(data.data.offset,data.data.count);
                 }else{
-                    rfAffirm(data.msg);
+                    rfAffirm(data.message);
                     window.location.reload();
                 }
             }

@@ -6,6 +6,7 @@ use jianyan\basics\common\models\wechat\ReplyImages;
 
 /**
  * 图片回复控制器
+ *
  * Class ReplyImagesController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -15,6 +16,7 @@ class ReplyImagesController extends RuleController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return array|ReplyImages|null|\yii\db\ActiveRecord
      */

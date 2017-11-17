@@ -8,6 +8,7 @@ use backend\controllers\MController;
 
 /**
  * RBAC权限控制器
+ *
  * Class AuthAccreditController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -36,10 +37,10 @@ class AuthAccreditController extends MController
         $request  = Yii::$app->request;
         $name     = $request->get('name');
         $model    = $this->findModel($name);
-        //父级key
+        // 父级key
         $parent_key = $request->get('parent_key',0);
         $level = $request->get('level',1);
-        $model->level = $level;//等级
+        $model->level = $level;// 等级
         $model->parent_key = $parent_key;
         $model->type = AuthItem::AUTH;
 
@@ -88,6 +89,7 @@ class AuthAccreditController extends MController
 
     /**
      * ajax修改
+     *
      * @return array
      */
     public function actionAjaxUpdate($id)
@@ -111,6 +113,7 @@ class AuthAccreditController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|AuthItem|static
      */

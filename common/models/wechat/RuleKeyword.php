@@ -7,6 +7,7 @@ use EasyWeChat\Message\Image;
 use EasyWeChat\Message\Video;
 use EasyWeChat\Message\Voice;
 use EasyWeChat\Message\News;
+use jianyan\basics\common\models\sys\Addons;
 use common\enums\StatusEnum;
 
 /**
@@ -97,7 +98,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
 
         if($keyword)
         {
-            //查询直接接管的
+            // 查询直接接管的
             $takeKeyword = RuleKeyword::find()
                 ->where(['type' => self::TYPE_TAKE,'status' => StatusEnum::ENABLED])
                 ->andFilterWhere(['>','displayorder',$keyword->displayorder])
@@ -111,37 +112,37 @@ class RuleKeyword extends \yii\db\ActiveRecord
                 'module' => $keyword->module,
             ];
 
-            //列表
+            // 列表
             $ruleModels = [
                 Rule::RULE_MODULE_BASE => ReplyBasic::find(),
                 Rule::RULE_MODULE_NEWS => ReplyNews::find()->with('news'),
-                Rule::RULE_MODULE_MUSIC => '音乐回复',
+                // Rule::RULE_MODULE_MUSIC => '音乐回复',
                 Rule::RULE_MODULE_IMAGES => ReplyImages::find(),
                 Rule::RULE_MODULE_VOICE => ReplyVoice::find(),
                 Rule::RULE_MODULE_VIDEO => ReplyVideo::find(),
                 Rule::RULE_MODULE_USER_API => ReplyUserApi::find(),
-                Rule::RULE_MODULE_WX_CARD => '微信卡卷回复',
-                Rule::RULE_MODULE_DEFAULT => '系统默认回复',
+                // Rule::RULE_MODULE_WX_CARD => '微信卡卷回复',
             ];
 
-            //模型
-            $table = $ruleModels[$keyword->module];
-            $model = $table->where(['rule_id' => $keyword->rule_id])
-                ->orderBy('rand()')
-                ->one();
+            // 默认为模块回复不需要查询对应的表
+            if(isset($ruleModels[$keyword->module]))
+            {
+                $table = $ruleModels[$keyword->module];
+                // 模型
+                $model = $table->where(['rule_id' => $keyword->rule_id])
+                    ->orderBy('rand()')
+                    ->one();
+            }
 
             switch ($keyword->module)
             {
-                //文字回复
+                // 文字回复
                 case  Rule::RULE_MODULE_BASE :
-
                     $result['content'] = $model->content;
 
                     break;
-
-                //图文回复
+                // 图文回复
                 case  Rule::RULE_MODULE_NEWS :
-
                     $news = $model->news;
                     $news_list = [];
                     if($news)
@@ -163,19 +164,15 @@ class RuleKeyword extends \yii\db\ActiveRecord
                     $result['content'] = $news_list;
 
                     break;
-
-                //图片回复
+                // 图片回复
                 case  Rule::RULE_MODULE_IMAGES :
-
                     $result['content'] = new Image([
                         'media_id' => $model->mediaid,
                     ]);
 
                     break;
-
-                //视频回复
+                // 视频回复
                 case Rule::RULE_MODULE_VIDEO :
-
                     $result['content'] = new Video([
                         'title' => $model->title,
                         'media_id' => $model->mediaid,
@@ -183,23 +180,28 @@ class RuleKeyword extends \yii\db\ActiveRecord
                     ]);
 
                     break;
-
-                //语音回复
+                // 语音回复
                 case Rule::RULE_MODULE_VOICE :
-
                     $result['content'] = new Voice([
                         'media_id' => $model->mediaid
                     ]);
 
                     break;
-
-                //自定义接口回复
+                // 自定义接口回复
                 case Rule::RULE_MODULE_USER_API :
-
                     $result['content'] = $model->default;
                     if($api_content = ReplyUserApi::getApiData($model, $content))
                     {
                         $result['content'] = $api_content;
+                    }
+
+                    break;
+                // 默认为模块回复
+                default :
+                    $reply = Addons::getWechatMessage(Yii::$app->params['wxMessage'], $keyword->module);
+                    if($reply)
+                    {
+                        $result['content'] = $reply;
                     }
 
                     break;
@@ -268,10 +270,10 @@ class RuleKeyword extends \yii\db\ActiveRecord
             RuleKeyword::deleteAll(['rule_id'=>$rule_id,'type'=>self::TYPE_TAKE]);
         }
 
-        //获取新的关键字
+        // 获取新的关键字
         $otherKeywords[self::TYPE_MATCH] = explode(',',$matchKeywords);
 
-        //给关键字赋值默认值
+        // 给关键字赋值默认值
         foreach (self::$typeExplain as $key => $value)
         {
             !isset($otherKeywords[$key]) && $otherKeywords[$key] = [];

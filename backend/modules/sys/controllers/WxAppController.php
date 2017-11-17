@@ -10,6 +10,7 @@ use backend\controllers\MController;
 
 /**
  * 小程序控制器
+ *
  * Class WxAppController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -46,7 +47,7 @@ class WxAppController extends MController
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
-            //版本控制
+            // 版本控制
             $id = $model->id;
             $versions->load(Yii::$app->request->post());
             $versions->account_id = $id;
@@ -103,6 +104,7 @@ class WxAppController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Account|static
      */

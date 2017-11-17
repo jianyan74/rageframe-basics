@@ -57,7 +57,14 @@ class RuleKeywordStat extends ActiveRecord
      */
     public static function setStat($rule_id,$keyword_id)
     {
-        $ruleKeywordStat = RuleKeywordStat::find()->where(['rule_id'=> $rule_id, 'keyword_id' => $keyword_id, 'append' => strtotime(date('Y-m-d'))])->one();
+        $ruleKeywordStat = RuleKeywordStat::find()
+            ->where([
+                'rule_id'=> $rule_id,
+                'keyword_id' => $keyword_id,
+                'append' => strtotime(date('Y-m-d'))
+            ])
+            ->one();
+
         if($ruleKeywordStat)
         {
             $ruleKeywordStat->hit = $ruleKeywordStat->hit + 1;
@@ -72,6 +79,23 @@ class RuleKeywordStat extends ActiveRecord
         $ruleKeywordStat->save();
     }
 
+    /**
+     * 关联规则
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRule()
+    {
+        return $this->hasOne(Rule::className(),['id' => 'rule_id']);
+    }
+
+    /**
+     * 关联关键字
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRuleKeyword()
+    {
+        return $this->hasOne(RuleKeyword::className(),['id' => 'keyword_id']);
+    }
 
     /**
      * @return array

@@ -22,9 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'announce_type')->dropDownList(NotifyCate::getList())->label('公告分类') ?>
                         <?= $form->field($model,'content')->widget('kucha\ueditor\UEditor',[
                             'clientOptions' => [
-                                //编辑区域大小
+                                // 编辑区域大小
                                 'initialFrameHeight' => '300',
-                                //定制菜单
+                                // 定制菜单
                                 'toolbars' => [
                                     [
                                         'fullscreen', 'source', '|', 'undo', 'redo', '|',

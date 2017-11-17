@@ -71,7 +71,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
     $(document).ready(function(){
 
         var tablename = [];
-        //dataType = 1:备份;2:修复;3:优化
+        // dataType = 1:备份;2:修复;3:优化
         $(".table-list-database").click(function () {
             tablename = [];
             $("#list :checkbox").each(function () {
@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             $('#reminder').show();
         });
 
-        //优化表单击
+        // 优化表单击
         $(".table-list-optimize").click(function () {
             tablename = $(this).parent().parent().attr('name');
 
@@ -104,13 +104,13 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             optimize();
         });
 
-        //修复表表单击
+        // 修复表表单击
         $(".table-list-repair").click(function () {
             tablename = $(this).parent().parent().attr('name');
             repair();
         });
 
-        //备份表
+        // 备份表
         function Export(){
 
             tablename = [];
@@ -138,7 +138,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             })
         }
 
-        //开始备份
+        // 开始备份
         function startExport(id,start) {
             $.ajax({
                 type: "post",
@@ -166,7 +166,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             })
         }
 
-        //优化表
+        // 优化表
         function optimize() {
             $.ajax({
                 type: "post",
@@ -180,7 +180,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             })
         }
 
-        //修复表
+        // 修复表
         function repair() {
             $.ajax({
                 type: "post",
@@ -194,7 +194,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             })
         }
 
-        //多选框选择
+        // 多选框选择
         $(".check-all").click(function(){
             if(this.checked){
                 $("#list :checkbox").prop("checked", true);

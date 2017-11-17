@@ -11,6 +11,7 @@ use backend\controllers\MController;
 
 /**
  * 系统配置控制器
+ *
  * Class ConfigController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -58,6 +59,7 @@ class ConfigController extends MController
 
     /**
      * 编辑/新增
+     *
      * @return string|\yii\web\Response
      */
     public function actionEdit()
@@ -79,18 +81,19 @@ class ConfigController extends MController
 
     /**
      * 编辑全部
+     *
      * @return string|\yii\web\Response
      */
     public function actionEditAll()
     {
-        //所有的配置信息
+        // 所有的配置信息
         $list = Config::find()
             ->where(['status' => 1])
             ->orderBy('sort asc')
             ->asArray()
             ->all();
 
-        //获取全部分类并压缩到分类中
+        // 获取全部分类并压缩到分类中
         $configCateAll = ConfigCate::getListAll();
         foreach ($configCateAll as &$item)
         {
@@ -110,6 +113,7 @@ class ConfigController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -127,45 +131,40 @@ class ConfigController extends MController
 
     /**
      * ajax批量更新数据
+     *
      * @return array
      * @throws NotFoundHttpException
      */
     public function actionUpdateInfo()
     {
         $request = Yii::$app->request;
+        $result = $this->setResult();
+
         if($request->isAjax)
         {
-            Yii::$app->response->format = yii\web\Response::FORMAT_JSON;
-
-            $result = [];
-            $result['flg'] = 1;
-            $result['msg'] = "保存成功";
-
-            $config    = $request->post('config');
-
+            $config = $request->post('config');
             foreach ($config as $key => $value)
             {
-                $model = Config::find()->where(['name'=>$key])->one();
-
+                $model = Config::find()->where(['name' => $key])->one();
                 if($model)
                 {
                     $model->value = is_array($value) ? serialize($value) : $value;
                     if(!$model->save())
                     {
-                        $result['flg'] = 2;
-                        $result['msg'] = $this->analysisError($model->getFirstErrors());
-                        return $result;
+                        $result->message = $this->analysisError($model->getFirstErrors());
+                        return $this->getResult();
                     }
                 }
                 else
                 {
-                    $result['flg'] = 2;
-                    $result['msg'] = "配置不存在,请刷新页面";
-                    return $result;
+                    $result->message = "配置不存在,请刷新页面";
+                    return $this->getResult();
                 }
             }
 
-            return $result;
+            $result->code = 200;
+            $result->message = "修改成功";
+            return $this->getResult();
         }
         else
         {
@@ -175,6 +174,7 @@ class ConfigController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Config|static
      */

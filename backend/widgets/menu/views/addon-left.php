@@ -8,15 +8,25 @@ use common\enums\StatusEnum;
 
 <div class="ibox-content">
     <div class="file-manager">
-        <?php if(Yii::$app->params['addon']['info']['setting'] == StatusEnum::ENABLED || !empty($list[AddonsBinding::ENTRY_COVER])){ ?>
+        <?php if(Yii::$app->params['addon']['info']['setting'] == StatusEnum::ENABLED || !empty($list[AddonsBinding::ENTRY_COVER]) || Yii::$app->params['addon']['info']['is_rule'] == StatusEnum::ENABLED){ ?>
             <h4> 核心设置</h4>
             <ul class="folder-list" style="padding: 10px;">
+                <?php if(!empty($list[AddonsBinding::ENTRY_COVER])){ ?>
                 <li>
-                    <a href="<?php echo Url::to(['cover','addon'=> Yii::$app->params['addon']['info']['name']])?>" title="应用入口">
+                    <a href="<?php echo Url::to(['/sys/addons/cover','addon'=> Yii::$app->params['addon']['info']['name']])?>" title="应用入口">
                         <i class="fa fa-arrow-circle-right"></i>
                         应用入口
                     </a>
                 </li>
+                <?php } ?>
+                <?php if(Yii::$app->params['addon']['info']['is_rule'] == StatusEnum::ENABLED){ ?>
+                    <li>
+                        <a href="<?php echo Url::to(['/sys/addons-rule/edit','addon'=> Yii::$app->params['addon']['info']['name']])?>" title="规则管理">
+                            <i class="fa fa-gavel"></i>
+                            规则管理
+                        </a>
+                    </li>
+                <?php } ?>
                 <?php if(Yii::$app->params['addon']['info']['setting'] == StatusEnum::ENABLED){ ?>
                     <li>
                         <a href="<?php echo AddonsUrl::toRoot(['setting/display','addon'=> Yii::$app->params['addon']['info']['name']])?>" title="参数设置">

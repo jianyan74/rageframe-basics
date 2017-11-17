@@ -39,9 +39,9 @@ class Config extends ActiveRecord
         return [
             ['name', 'unique','message'=>'标识已经占用'],
             [['title','name','cate','cate_child','type'],'required'],
-            [['type', 'cate', 'append', 'updated', 'status', 'sort','is_hide_remark'], 'integer'],
+            [['cate', 'append', 'updated', 'status', 'sort','is_hide_remark'], 'integer'],
             [['value'], 'string'],
-            [['name'], 'string', 'max' => 30],
+            [['name','type'], 'string', 'max' => 30],
             [['title'], 'string', 'max' => 50],
             [['extra'], 'string', 'max' => 255],
             [['remark'], 'string', 'max' => 1000],
@@ -80,7 +80,7 @@ class Config extends ActiveRecord
      */
     public function info($name)
     {
-        //获取缓存信息
+        // 获取缓存信息
         $info = $this->getConfigInfo();
         return isset($info[$name]) ? trim($info[$name]) : false;
     }
@@ -102,7 +102,7 @@ class Config extends ActiveRecord
      */
     protected function getConfigInfo()
     {
-        //获取缓存信息
+        // 获取缓存信息
         $key = "_siteConfigInfo";
         $info = Yii::$app->cache->get($key);
         if(!$info)
@@ -114,7 +114,7 @@ class Config extends ActiveRecord
                 $info[$row['name']] = $row['value'];
             }
 
-            //设置缓存
+            // 设置缓存
             Yii::$app->cache->set($key,$info);
         }
 
@@ -152,7 +152,7 @@ class Config extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        //清除缓存
+        // 清除缓存
         Yii::$app->cache->delete("_siteConfigInfo");
         return parent::beforeSave($insert);
     }

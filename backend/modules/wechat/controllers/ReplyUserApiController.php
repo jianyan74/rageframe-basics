@@ -7,6 +7,7 @@ use jianyan\basics\common\models\wechat\ReplyUserApi;
 
 /**
  * 自定义接口回复回复控制器
+ *
  * Class ReplyUserApiController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -16,6 +17,7 @@ class ReplyUserApiController extends RuleController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return array|ReplyUserApi|null|\yii\db\ActiveRecord
      */

@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             <div class="inlineBlockContainer col3 vAlignTop">
                 <?php foreach ($models as $model){ ?>
                     <div class="normalPaddingRight" style="width:20%;margin-top: 10px;">
-                        <div class="borderColorGray separateChildrenWithLine whiteBG" style="margin-bottom: 30px;">
+                        <div class="borderColorGray separateChildrenWithLine whiteBG" style="margin-bottom: 20px;">
                             <div class="normalPadding">
                                 <div style="background-image: url(<?= Url::to(['we-code/image','attach'=>$model['tag']]) ?>); height: 160px" class="backgroundCover relativePosition mainPostCover">
                                     <div class="bottomBar"><?= $model['file_name'] ?></div>
@@ -69,24 +69,24 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script>
-    //获取资源
+    // 获取资源
     $("#getAllAttachment").click(function(){
         rfAffirm('同步中,请不要关闭当前页面');
         sync();
     });
 
-    //同步粉丝资料
-    function sync(offset=0,count=20){
+    // 同步粉丝资料
+    function sync(offset = 0,count = 20){
         $.ajax({
             type:"get",
             url:"<?= Url::to(['get-all-attachment','type' => $mediaType])?>",
             dataType: "json",
             data: {offset:offset,count:count},
             success: function(data){
-                if(data.flg == 1) {
-                    sync(data.offset,data.count);
+                if(data.code == 200) {
+                    sync(data.data.offset,data.data.count);
                 }else{
-                    rfAffirm(data.msg);
+                    rfAffirm(data.message);
                     window.location.reload();
                 }
             }

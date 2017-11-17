@@ -72,8 +72,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             dataType: "json",
             data    : {shortUrl:longurl},
             success: function(data){
-                if(data.flg == 2) {
-                    change.html('转换失败');
+                if(data.code == 404) {
+                    rfAffirm(data.message);
                 }else{
                     $('#url').val(data.short_url);
                     $('#longUrl').text("当前显示 "+longurl+" 的二维码");

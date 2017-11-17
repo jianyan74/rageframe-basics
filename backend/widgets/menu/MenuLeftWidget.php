@@ -21,5 +21,3 @@ class MenuLeftWidget extends Widget
         ]);
     }
 }
-
-?>

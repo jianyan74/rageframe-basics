@@ -10,6 +10,7 @@ use jianyan\basics\common\models\sys\Addons as AddonsModel;
 
 /**
  * 插件基类
+ *
  * Class Addons
  * @package common\components
  */
@@ -22,18 +23,21 @@ class Addons extends WechatController
 
     /**
      * 获取当前插件根目录
+     *
      * @var
      */
     public $_path;
 
     /**
      * 当前模块名称
+     *
      * @var
      */
     public $_addonName;
 
     /**
      * 模拟用户信息
+     *
      * @var bool
      */
     public $_addonSwitch = false;
@@ -47,13 +51,13 @@ class Addons extends WechatController
         $this->_addonName = $request->get('addon');
         $this->_path = Yii::getAlias('@addonurl') . '/' . $this->_addonName . '/';
 
-        //微信支付回调地址
+        // 微信支付回调地址
         $this->_notifyUrl = Yii::$app->request->hostInfo . AddonsUrl::toAbsoluteUrl(['we-notify/notify']);
 
-        //继承
+        // 继承
         parent::init();
 
-        //非微信网页打开时候开启模拟数据
+        // 非微信网页打开时候开启模拟数据
         if($this->_addonSwitch == true && empty($this->_wechatMember))
         {
             $this->_wechatMember = Yii::$app->params['wecahtSimulate']['userInfo'];
@@ -62,6 +66,7 @@ class Addons extends WechatController
 
     /**
      * 普通渲染插件后台视图
+     *
      * @param $view
      * @param array $params
      * @return string
@@ -87,6 +92,7 @@ class Addons extends WechatController
 
     /**
      * ajax渲染插件后台视图
+     *
      * @param $view
      * @param array $params
      * @return string
@@ -99,6 +105,7 @@ class Addons extends WechatController
 
     /**
      * Partial渲染插件后台视图
+     *
      * @param $view
      * @param array $params
      * @return string
@@ -111,6 +118,7 @@ class Addons extends WechatController
 
     /**
      * 视图渲染基类
+     *
      * @param $view
      * @return string
      */
@@ -131,6 +139,7 @@ class Addons extends WechatController
 
     /**
      * 直接跳转
+     *
      * @param $url
      * @param int $statusCode
      * @return yii\web\Response
@@ -142,6 +151,7 @@ class Addons extends WechatController
 
     /**
      * 渲染钩子视图
+     *
      * @param $view
      * @param array $params
      * @return string
@@ -154,6 +164,7 @@ class Addons extends WechatController
 
     /**
      * 获取配置信息
+     *
      * @return mixed
      */
     public function getConfig()
@@ -166,6 +177,7 @@ class Addons extends WechatController
 
     /**
      * 写入配置信息
+     *
      * @param $config
      * @return bool
      */
@@ -180,17 +192,18 @@ class Addons extends WechatController
 
     /**
      * 错误提示信息
-     * @param $msgText  -错误内容
-     * @param $skipUrl  -跳转链接
-     * @param $msgType  -提示类型
-     * @param int $closeTime -提示关闭时间
+     *
+     * @param string $msgText 错误内容
+     * @param string $skipUrl 跳转链接
+     * @param string $msgType 提示类型
+     * @param int $closeTime 提示关闭时间
      * @return mixed
      */
-    public function message($msgText,$skipUrl,$msgType="",$closeTime=5)
+    public function message($msgText, $skipUrl, $msgType = "",$closeTime = 5)
     {
         $closeTime = (int)$closeTime;
 
-        //如果是成功的提示则默认为3秒关闭时间
+        // 如果是成功的提示则默认为3秒关闭时间
         if(!$closeTime && $msgType == "success" || !$msgType)
         {
             $closeTime = 3;
@@ -201,31 +214,22 @@ class Addons extends WechatController
         switch ($msgType)
         {
             case "success" :
-
                 Yii::$app->getSession()->setFlash('success',$html);
 
                 break;
-
             case "error" :
-
                 Yii::$app->getSession()->setFlash('error',$html);
 
                 break;
-
             case "info" :
-
                 Yii::$app->getSession()->setFlash('info',$html);
 
                 break;
-
             case "warning" :
-
                 Yii::$app->getSession()->setFlash('warning',$html);
 
                 break;
-
             default :
-
                 Yii::$app->getSession()->setFlash('success',$html);
 
                 break;
@@ -235,11 +239,11 @@ class Addons extends WechatController
     }
 
     /**
-     * @param $msg
-     * @param $closeTime
+     * @param string $msg 提示消息
+     * @param integer $closeTime 关闭时间
      * @return string
      */
-    public function hintText($msg,$closeTime)
+    public function hintText($msg, $closeTime)
     {
         $text = $msg." <span class='closeTimeYl'>".$closeTime."</span>秒后自动关闭...";
         return $text;

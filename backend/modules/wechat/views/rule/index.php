@@ -1,8 +1,8 @@
 <?php
 use yii\helpers\Url;
-use jianyan\basics\common\models\wechat\Rule;
-use jianyan\basics\common\models\wechat\RuleKeyword;
 use yii\widgets\LinkPager;
+use jianyan\basics\common\models\wechat\RuleKeyword;
+use common\enums\StatusEnum;
 
 $this->title = '自动回复';
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
@@ -64,11 +64,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                 <span class="pull-right" id="<?= $model->id ?>">
                                                     <span class="label label-info">优先级：<?= $model->displayorder; ?></span>
                                                    <?php if(RuleKeyword::verifyTake($model->ruleKeyword)){ ?>
-                                                       <?php if($model->status == Rule::STATUS_ON){ ?>
+                                                       <?php if($model->status == StatusEnum::ENABLED){ ?>
                                                            <span class="label label-info">直接接管</span>
                                                        <?php } ?>
                                                    <?php } ?>
-                                                    <?php if($model->status == Rule::STATUS_OFF){ ?>
+                                                    <?php if($model->status == StatusEnum::DELETE){ ?>
                                                         <span class="label label-danger" onclick="statusRule(this)">已禁用</span>
                                                     <?php }else{ ?>
                                                         <span class="label label-info" onclick="statusRule(this)">已启用</span>
@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
     </div>
 </div>
 <script type="text/javascript">
-    //status => 1:启用;-1禁用;
+    // status => 1:启用;-1禁用;
     function statusRule(obj){
 
         var id = $(obj).parent().attr('id');

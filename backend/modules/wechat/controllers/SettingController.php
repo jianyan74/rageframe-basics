@@ -8,6 +8,7 @@ use common\helpers\StringHelper;
 
 /**
  * 参数设置控制器
+ *
  * Class SettingController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -15,6 +16,7 @@ class SettingController extends WController
 {
     /**
      * 参数设置
+     *
      * @return string|yii\web\Response
      */
     public function actionHistoryStat()
@@ -38,6 +40,7 @@ class SettingController extends WController
 
     /**
      * 特殊消息回复
+     *
      * @return string|yii\web\Response
      */
     public function actionSpecialMessage()
@@ -59,6 +62,7 @@ class SettingController extends WController
 
     /**
      * 上传JS接口安全域名文件
+     *
      * @return string
      */
     public function actionUploadAuthFile()
@@ -66,14 +70,14 @@ class SettingController extends WController
         if(Yii::$app->request->isPost)
         {
             $file = $_FILES['jsFile'];
-            $file_name = $file['name'];//原名称
-            $file_exc = StringHelper::clipping($file_name);//后缀
+            $file_name = $file['name'];// 原名称
+            $file_exc = StringHelper::clipping($file_name);// 后缀
             if($file_exc != '.txt')
             {
                 return $this->message('文件类型必须是txt',$this->redirect(['upload-auth-file']),'error');
             }
 
-            //利用yii2自带的上传
+            // 利用yii2自带的上传
             $uploadFile = UploadedFile::getInstanceByName('jsFile');
             $uploadFile->saveAs(Yii::getAlias("@rootPath") . '/web/' . $file_name);
 

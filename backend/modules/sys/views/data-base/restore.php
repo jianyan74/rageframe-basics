@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
     $(document).ready(function(){
 
         var time;
-        //优化表单击
+        // 优化表单击
         $(".table-restore").click(function () {
             time = $(this).parent().parent().parent().attr('data-time');
             $.ajax({
@@ -68,14 +68,14 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         $('#reminder').text('还原中,请不要关闭本页面,可能会造成服务器卡顿......');
                         $('#reminder').show();
                     }else{
-                        alert(data.message);
+                        rfAffirm(data.message);
                     }
                 }
             })
 
         });
 
-        //开始备份
+        // 开始还原
         function startRestore(part,start) {
             $.ajax({
                 type: "post",
@@ -90,10 +90,10 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             $('#reminder').text('还原中,请不要关闭本页面,可能会造成服务器卡顿['+data.data.start+']......');
                         }else{
                             $('#reminder').hide();
-                            alert(data.message);
+                            rfAffirm(data.message);
                         }
                     }else{
-                        alert(data.message);
+                        rfAffirm(data.message);
                     }
                 }
             })

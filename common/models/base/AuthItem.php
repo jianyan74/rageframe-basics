@@ -29,21 +29,28 @@ class AuthItem extends \yii\db\ActiveRecord
 {
     /**
      * 规则类名
+     *
      * @var
      */
     protected $auth_rule;
+
     /**
      * 角色授权用户类
+     *
      * @var
      */
     protected $auth_assignment;
+
     /**
      * 角色路由类
+     *
      * @var
      */
     protected $auth_item;
+
     /**
      * 路由授权角色类
+     *
      * @var
      */
     protected $auth_item_child;
@@ -170,7 +177,7 @@ class AuthItem extends \yii\db\ActiveRecord
     {
         if($this->isNewRecord)
         {
-            //设置key
+            // 设置key
             $model = self::find()
                 ->orderBy('key desc')
                 ->select('key')

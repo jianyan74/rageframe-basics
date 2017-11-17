@@ -9,6 +9,7 @@ use backend\controllers\MController;
 
 /**
  * 公告分类控制器
+ *
  * Class TagController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -33,8 +34,9 @@ class NotifyCateController extends MController
     }
 
     /**
-     * @return string|\yii\web\Response
      * 编辑/新增
+     *
+     * @return array|mixed|string|yii\web\Response
      */
     public function actionEdit()
     {
@@ -60,40 +62,6 @@ class NotifyCateController extends MController
         return $this->renderAjax('edit', [
             'model'         => $model,
         ]);
-    }
-
-    /**
-     * 修改
-     * @throws NotFoundHttpException
-     */
-    public function actionUpdateAjax()
-    {
-        $request = Yii::$app->request;
-        if($request->isAjax)
-        {
-            $result = [];
-            $result['flg'] = 2;
-            $result['msg'] = "修改失败!";
-
-            $tag_id = $request->get('id');
-            $model  = $this->findModel($tag_id);
-            $model->attributes = $request->get();
-            if($model->save())
-            {
-                $result['flg'] = 1;
-                $result['msg'] = "修改成功!";
-            }
-            else
-            {
-                $result['msg'] = $this->analysisError($model->getFirstErrors());
-            }
-
-            echo json_encode($result);
-        }
-        else
-        {
-            throw new NotFoundHttpException('请求出错!');
-        }
     }
 
     /**

@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script type="text/javascript">
-    //折叠
+    // 折叠
     $('.cf').click(function(){
         var self = $(this);
         var id = self.parent().parent().attr('id');

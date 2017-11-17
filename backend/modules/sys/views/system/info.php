@@ -27,19 +27,20 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <td><?= Yii::$app->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION); ?></td>
                     </tr>
                     <tr>
-                        <td>Memcache扩展</td>
+                        <td>扩展支持</td>
                         <td>
                             <?= extension_loaded('memcache')
-                                ? '<span class="label label-primary">支持</span>'
-                                : '<span class="label label-default">不支持</span>'; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Redis扩展</td>
-                        <td>
+                                ? '<span class="label label-primary">memcache支持</span>'
+                                : '<span class="label label-default">memcache不支持</span>'; ?>
+                            <?= extension_loaded('memcached')
+                                ? '<span class="label label-primary">memcached支持</span>'
+                                : '<span class="label label-default">memcached不支持</span>'; ?>
                             <?= extension_loaded('redis')
-                                ? '<span class="label label-primary">支持</span>'
-                                : '<span class="label label-default">不支持</span>'; ?>
+                                ? '<span class="label label-primary">redis支持</span>'
+                                : '<span class="label label-default">redis不支持</span>'; ?>
+                            <?= extension_loaded('swoole')
+                                ? '<span class="label label-primary">swoole支持</span>'
+                                : '<span class="label label-default">swoole不支持</span>'; ?>
                         </td>
                     </tr>
                     <tr>

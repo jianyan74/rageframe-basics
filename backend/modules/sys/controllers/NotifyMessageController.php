@@ -9,6 +9,7 @@ use backend\controllers\MController;
 
 /**
  * 消息控制器
+ *
  * Class TagController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -16,6 +17,7 @@ class NotifyMessageController extends MController
 {
     /**
      * 系统私信
+     *
      * @return string
      */
     public function actionIndex()
@@ -39,6 +41,7 @@ class NotifyMessageController extends MController
 
     /**
      * 系统私信-编辑/新增
+     *
      * @return string|yii\web\Response
      */
     public function actionEdit()
@@ -63,6 +66,7 @@ class NotifyMessageController extends MController
 
     /**
      * 系统消息
+     *
      * @return string
      */
     public function actionPersonal()
@@ -72,7 +76,7 @@ class NotifyMessageController extends MController
         $where = [];
         if($keywords)
         {
-            $where = ['like', 'content', $keywords];//标题
+            $where = ['like', 'content', $keywords];// 标题
         }
 
         $data = Notify::find()
@@ -97,6 +101,7 @@ class NotifyMessageController extends MController
 
     /**
      * 发送者逻辑删除
+     *
      * @param $id
      * @return mixed
      */
@@ -116,6 +121,7 @@ class NotifyMessageController extends MController
 
     /**
      * 发送者逻辑删除
+     *
      * @param $id
      * @return mixed
      */
@@ -135,6 +141,7 @@ class NotifyMessageController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Notify|static
      */

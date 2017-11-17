@@ -8,6 +8,7 @@ use jianyan\basics\backend\modules\sys\models\Menu;
 
 /**
  * 菜单控制器
+ *
  * Class MenuController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -37,6 +38,7 @@ class MenuController extends MController
 
     /**
      * 编辑/新增
+     *
      * @return string|\yii\web\Response
      */
     public function actionEdit()
@@ -50,9 +52,9 @@ class MenuController extends MController
         $model = $this->findModel($id);
         $model->type = $type;
 
-        //等级
+        // 等级
         !empty($level) && $model->level = $level;
-        //上级id
+        // 上级id
         !empty($pid) && $model->pid = $pid;
 
         if ($model->load(Yii::$app->request->post()))
@@ -78,6 +80,7 @@ class MenuController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -96,6 +99,7 @@ class MenuController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Menu|static
      */

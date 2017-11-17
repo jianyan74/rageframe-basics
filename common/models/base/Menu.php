@@ -82,12 +82,12 @@ class Menu extends ActiveRecord
     }
 
     /**
-     * @param $type
-     * @param bool $status
+     * 返回菜单列表
+     * @param string $type 类别
+     * @param bool $status 状态
      * @return array
-     * 返回菜单
      */
-    public static function getMenus($type,$status=false)
+    public static function getMenus($type, $status = false)
     {
         $models = Menu::find()
             ->where(['type'=>$type])
@@ -98,12 +98,12 @@ class Menu extends ActiveRecord
 
         $id = Yii::$app->user->id;
 
-        //判断是否是管理员
+        // 判断是否是管理员
         if($id != Yii::$app->params['adminAccount'] && Yii::$app->config->info('SYS_MENU_SHOW_TYPE') == 1)
         {
-            //查询用户权限
+            // 查询用户权限
             $authAssignment = SysAuthAssignment::find()->with('itemNameChild')->where(['user_id' => $id])->asArray()->one();
-            //匹配菜单
+            // 匹配菜单
             if(isset($authAssignment['itemNameChild']))
             {
                 $menu = [];
@@ -118,7 +118,7 @@ class Menu extends ActiveRecord
                     }
                 }
 
-                //数组排序
+                // 数组排序
                 $models = SysArrayHelper::arraySort($menu,'sort');
             }
         }

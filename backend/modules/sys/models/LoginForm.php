@@ -12,13 +12,17 @@ use jianyan\basics\common\models\sys\ActionLog;
 class LoginForm extends \common\models\base\LoginForm
 {
     public $verifyCode;
+
     /**
      * 默认登录失败3次显示验证码
+     *
      * @var int
      */
     public $attempts = 3;
+
     /**
      * 统计登录次数
+     *
      * @var
      */
     public $counter;
@@ -49,6 +53,7 @@ class LoginForm extends \common\models\base\LoginForm
 
     /**
      * 验证ip地址是否正确
+     *
      * @param $attribute
      * @param $params
      */
@@ -61,7 +66,7 @@ class LoginForm extends \common\models\base\LoginForm
             $value  = explode(",",$ipList);
             if(!in_array($ip,$value))
             {
-                //ip不正确强行登陆
+                // ip不正确强行登陆
                 Yii::$app->actionlog->addLog(ActionLog::ACTION_FORBID_IP,"login","账号:".$this->username);
 
                 $this->addError($attribute,'禁止登陆');
@@ -72,7 +77,7 @@ class LoginForm extends \common\models\base\LoginForm
     /**
      * @return null|static
      */
-    protected function getUser()
+    public function getUser()
     {
         if ($this->_user === null)
         {
@@ -84,6 +89,7 @@ class LoginForm extends \common\models\base\LoginForm
 
     /**
      * 登陆
+     *
      * @return bool
      */
     public function login()

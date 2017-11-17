@@ -5,8 +5,8 @@ use Yii;
 use yii\base\Model;
 
 /**
- * Class LoginForm
- * @package jianyan\basics\common\models\sys
+ * Class NewsPreview
+ * @package jianyan\basics\backend\modules\wechat\models
  */
 class NewsPreview extends Model
 {
@@ -28,9 +28,9 @@ class NewsPreview extends Model
     public function attributeLabels()
     {
         return [
-            'media_id'   => '素材id',
+            'media_id' => '素材id',
             'type' => '类别',
-            'content'   => '微信号/openid',
+            'content' => '微信号/openid',
         ];
     }
 }

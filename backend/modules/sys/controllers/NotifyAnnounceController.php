@@ -9,6 +9,7 @@ use backend\controllers\MController;
 
 /**
  * 消息公告控制器
+ *
  * Class TagController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -26,6 +27,7 @@ class NotifyAnnounceController extends MController
 
     /**
      * 系统公告
+     *
      * @return string
      */
     public function actionIndex()
@@ -46,6 +48,7 @@ class NotifyAnnounceController extends MController
 
     /**
      * 系统公告-编辑/新增
+     *
      * @return string|yii\web\Response
      */
     public function actionEdit()
@@ -69,6 +72,7 @@ class NotifyAnnounceController extends MController
 
     /**
      * 系统公告
+     *
      * @return string
      */
     public function actionPersonal()
@@ -78,7 +82,7 @@ class NotifyAnnounceController extends MController
         $where = [];
         if($keywords)
         {
-            $where = ['like', 'title', $keywords];//标题
+            $where = ['like', 'title', $keywords];// 标题
         }
 
         $data = Notify::find()->where(['type' => Notify::TYPE_ANNOUNCE])->andWhere($where);
@@ -100,6 +104,7 @@ class NotifyAnnounceController extends MController
 
     /**
      * 系统公告-编辑/新增
+     *
      * @return string|yii\web\Response
      */
     public function actionView()
@@ -118,6 +123,7 @@ class NotifyAnnounceController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -135,6 +141,7 @@ class NotifyAnnounceController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Notify|static
      */

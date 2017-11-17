@@ -13,6 +13,7 @@ use jianyan\basics\backend\modules\wechat\models\NewsPreview;
 
 /**
  * 素材控制器
+ *
  * Class AttachmentController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -20,12 +21,14 @@ class AttachmentController extends WController
 {
     /**
      * 微信素材域名
+     *
      * @var string
      */
     protected $_wechaMediatUrl = 'http://mmbiz.qpic.cn';
 
     /**
      * 因为微信图片做了防盗链,重新获取微信图片转接地址
+     *
      * @var
      */
     protected $_getWecahtMediatUrl;
@@ -42,6 +45,7 @@ class AttachmentController extends WController
 
     /**
      * 图文首页
+     *
      * @return string
      */
     public function actionNewsIndex()
@@ -58,12 +62,13 @@ class AttachmentController extends WController
 
     /**
      * 图文编辑
-     * @return string
+     *
+     * @return string|array
      */
     public function actionNewsEdit()
     {
         $request  = Yii::$app->request;
-        //获取图片的链接地址
+        // 获取图片的链接地址
         $this->_getWecahtMediatUrl = Url::to(['we-code/image']) . "?attach=";
 
         $attach_id  = $request->get('attach_id','');
@@ -72,9 +77,9 @@ class AttachmentController extends WController
         if ($request->isAjax)
         {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            //素材库
+            // 素材库
             $material = $this->_app->material;
-            //本地图片前缀
+            // 本地图片前缀
             $prefix =  Yii::getAlias("@rootPath/").'web';
 
             $attach_id = $request->post('attach_id');
@@ -83,20 +88,20 @@ class AttachmentController extends WController
             $list = $request->post('list');
             $list = json_decode($list,true);
 
-            //图文详情
+            // 图文详情
             $article_list = [];
             foreach ($list as $key => &$item)
             {
-                //替换加入显示的数据
+                // 替换加入显示的数据
                 $item['content'] = str_replace($this->_getWecahtMediatUrl,'',trim($item['content']));
                 $item['thumb_url'] = str_replace($this->_getWecahtMediatUrl,'',trim($item['thumb_url']));
-                //原始封面
+                // 原始封面
                 $thumb_url = $item['thumb_url'];
 
-                //封面判断是否已经上传到微信了
+                // 封面判断是否已经上传到微信了
                 if(strpos(urldecode($item['thumb_url']),$this->_wechaMediatUrl) === false)
                 {
-                    //上传到微信
+                    // 上传到微信
                     $image_material = $material->uploadImage($prefix.$thumb_url);
                     $item['thumb_media_id'] = $image_material['media_id'];
                     $item['thumb_url'] = $image_material['url'];
@@ -104,23 +109,23 @@ class AttachmentController extends WController
                     Attachment::addImage($image_material,$prefix.$thumb_url);
                 }
 
-                //循环上传文章图片到微信
+                // 循环上传文章图片到微信
                 preg_match_all('/<img[^>]*src\s*=\s*([\'"]?)([^\'" >]*)\1/isu', $item['content'],$match);
                 foreach ($match[2] as $src)
                 {
-                    //判断是否已经上传到微信了
+                    // 判断是否已经上传到微信了
                     if(strpos(urldecode($src),$this->_wechaMediatUrl) === false)
                     {
                         $result = $material->uploadArticleImage($prefix.$src);
                         $url = $result->url;
-                        //替换图片上传
+                        // 替换图片上传
                         $item['content'] = str_replace($src,$url,$item['content']);
                     }
                 }
 
                 $item['content'] = htmlspecialchars_decode($item['content']);
 
-                //默认微信返回值
+                // 默认微信返回值
                 $article = new Article([
                     'title' => $item['title'],
                     'thumb_media_id' => $item['thumb_media_id'],
@@ -134,13 +139,13 @@ class AttachmentController extends WController
                 $article_list[] = $article;
             }
 
-            //编辑
+            // 编辑
             if($attach_id)
             {
-                //更新到微信
+                // 更新到微信
                 $material->updateArticle($attachment['media_id'], $article_list);
 
-                //插入文章到表
+                // 插入文章到表
                 foreach ($list as $k => $vo)
                 {
                     $news = News::findOne($vo['id']);
@@ -151,19 +156,19 @@ class AttachmentController extends WController
             }
             else
             {
-                //上传图文信息
+                // 上传图文信息
                 $resource = $material->uploadArticle($article_list);
-                //获取图文信息
+                // 获取图文信息
                 $getNews = $material->get($resource['media_id']);
                 $news_item = $getNews['news_item'];
 
-                //图文素材创建
+                // 图文素材创建
                 $attachment->media_id = $resource['media_id'];
                 $attachment->manager_id = Yii::$app->user->id;
                 $attachment->type = Attachment::TYPE_NEWS;
                 $attachment->save();
 
-                //插入文章到表
+                // 插入文章到表
                 foreach ($list as $k => $vo)
                 {
                     $vo['attach_id'] = $attachment->id;
@@ -175,12 +180,10 @@ class AttachmentController extends WController
                 }
             }
 
-            $result = [
-                'flg' => 1,
-                'msg' => '成功',
-            ];
-
-            return $result;
+            $result = $this->setResult();
+            $result->code = 200;
+            $result->message = '成功';
+            return $this->getResult();
         }
 
         return $this->render('news-edit',[
@@ -192,12 +195,13 @@ class AttachmentController extends WController
 
     /**
      * 图文链接编辑
-     * @return string
+     *
+     * @return string|array
      */
     public function actionNewsLinkEdit()
     {
         $request  = Yii::$app->request;
-        //获取图片的链接地址
+        // 获取图片的链接地址
         $this->_getWecahtMediatUrl = Url::to(['we-code/image']) . "?attach=";
 
         $attach_id  = $request->get('attach_id','');
@@ -205,10 +209,9 @@ class AttachmentController extends WController
 
         if ($request->isAjax)
         {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            //素材库
+            // 素材库
             $material = $this->_app->material;
-            //本地图片前缀
+            // 本地图片前缀
             $prefix =  Yii::getAlias("@rootPath/").'web';
 
             $attach_id = $request->post('attach_id');
@@ -217,18 +220,18 @@ class AttachmentController extends WController
             $list = $request->post('list');
             $list = json_decode($list,true);
 
-            //图文详情
+            // 图文详情
             foreach ($list as $key => &$item)
             {
-                //替换加入显示的数据
+                // 替换加入显示的数据
                 $item['thumb_url'] = str_replace($this->_getWecahtMediatUrl,'',trim($item['thumb_url']));
-                //原始封面
+                // 原始封面
                 $thumb_url = $item['thumb_url'];
 
-                //封面判断是否已经上传到微信了
+                // 封面判断是否已经上传到微信了
                 if(strpos(urldecode($item['thumb_url']),$this->_wechaMediatUrl) === false)
                 {
-                    //上传到微信
+                    // 上传到微信
                     $image_material = $material->uploadImage($prefix.$thumb_url);
                     $item['thumb_media_id'] = $image_material['media_id'];
                     $item['thumb_url'] = $image_material['url'];
@@ -237,10 +240,10 @@ class AttachmentController extends WController
                 }
             }
 
-            //编辑
+            // 编辑
             if($attach_id)
             {
-                //插入文章到表
+                // 插入文章到表
                 foreach ($list as $k => $vo)
                 {
                     $news = News::findOne($vo['id']);
@@ -252,13 +255,13 @@ class AttachmentController extends WController
             }
             else
             {
-                //图文素材创建
+                // 图文素材创建
                 $attachment->link_type = Attachment::LINK_TYPE_LOCAL;
                 $attachment->manager_id = Yii::$app->user->id;
                 $attachment->type = Attachment::TYPE_NEWS;
                 $attachment->save();
 
-                //插入文章到表
+                // 插入文章到表
                 foreach ($list as $k => $vo)
                 {
                     $vo['attach_id'] = $attachment->id;
@@ -270,12 +273,10 @@ class AttachmentController extends WController
                 }
             }
 
-            $result = [
-                'flg' => 1,
-                'msg' => '成功',
-            ];
-
-            return $result;
+            $result = $this->setResult();
+            $result->code = 200;
+            $result->message = '成功';
+            return $this->getResult();
         }
 
         return $this->render('news-link-edit',[
@@ -287,6 +288,7 @@ class AttachmentController extends WController
 
     /**
      * 手机预览
+     *
      * @param $attach_id
      * @return mixed|string
      */
@@ -305,12 +307,12 @@ class AttachmentController extends WController
                 $broadcast = $this->_app->broadcast;
                 if($model->type == 1)
                 {
-                    //微信号预览
+                    // 微信号预览
                     $broadcast->previewByName($model->msg_type, $model->media_id, $model->content);
                 }
                 else
                 {
-                    //openid预览
+                    // openid预览
                     $broadcast->preview($model->msg_type, $model->media_id, $model->content);
                 }
             }
@@ -329,6 +331,7 @@ class AttachmentController extends WController
 
     /**
      * 图片首页
+     *
      * @return string
      */
     public function actionImageIndex()
@@ -360,7 +363,7 @@ class AttachmentController extends WController
         {
             if($model->attachment)
             {
-                //本地图片前缀
+                // 本地图片前缀
                 $prefix =  Yii::getAlias("@rootPath/").'web';
                 $material = $this->_app->material;
                 $image_material = $material->uploadImage($prefix.$model->attachment);
@@ -400,6 +403,7 @@ class AttachmentController extends WController
 
     /**
      * 视频添加
+     *
      * @return string|Response
      */
     public function actionVideoAdd()
@@ -409,7 +413,7 @@ class AttachmentController extends WController
         {
             if($model->attachment)
             {
-                //本地图片前缀
+                // 本地图片前缀
                 $prefix =  Yii::getAlias("@rootPath/").'web';
                 $material = $this->_app->material;
                 $res_material = $material->uploadVideo($prefix . $model->attachment, $model->file_name, $model->description);
@@ -427,6 +431,7 @@ class AttachmentController extends WController
 
     /**
      * 声音首页
+     *
      * @return string
      */
     public function actionVoiceIndex()
@@ -450,6 +455,7 @@ class AttachmentController extends WController
 
     /**
      * 声音添加
+     *
      * @return string|Response
      */
     public function actionVoiceAdd()
@@ -459,11 +465,11 @@ class AttachmentController extends WController
         {
             if($model->attachment)
             {
-                //本地图片前缀
+                // 本地图片前缀
                 $prefix =  Yii::getAlias("@rootPath/").'web';
                 $material = $this->_app->material;
                 $res_material = $material->uploadVoice($prefix . $model->attachment);
-                //插入数据库
+                // 插入数据库
                 Attachment::addVoice($res_material, $prefix . $model->attachment);
 
                 return $this->redirect(['voice-index']);
@@ -480,10 +486,10 @@ class AttachmentController extends WController
      */
     public function actionDelete($attach_id)
     {
-        //删除数据库
+        // 删除数据库
         $attachment = $this->findModel($attach_id);
         $attachment->delete();
-        //删除微信服务器数据
+        // 删除微信服务器数据
         $material = $this->_app->material;
         $material->delete($attachment['media_id']);
 
@@ -492,6 +498,7 @@ class AttachmentController extends WController
 
     /**
      * 同步微信素材
+     *
      * @param string $type 素材的类型，图片（image）、视频（video）、语音 （voice）、图文（news）
      * @param int $offset 从全部素材的该偏移位置开始返回，可选，默认 0，0 表示从第一个素材 返回
      * @param int $count 返回素材的数量，可选，默认 20, 取值在 1 到 20 之间
@@ -499,14 +506,14 @@ class AttachmentController extends WController
      */
     public function actionGetAllAttachment($type, $offset = 0, $count = 20)
     {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $result = $this->setResult();
 
-        //查找素材
+        // 查找素材
         $material = $this->_app->material;
         $lists = $material->lists($type, $offset, $count);
         $total = $lists['total_count'];
 
-        //素材列表
+        // 素材列表
         $list = ArrayHelper::toArray($lists['item']);
 
         $add_material = [];
@@ -516,7 +523,7 @@ class AttachmentController extends WController
             $sys_material[] = $vo['media_id'];
         }
 
-        //系统内的素材
+        // 系统内的素材
         $system_material = Attachment::find()
             ->where(['in','media_id',$sys_material])
             ->select('media_id')
@@ -531,7 +538,7 @@ class AttachmentController extends WController
 
         switch ($type)
         {
-            //** 图文 **//
+            // ** 图文 **// 
             case Attachment::TYPE_NEWS :
 
                 foreach ($list as $vo)
@@ -547,7 +554,7 @@ class AttachmentController extends WController
                         $attachment->save();
 
                         $attach_id = $attachment->id;
-                        //插入文章
+                        // 插入文章
                         foreach ($vo['content']['news_item'] as $key => $content)
                         {
                             $news = new News();
@@ -575,7 +582,7 @@ class AttachmentController extends WController
 
                 if (!empty($add_material))
                 {
-                    //批量插入数据
+                    // 批量插入数据
                     $field = ['manager_id','model','file_name','media_id','type','tag','append','updated'];
                     Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
                 }
@@ -595,7 +602,7 @@ class AttachmentController extends WController
 
                 if (!empty($add_material))
                 {
-                    //批量插入数据
+                    // 批量插入数据
                     $field = ['manager_id','model','file_name','media_id','type','append','updated'];
                     Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
                 }
@@ -614,7 +621,7 @@ class AttachmentController extends WController
 
                 if (!empty($add_material))
                 {
-                    //批量插入数据
+                    // 批量插入数据
                     $field = ['manager_id','model','file_name','media_id','type','append','updated'];
                     Yii::$app->db->createCommand()->batchInsert(Attachment::tableName(),$field, $add_material)->execute();
                 }
@@ -622,18 +629,18 @@ class AttachmentController extends WController
                 break;
         }
 
-        $result['flg'] = 2;
-        $result['msg'] = "同步完成!";
+        $result->message = "同步完成!";
         if($total - $count > 0)
         {
-            $result = [];
-            $result['offset'] = ($offset + 1) * $count;
-            $result['count'] = $count + $count;
-            $result['flg'] = 1;
-            $result['msg'] = "同步成功!";
+            $result->code = 200;
+            $result->message = "同步成功!";
+            $result->data = [
+                'offset' => ($offset + 1) * $count,
+                'count' => $count + $count
+            ];
         }
 
-        return $result;
+        return $this->getResult();
     }
 
     /**

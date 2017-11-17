@@ -5,6 +5,7 @@ use yii;
 
 /**
  * 钩子实现类
+ *
  * Class AddonsHook
  * @package common\helpers
  */
@@ -12,6 +13,7 @@ class AddonsHook
 {
     /**
      * 钩子渲染路径
+     *
      * @var string
      */
     const hookPath = 'Setting/hook';
@@ -27,6 +29,7 @@ class AddonsHook
 
     /**
      * 实现钩子
+     *
      * @param $through
      * @param $params
      * @return bool

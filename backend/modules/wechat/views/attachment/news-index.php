@@ -14,8 +14,31 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
     .postToolbar{
         font-size: 15px;
     }
-</style>
 
+    /*!*给大盒子添加样式*!*/
+    .inlineBlockContainer{
+        width:100%;
+        /*下面代码是兼容各个浏览器的，并实现了四列，没两列之间间距为30px，*/
+        /*火狐*/
+        -moz-column-count:5;
+        -moz-column-gap:0;
+        -moz-column-rule:0 solid #ff0000;
+        /*谷歌*/
+        -webkit-column-count:5;
+        -webkit-column-gap:0;
+        -webkit-column-rule:0 solid #ff0000;
+        /*Opera浏览器*/
+        -o-column-count:5;
+        -o-column-gap:0;
+        -o-column-rule:0 solid #ff0000;
+    }
+
+    /*!*小盒子内容区的样式，display:inline-block：实现 效果*!*/
+    .inlineBlockContainer .normalPaddingRight{
+        width:100%;
+        display:inline-block
+    }
+</style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row separateFromNextBlock">
         <div class="col-sm-12">
@@ -85,7 +108,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
 <script>
     $(function(){
-        //显示/隐藏“预览文章”按钮
+        // 显示/隐藏“预览文章”按钮
         $('.postItem').mouseenter(function(e){
             $(e.currentTarget).find('.halfOpacityBlackBG').show();
         });
@@ -93,7 +116,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             $(e.currentTarget).find('.halfOpacityBlackBG').hide();
         });
 
-        //弹出框选择新建图文类型
+        // 弹出框选择新建图文类型
         var postType1Link = "<?php echo Url::to(['news-edit','model'=>'perm'])?>";
         var postType2Link = "<?php echo Url::to(['news-link-edit','model'=>'perm'])?>";
         $('#createPostBtn').click(function(){
@@ -119,24 +142,24 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </script>
 
 <script>
-    //获取资源
+    // 获取资源
     $("#getAllAttachment").click(function(){
         rfAffirm('同步中,请不要关闭当前页面');
         sync();
     });
 
-    //同步粉丝资料
-    function sync(offset=0,count=20){
+    // 同步粉丝资料
+    function sync(offset = 0,count = 20){
         $.ajax({
             type:"get",
             url:"<?= Url::to(['get-all-attachment','type' => $mediaType])?>",
             dataType: "json",
             data: {offset:offset,count:count},
             success: function(data){
-                if(data.flg == 1) {
-                    sync(data.offset,data.count);
+                if(data.code == 200) {
+                    sync(data.data.offset,data.data.count);
                 }else{
-                    rfAffirm(data.msg);
+                    rfAffirm(data.message);
                     window.location.reload();
                 }
             }

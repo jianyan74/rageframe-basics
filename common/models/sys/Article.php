@@ -159,7 +159,7 @@ class Article extends ActiveRecord
         {
             foreach ($position as $key => $value)
             {
-                //将各个推荐位的值相加
+                // 将各个推荐位的值相加
                 $pos += $value;
             }
         }
@@ -187,7 +187,7 @@ class Article extends ActiveRecord
             $this->manager_id = Yii::$app->user->id;
         }
 
-        //推荐位
+        // 推荐位
         $this->position = $this->getPosition();
 
         return parent::beforeSave($insert);

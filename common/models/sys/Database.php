@@ -104,8 +104,8 @@ class Database
     {
         $size = strlen($sql);
 
-        //由于压缩原因，无法计算出压缩后的长度，这里假设压缩率为50%，
-        //一般情况压缩率都会高于50%；
+        // 由于压缩原因，无法计算出压缩后的长度，这里假设压缩率为50%，
+        // 一般情况压缩率都会高于50%；
         $size = $this->config['compress'] ? $size / 2 : $size;
 
         $this->open($size);
@@ -120,10 +120,10 @@ class Database
      */
     public function backup($table, $start)
     {
-        //创建DB对象
+        // 创建DB对象
         $db = \Yii::$app->db;
 
-        //备份表结构
+        // 备份表结构
         if(0 == $start){
             $result = $db->createCommand("SHOW CREATE TABLE `{$table}`")->queryAll();
             $sql  = "\n";
@@ -137,14 +137,14 @@ class Database
             }
         }
 
-        //数据总数
+        // 数据总数
         $result = $db->createCommand("SELECT COUNT(*) AS count FROM `{$table}`")->queryAll();
         $count  = $result['0']['count'];
 
-        //备份表数据
+        // 备份表数据
         if($count)
         {
-            //写入数据注释
+            // 写入数据注释
             if(0 == $start)
             {
                 $sql  = "-- -----------------------------\n";
@@ -153,7 +153,7 @@ class Database
                 $this->write($sql);
             }
 
-            //备份数据记录
+            // 备份数据记录
             $result = $db->createCommand("SELECT * FROM `{$table}` LIMIT {$start}, 1000")->queryAll();
             foreach ($result as $row)
             {
@@ -165,19 +165,19 @@ class Database
                 }
             }
 
-            //还有更多数据
+            // 还有更多数据
             if($count > $start + 1000){
                 return array($start + 1000, $count);
             }
         }
 
-        //备份下一表
+        // 备份下一表
         return 0;
     }
 
     public function import($start)
     {
-        //还原数据
+        // 还原数据
         $db = \Yii::$app->db;
 
         if($this->config['compress'])

@@ -8,6 +8,7 @@ use yii\web\NotFoundHttpException;
 use yii\db\ActiveRecord;
 use common\helpers\AddonsHelp;
 use common\enums\StatusEnum;
+use jianyan\basics\common\models\wechat\Rule;
 
 /**
  * This is the model class for table "{{%sys_addons}}".
@@ -51,7 +52,7 @@ class Addons extends ActiveRecord
             [['name','title','version', 'description','install','uninstall','upgrade'], 'trim'],
             [['name','title', 'type','version', 'description','author','brief_introduction'], 'required'],
             [['description', 'config'], 'string'],
-            [['wxapp_support','status', 'setting', 'hook','updated', 'append'], 'integer'],
+            [['wxapp_support','status', 'setting', 'is_rule', 'hook','updated', 'append'], 'integer'],
             [['name', 'author'], 'string', 'max' => 40],
             [['version'], 'string', 'max' => 10],
             [['title'], 'string', 'max' => 20],
@@ -81,6 +82,7 @@ class Addons extends ActiveRecord
             'status' => '状态',
             'config' => '配置信息',
             'hook' => '钩子',
+            'is_rule' => '需要嵌入规则 ',
             'wxapp_support' => '小程序',
             'setting' => '存在全局设置项',
             'author' => '作者',
@@ -102,7 +104,7 @@ class Addons extends ActiveRecord
     {
         $addon_dir = Yii::getAlias('@addons');
 
-        //获取插件列表
+        // 获取插件列表
         $dirs = array_map('basename',glob($addon_dir.'/*'));
 
         $addons = [];
@@ -120,7 +122,7 @@ class Addons extends ActiveRecord
 
         foreach ($dirs as $value)
         {
-            //判断是否安装
+            // 判断是否安装
             if(!isset($addons[$value]))
             {
                 $class = AddonsHelp::getAddonsClass($value);
@@ -259,6 +261,7 @@ class Addons extends ActiveRecord
     public function afterDelete()
     {
         AddonsBinding::deleted($this->name);
+        Rule::deleted($this->name);
         parent::afterDelete();
     }
 

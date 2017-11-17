@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <div class="input-group m-b">
-                                            <input id="js-file" type="file" name="jsFile" style="display:none">
+                                            <input id="js-file" type="file" name="jsFile" accept=".txt" style="display:none">
                                             <input type="text" class="form-control" id="fileName" name="fileName" readonly>
                                             <span class="input-group-btn">
                                             <a class="btn btn-white" onclick="$('#js-file').click();">选择文件</a>

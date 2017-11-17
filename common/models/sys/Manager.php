@@ -145,7 +145,7 @@ class Manager extends \common\models\base\User
         }
         else
         {
-            //验证密码是否修改
+            // 验证密码是否修改
             $old_pwd = Yii::$app->user->identity['password_hash'];
             $new_pwd = $this->password_hash;
 

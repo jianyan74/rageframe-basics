@@ -5,34 +5,39 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\web\UnauthorizedHttpException;
-use common\controllers\BaseController;
 
 /**
  * 后台基类控制器
+ *
  * Class MController
  * @package backend\controllers
  */
-class MController extends BaseController
+class MController extends \common\controllers\BaseController
 {
     /**
      * csrf验证
+     *
      * @var bool
      */
     public $enableCsrfValidation = true;
 
     /**
      * 默认自动加载地址
+     *
+     * @var string
      */
     public $layout = '@basics/backend/views/layouts/main';
 
     /**
-     * @var
      * 实例化SDK
+     *
+     * @var object
      */
     protected $_app;
 
     /**
      * 自动运行
+     *
      */
     public function init()
     {
@@ -62,7 +67,7 @@ class MController extends BaseController
         Yii::$app->params['WECHAT']['log']['file'] = '/tmp/rageframe/backend/'.date('Y-m').'/'.date('d').'/wechat.log';
         $this->_app = Yii::$app->wechat->getApp();
 
-        //分页
+        // 分页
         Yii::$app->config->info('SYS_PAGE') && $this->_pageSize = Yii::$app->config->info('SYS_PAGE');
 
         parent::init();
@@ -75,7 +80,7 @@ class MController extends BaseController
     public function actions()
     {
         return [
-            //错误提示跳转页面
+            // 错误提示跳转页面
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
@@ -93,7 +98,7 @@ class MController extends BaseController
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'],//登录
+                        'roles' => ['@'],// 登录
                     ],
                 ],
             ],
@@ -107,14 +112,10 @@ class MController extends BaseController
      */
     public function beforeAction($action)
     {
-        //验证是否登录
-        if (!\Yii::$app->user->isGuest)
+        // 验证是否登录且验证是否超级管理员
+        if (!\Yii::$app->user->isGuest && Yii::$app->user->id === Yii::$app->params['adminAccount'])
         {
-            //验证是否超级管理员
-            if(Yii::$app->user->identity->id === Yii::$app->params['adminAccount'])
-            {
-                return true;
-            }
+            return true;
         }
 
         if (!parent::beforeAction($action))
@@ -122,21 +123,21 @@ class MController extends BaseController
             return false;
         }
 
-        //控制器+方法
+        // 控制器+方法
         $permissionName = Yii::$app->controller->id.'/'.Yii::$app->controller->action->id;
-        //加入模块验证
+        // 加入模块验证
         if(Yii::$app->controller->module->id != "app-backend")
         {
             $permissionName = Yii::$app->controller->module->id.'/'.$permissionName;
         }
 
-        //不需要RBAC判断的路由全称
-        $noAuthRoute = ArrayHelper::merge(Yii::$app->params['basicsNoAuthRoute'],Yii::$app->params['noAuthRoute']);
+        // 不需要RBAC判断的路由全称
+        $noAuthRoute = ArrayHelper::merge(Yii::$app->params['basicsNoAuthRoute'], Yii::$app->params['noAuthRoute']);
 
-        //不需要RBAC判断的方法
-        $noAuthAction = ArrayHelper::merge(Yii::$app->params['basicsNoAuthAction'],Yii::$app->params['noAuthAction']);
+        // 不需要RBAC判断的方法
+        $noAuthAction = ArrayHelper::merge(Yii::$app->params['basicsNoAuthAction'], Yii::$app->params['noAuthAction']);
 
-        if(in_array($permissionName,$noAuthRoute) || in_array(Yii::$app->controller->action->id,$noAuthAction) )
+        if(in_array($permissionName, $noAuthRoute) || in_array(Yii::$app->controller->action->id, $noAuthAction) )
         {
             return true;
         }
@@ -151,17 +152,18 @@ class MController extends BaseController
 
     /**
      * 错误提示信息
-     * @param $msgText  -错误内容
-     * @param $skipUrl  -跳转链接
-     * @param $msgType  -提示类型
-     * @param int $closeTime -提示关闭时间
+     *
+     * @param string $msgText 错误内容
+     * @param string $skipUrl 跳转链接
+     * @param string $msgType 提示类型
+     * @param int $closeTime 提示关闭时间
      * @return mixed
      */
-    public function message($msgText,$skipUrl,$msgType="",$closeTime=5)
+    public function message($msgText, $skipUrl, $msgType = "",$closeTime = 5)
     {
         $closeTime = (int)$closeTime;
 
-        //如果是成功的提示则默认为3秒关闭时间
+        // 如果是成功的提示则默认为3秒关闭时间
         if(!$closeTime && $msgType == "success" || !$msgType)
         {
             $closeTime = 3;
@@ -172,31 +174,22 @@ class MController extends BaseController
         switch ($msgType)
         {
             case "success" :
-
                 Yii::$app->getSession()->setFlash('success',$html);
 
                 break;
-
             case "error" :
-
                 Yii::$app->getSession()->setFlash('error',$html);
 
                 break;
-
             case "info" :
-
                 Yii::$app->getSession()->setFlash('info',$html);
 
                 break;
-
             case "warning" :
-
                 Yii::$app->getSession()->setFlash('warning',$html);
 
                 break;
-
             default :
-
                 Yii::$app->getSession()->setFlash('success',$html);
 
                 break;
@@ -218,6 +211,7 @@ class MController extends BaseController
 
     /**
      * 全局通用修改排序和状态
+     *
      * @param $id
      * @return array
      */

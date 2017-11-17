@@ -116,7 +116,7 @@ class Fans extends ActiveRecord
     {
         $fans = static::findModel($openid);
 
-        //获取用户信息
+        // 获取用户信息
         $user = $app->user->get($openid);
         $user = ArrayHelper::toArray($user);
 
@@ -125,6 +125,8 @@ class Fans extends ActiveRecord
         $fans->followtime = $user['subscribe_time'];
         $fans->follow = self::FOLLOW_ON;
         $fans->save();
+
+        FansStat::upFollowNum();
     }
 
     /**
@@ -133,10 +135,15 @@ class Fans extends ActiveRecord
      */
     public static function unFollow($openid)
     {
-        $fans = Fans::find()->where(['openid'=>$openid])->one();
+        $fans = Fans::find()
+            ->where(['openid' => $openid])
+            ->one();
+
         $fans->follow = self::FOLLOW_OFF;
         $fans->unfollowtime = time();
         $fans->save();
+
+        FansStat::upUnFollowNum();
     }
 
     /**
@@ -181,13 +188,24 @@ class Fans extends ActiveRecord
     }
 
     /**
+     * 获取关注的人数
+     * @return int|string
+     */
+    public static function getCountFollowFans()
+    {
+        return self::find()->where(['follow' => self::FOLLOW_ON])->count();
+    }
+
+    /**
      * 根据openid获取粉丝
      * @param $openid
      * @return array|null|ActiveRecord
      */
     public static function getFans($openid)
     {
-        return self::find()->where(['openid'=>$openid])->one();
+        return self::find()
+            ->where(['openid'=>$openid])
+            ->one();
     }
 
     /**

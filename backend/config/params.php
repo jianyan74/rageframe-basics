@@ -1,33 +1,39 @@
 <?php
 return [
-    /**-------------------开发者信息-------------------**/
+    /** ------ 开发者信息 ------ **/
+
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
-    'exploitVersions'          => '1.3.10',
+    'exploitVersions'          => '1.3.23',
     'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',
     'exploitGit@OSC'           => '<a href="https://git.oschina.net/jianyan94/rageframe.git" target="_blank">git.oschina.net/jianyan94/rageframe.git</a>',
 
-    /**-------------------后台网站基础配置-------------------**/
-    'siteTitle'              => "RageFrame应用开发引擎",//后台系统名称
-    'abbreviation'           => "让开发变得更简单！",//缩写
-    'acronym'                => "RF",//拼音缩写
+    /** ------ 后台网站基础配置 ------ **/
 
-    /**-------------------配置管理类型-------------------**/
-    'configTypeList'       => [
-        '1'   => "文本框",
-        '2'   => "密码框",
-        '3'   => "密钥文本框",
-        '4'   => "文本域",
-        '5'   => "下拉文本框",
-        '6'   => "单选按钮",
-        '7'   => "百度编辑器",
-        '8'   => "图片上传",
-        '9'   => "多图上传",
+    'siteTitle'              => "RageFrame应用开发引擎",// 后台系统名称
+    'abbreviation'           => "让开发变得更简单！",// 缩写
+    'acronym'                => "RF",// 拼音缩写
+
+    /** ------ 配置管理类型 ------ **/
+
+    'configTypeList' => [
+        'text'          => "文本框",
+        'password'      => "密码框",
+        'secretKeyText' => "密钥文本框",
+        'textarea'      => "文本域",
+        'dropDownList'  => "下拉文本框",
+        'radioList'     => "单选按钮",
+        'baiduUEditor'  => "百度编辑器",
+        'image'         => "图片上传",
+        'images'        => "多图上传",
+        'file'          => "文件上传",
+        'files'         => "多文件上传",
     ],
 
-    /**-------------------模块类别-------------------**/
+    /** ------ 模块类别 ------ **/
+
     'addonsType'  => [
         'plug-in'   => [
             'name'  => "plug-in",
@@ -51,11 +57,13 @@ return [
         ],
     ],
 
-    /**-------------------禁止删除的后台菜单id-------------------**/
+    /** ------ 禁止删除的后台菜单id ------ **/
+
     'noDeleteMenu' => [65,108],
 
-    /**-------------------微信配置-------------------**/
-    //素材类型
+    /** ------ 微信配置-------------------**/
+
+    // 素材类型
     'wechatMediaType' => [
         'news'  => '微信图文',
         'image' => '图片',
@@ -63,7 +71,7 @@ return [
         'video' => '视频',
     ],
 
-    //微信级别
+    // 微信级别
     'wechatLevel' => [
         '1' => '普通订阅号',
         '2' => '普通服务号',
@@ -71,22 +79,68 @@ return [
         '4' => '认证服务号/认证媒体/政府订阅号',
     ],
 
-    //不需要验证的路由全称
-    'basicsNoAuthRoute' => [
-        'main/index',//系统主页
-        'main/system',//系统首页
-        'sys/system/index',//系统入口
-        'sys/addons/execute',//模块插件渲染
-        'sys/addons/centre',//模块插件基础设置渲染
-        'sys/addons/qr',//模块插件二维码渲染
-        'sys/addons/cover',//模块插件导航
-        'sys/addons/binding',//模块插件入口
-        'sys/provinces/index',//省市区联动
-        'wechat/default/index',//微信api
+    /** ------ 微信个性化菜单 ------ **/
+
+    // 性别
+    'individuationMenuSex' => [
+        '' => '全部',
+        1 => '男',
+        2 => '女',
     ],
 
-    //不需要验证的方法
+    // 客户端版本
+    'individuationMenuClientPlatformType' => [
+        '' => '全部',
+        1 => 'IOS',
+        2 => 'Android',
+        3 => 'Others',
+    ],
+
+    // 语言
+    'individuationMenuLanguage' => [
+        '简体中文' => 'zh_CN',
+        '繁体中文TW' => 'zh_TW',
+        '繁体中文HK' => 'zh_HK',
+        '英文' => 'en',
+        '印尼' => 'id',
+        '马来' => 'ms',
+        '西班牙' => 'es',
+        '韩国' => 'ko',
+        '意大利' => 'it',
+        '日本' => 'ja',
+        '波兰' => 'pl',
+        '葡萄牙' => 'pt',
+        '俄国' => 'ru',
+        '泰文' => 'th',
+        '越南' => 'vi',
+        '阿拉伯语' => 'ar',
+        '北印度' => 'hi',
+        '希伯来' => 'he',
+        '土耳其' => 'tr',
+        '德语' => 'de',
+        '法语' => 'fr',
+    ],
+
+    /** ------ 无须验证的权限 ------ **/
+
+    // 不需要验证的路由全称
+    'basicsNoAuthRoute' => [
+        'main/index',// 系统主页
+        'main/system',// 系统首页
+        'sys/system/index',// 系统入口
+        'sys/addons/execute',// 模块插件渲染
+        'sys/addons/centre',// 模块插件基础设置渲染
+        'sys/addons/qr',// 模块插件二维码渲染
+        'sys/addons/cover',// 模块插件导航
+        'sys/addons/binding',// 模块插件入口
+        'sys/addons-rule/edit',// 模块插件规则管理入口
+        'sys/provinces/index',// 省市区联动
+        'wechat/default/index',// 微信api
+        'wechat/we-code/image',// 微信防盗链获取图片
+    ],
+
+    // 不需要验证的方法
     'basicsNoAuthAction' => [
-        'upload',//百度编辑器上传
+        'upload',// 百度编辑器上传
     ],
 ];

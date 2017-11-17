@@ -7,6 +7,7 @@ use backend\controllers\MController;
 
 /**
  * 单页管理控制器
+ *
  * Class ArticleSingleController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -24,6 +25,7 @@ class ArticleSingleController extends MController
 
     /**
      * 首页
+     *
      * @return string
      */
     public function actionIndex()
@@ -40,6 +42,7 @@ class ArticleSingleController extends MController
 
     /**
      * 编辑/新增
+     *
      * @return string|yii\web\Response
      */
     public function actionEdit()
@@ -60,6 +63,7 @@ class ArticleSingleController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -77,6 +81,7 @@ class ArticleSingleController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|ArticleSingle|static
      */

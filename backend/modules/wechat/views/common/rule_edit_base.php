@@ -192,16 +192,16 @@ use jianyan\basics\common\models\wechat\RuleKeyword;
 
 <script>
     $(document).ready(function(){
-        //复选框选中
+        // 复选框选中
         $('input').on('ifChecked', function(event){
             $(this).parent().parent().parent().parent().parent().parent().find('.advanced').show();
         });
-        //复选框移除
+        // 复选框移除
         $('input').on('ifUnchecked', function(event){
             $(this).parent().parent().parent().parent().parent().parent().find('.advanced').hide();
         });
 
-        //添加
+        // 添加
         var take = "<?= RuleKeyword::TYPE_TAKE?>";
         $('.addKeyword').click(function(){
             var self = $(this);
@@ -220,12 +220,12 @@ use jianyan\basics\common\models\wechat\RuleKeyword;
             }
         });
 
-        //保存编辑
+        // 保存编辑
         $(document).on("click",".saveKeyword",function(){
             var self = $(this);
             var val = self.parent().parent().find('.key-input').val();
             var type = self.parent().attr('type');
-            if(self.hasClass("save-Keyword")){//保存
+            if(self.hasClass("save-Keyword")){// 保存
                 if(val){
                     self.removeClass("save-Keyword").addClass("edit-Keyword");
                     self.text('编辑');
@@ -234,7 +234,7 @@ use jianyan\basics\common\models\wechat\RuleKeyword;
                     self.parent().parent().find('.key-input').hide();
                     self.parent().parent().find('.key-input').attr('name','ruleKey['+type+'][]');
                 }
-            } else {//编辑
+            } else {// 编辑
                 self.removeClass("edit-Keyword").addClass("save-Keyword");
                 self.text('保存');
                 self.parent().parent().find('.key-text').hide();

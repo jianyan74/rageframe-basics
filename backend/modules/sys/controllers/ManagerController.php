@@ -3,15 +3,15 @@ namespace jianyan\basics\backend\modules\sys\controllers;
 
 use yii;
 use yii\data\Pagination;
-use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\sys\Manager;
-use backend\controllers\MController;
 use jianyan\basics\backend\modules\sys\models\PasswdForm;
 use jianyan\basics\backend\modules\sys\models\AuthItem;
 use jianyan\basics\backend\modules\sys\models\AuthAssignment;
+use backend\controllers\MController;
 
 /**
  * 后台用户控制器
+ *
  * Class ManagerController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -42,14 +42,14 @@ class ManagerController extends MController
                 break;
         }
 
-        //验证是否超级管理员
+        // 验证是否超级管理员
         $manager = [];
         if(Yii::$app->user->identity->id != Yii::$app->params['adminAccount'])
         {
             $manager = ['type' => Manager::TYPE_USER];
         }
 
-        //关联角色查询
+        // 关联角色查询
        $data   = Manager::find()->with('assignment')->where($where)->andWhere($manager);
        $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
        $models = $data->offset($pages->offset)->orderBy('type desc,created_at desc')->limit($pages->limit)->all();
@@ -64,6 +64,7 @@ class ManagerController extends MController
 
     /**
      * 编辑
+     *
      * @return array|mixed|string|\yii\web\Response
      */
     public function actionEdit()
@@ -94,18 +95,16 @@ class ManagerController extends MController
 
     /**
      * 用户账号
+     *
      * @return string|yii\web\Response
      */
     public function actionEditPersonal()
     {
         $request  = Yii::$app->request;
         $id       = $request->get('id');
-
-        //总管理员权限验证
-        $this->auth($id);
         $model    = $this->findModel($id);
 
-        //提交表单
+        // 提交表单
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['index']);
@@ -119,14 +118,12 @@ class ManagerController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        //总管理员权限验证
-        $this->auth($id);
-
         if($this->findModel($id)->delete())
         {
             return $this->message('用户删除成功',$this->redirect(['index']));
@@ -143,11 +140,11 @@ class ManagerController extends MController
     public function actionAuthRole()
     {
         $request  = Yii::$app->request;
-        //用户id
+        // 用户id
         $user_id  = $request->get('user_id');
-        //角色
+        // 角色
         $role     = AuthItem::find()->where(['type'=>AuthItem::ROLE])->all();
-        //模型
+        // 模型
         $model = AuthAssignment::find()->where(['user_id'=>$user_id])->one();
 
         if(!$model)
@@ -166,7 +163,7 @@ class ManagerController extends MController
             else
             {
                 $AuthAssignment = new AuthAssignment();
-                //返回状态
+                // 返回状态
                 if($AuthAssignment->setAuthRole($model->user_id,$model->item_name))
                 {
                     return $this->message('角色分配成功',$this->redirect(['index']));
@@ -187,6 +184,7 @@ class ManagerController extends MController
 
     /**
      * 修改个人资料
+     *
      * @return string|yii\web\Response
      */
     public function actionPersonal()
@@ -194,7 +192,7 @@ class ManagerController extends MController
         $id       = Yii::$app->user->identity->id;
         $model    = $this->findModel($id);
 
-        //提交表单
+        // 提交表单
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['personal','id'=>$id]);
@@ -209,6 +207,7 @@ class ManagerController extends MController
 
     /**
      * 修改密码
+     *
      * @return string|yii\web\Response
      */
     public function actionUpPasswd()
@@ -224,7 +223,7 @@ class ManagerController extends MController
 
             if($manager->save())
             {
-                //退出登陆
+                // 退出登陆
                 Yii::$app->user->logout();
                 return $this->goHome();
             }
@@ -235,27 +234,9 @@ class ManagerController extends MController
         ]);
     }
 
-
-    /**
-     * 验证是否非总管理员用户来修改管理员信息
-     * @param $id
-     * @return bool
-     * @throws NotFoundHttpException
-     */
-    public function auth($id)
-    {
-        if($id == Yii::$app->params['adminAccount'] && Yii::$app->user->identity->id != Yii::$app->params['adminAccount'])
-        {
-            throw new NotFoundHttpException('您没有权限更改超级管理员信息!');
-        }
-        else
-        {
-            return true;
-        }
-    }
-
     /**
      * 返回模型
+     *
      * @param $id
      * @return Manager|static
      */

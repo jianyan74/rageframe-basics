@@ -8,6 +8,7 @@ use jianyan\basics\common\models\wechat\Rule;
 
 /**
  * 历史消息控制器
+ *
  * Class MsgHistoryController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -15,6 +16,7 @@ class MsgHistoryController extends WController
 {
     /**
      * 消息列表
+     *
      * @return string
      */
     public function actionIndex()
@@ -37,7 +39,7 @@ class MsgHistoryController extends WController
                 break;
         }
 
-        //关联角色查询
+        // 关联角色查询
         $data   = MsgHistory::find()->with('fans')
             ->where($where)
             ->andFilterWhere(['between','append',strtotime($from_date),strtotime($to_date)])
@@ -61,6 +63,7 @@ class MsgHistoryController extends WController
 
     /**
      * 删除消息
+     *
      * @param $id
      * @return mixed
      */
@@ -78,6 +81,7 @@ class MsgHistoryController extends WController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return MsgHistory|static
      */

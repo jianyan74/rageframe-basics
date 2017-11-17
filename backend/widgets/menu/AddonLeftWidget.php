@@ -6,6 +6,7 @@ use yii\base\Widget;
 
 /**
  * 插件左边菜单
+ *
  * Class AddonLeftWidget
  * @package jianyan\basics\backend\widgets\menu
  */
@@ -17,5 +18,3 @@ class AddonLeftWidget extends Widget
         ]);
     }
 }
-
-?>

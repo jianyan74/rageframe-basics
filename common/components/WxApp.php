@@ -10,6 +10,7 @@ use jianyan\basics\common\models\wechat\Fans;
 
 /**
  * 微信小程序基类
+ *
  * Class WxApp
  * @package common\components
  */
@@ -22,9 +23,10 @@ class WxApp extends BaseController
 
     /**
      * 当前模块名称
+     *
      * @var
      */
-    protected $_addon_name;
+    protected $_addonName;
 
     /**
      * @var
@@ -34,7 +36,7 @@ class WxApp extends BaseController
     /**
      * @var
      */
-    protected $_account_id;
+    protected $_accountId;
 
     /**
      * 自动运行
@@ -42,10 +44,10 @@ class WxApp extends BaseController
     public function init()
     {
         $request  = Yii::$app->request;
-        $this->_addon_name = !empty($request->get('addon','')) ? $request->get('addon') : $request->post('addon','');
-        $this->_account_id = !empty($request->get('account_id','')) ? $request->get('account_id') : $request->post('account_id','');
+        $this->_addonName = !empty($request->get('addon','')) ? $request->get('addon') : $request->post('addon','');
+        $this->_accountId = !empty($request->get('account_id','')) ? $request->get('account_id') : $request->post('account_id','');
 
-        $this->_account = Account::getAccount($this->_account_id,$this->_addon_name);
+        $this->_account = Account::getAccount($this->_accountId,$this->_addonName);
         if($this->_account)
         {
             $options = [
@@ -155,11 +157,13 @@ class WxApp extends BaseController
         $result->data = [
             'userinfo' => $userinfo
         ];
+
         return $this->getResult();
     }
 
     /**
      * 生成auth_key并缓存
+     *
      * @param $oauth
      * @return int
      */
@@ -174,6 +178,7 @@ class WxApp extends BaseController
 
     /**
      * 获取用户信息
+     *
      * @param $auth_key
      * @return mixed
      */

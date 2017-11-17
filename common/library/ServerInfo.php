@@ -1,5 +1,6 @@
 <?php
 namespace jianyan\basics\common\library;
+
 use Yii;
 
 /**
@@ -10,18 +11,19 @@ class ServerInfo
 {
     /**
      * 服务器信息
+     *
      * @var array
      */
     public $server = [
-        'ip' => '',//ip
-        'domainIP' => '',//服务器域名和IP及进程用户名
-        'flag' => '',//服务器标识
-        'os' => '',//服务器系统
-        'language' => '',//语言
-        'name' => '',//名称
-        'email' => '',//管理员邮箱
+        'ip' => '',// ip
+        'domainIP' => '',// 服务器域名和IP及进程用户名
+        'flag' => '',// 服务器标识
+        'os' => '',// 服务器系统
+        'language' => '',// 语言
+        'name' => '',// 名称
+        'email' => '',// 管理员邮箱
         'webEngine' => '',
-        'webPort' => '',//端口
+        'webPort' => '',// 端口
         'webPath' => '',
         'newTime' => '',
         'probePath' => '',
@@ -29,19 +31,20 @@ class ServerInfo
 
     /**
      * 系统信息
+     *
      * @var array|string|void
      */
     public $sysInfo = [
-        'memTotal' => '目前只支持Linux系统',//物理内存总量
-        'memFree' => '目前只支持Linux系统',//物理空闲
-        'memUsed' => '目前只支持Linux系统', //物理内存使用
-        'memPercent' => 0,//物理内存使用百分比
-        'memBuffers' => '目前只支持Linux系统',//buffers
-        'memCached' => '目前只支持Linux系统',//缓存内存
-        'memCachedPercent' => 0,//缓存内存使用百分比
-        'memRealUsed' => '目前只支持Linux系统',//真实内存使用
-        'memRealFree' => '目前只支持Linux系统',//真实内存空闲
-        'memRealPercent' => 0,//真实内存使用百分比
+        'memTotal' => '目前只支持Linux系统',// 物理内存总量
+        'memFree' => '目前只支持Linux系统',// 物理空闲
+        'memUsed' => '目前只支持Linux系统', // 物理内存使用
+        'memPercent' => 0,// 物理内存使用百分比
+        'memBuffers' => '目前只支持Linux系统',// buffers
+        'memCached' => '目前只支持Linux系统',// 缓存内存
+        'memCachedPercent' => 0,// 缓存内存使用百分比
+        'memRealUsed' => '目前只支持Linux系统',// 真实内存使用
+        'memRealFree' => '目前只支持Linux系统',// 真实内存空闲
+        'memRealPercent' => 0,// 真实内存使用百分比
         'swapTotal' => '目前只支持Linux系统',
         'swapFree' => '目前只支持Linux系统',
         'swapUsed' => '目前只支持Linux系统',
@@ -52,23 +55,26 @@ class ServerInfo
 
     /**
      * 硬盘信息
+     *
      * @var array
      */
     public $hd = [
-        't',//硬盘总量
-        'f',//可用
-        'u',//已用
-        'PCT',//使用率
+        't',// 硬盘总量
+        'f',// 可用
+        'u',// 已用
+        'PCT',// 使用率
     ];
 
     /**
      * 网络信息
+     *
      * @var array
      */
     public $netWork;
 
     /**
      * cpu信息
+     *
      * @var string
      */
     public $cpuUse;
@@ -121,6 +127,7 @@ class ServerInfo
 
     /**
      * 获取服务器信息
+     *
      * @return array|bool
      */
     public function getSysInfo()
@@ -146,13 +153,13 @@ class ServerInfo
     public function linux()
     {
         $res = [];
-        //获取CPU信息
+        // 获取CPU信息
         if($cpuinfo = @file("/proc/cpuinfo"))
         {
             $cpuinfo= implode("",$cpuinfo);
-            @preg_match_all("/model\s+name\s{0,}\:+\s{0,}([\w\s\)\(\@.-]+)([\r\n]+)/s",$cpuinfo, $model);//CPU 名称
-            @preg_match_all("/cpu\s+MHz\s{0,}\:+\s{0,}([\d\.]+)[\r\n]+/",$cpuinfo, $mhz);//CPU频率
-            @preg_match_all("/cache\s+size\s{0,}\:+\s{0,}([\d\.]+\s{0,}[A-Z]+[\r\n]+)/",$cpuinfo, $cache);//CPU缓存
+            @preg_match_all("/model\s+name\s{0,}\:+\s{0,}([\w\s\)\(\@.-]+)([\r\n]+)/s",$cpuinfo, $model);// CPU 名称
+            @preg_match_all("/cpu\s+MHz\s{0,}\:+\s{0,}([\d\.]+)[\r\n]+/",$cpuinfo, $mhz);// CPU频率
+            @preg_match_all("/cache\s+size\s{0,}\:+\s{0,}([\d\.]+\s{0,}[A-Z]+[\r\n]+)/",$cpuinfo, $cache);// CPU缓存
             @preg_match_all("/bogomips\s{0,}\:+\s{0,}([\d\.]+)[\r\n]+/",$cpuinfo, $bogomips);
 
             if(is_array($model[1]))
@@ -171,7 +178,7 @@ class ServerInfo
             }
         }
 
-        //运行时间
+        // 运行时间
         if($uptime = @file("/proc/uptime"))
         {
             $str = explode(" ", implode("",$uptime));
@@ -184,7 +191,7 @@ class ServerInfo
             $res['uptime'] = $days . " 天 " . $hours . " 小时 " . $min . " 分钟 ";
         }
 
-        //内存
+        // 内存
         $meminfo = @file("/proc/meminfo");
         if($meminfo)
         {
@@ -228,6 +235,7 @@ class ServerInfo
 
     /**
      * 时间输出
+     *
      * @param $resmem
      * @return mixed
      */
@@ -247,6 +255,7 @@ class ServerInfo
 
     /**
      * 获取cpu信息
+     *
      * @return array
      */
     public function getCpuUse()
@@ -275,6 +284,7 @@ class ServerInfo
 
     /**
      * 对比CPU使用率
+     *
      * @param $cpuOne
      * @param $cpuTwo
      * @return bool
@@ -313,6 +323,7 @@ class ServerInfo
 
     /**
      * 获取硬盘情况
+     *
      * @return mixed
      */
     public function getDisk()
@@ -330,6 +341,7 @@ class ServerInfo
 
     /**
      * 网卡流量
+     *
      * @return mixed
      */
     public function getNetWork()
@@ -358,6 +370,7 @@ class ServerInfo
 
     /**
      * 计算出入网速和总量
+     *
      * @param $netWorkOne
      * @param $netWorkTwo
      */

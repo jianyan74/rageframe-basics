@@ -164,7 +164,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script>
     $(function(){
-        //兼容老IE
+        // 兼容老IE
         document.body.ondrop = function (event) {
             event = event || window.event;
             if (event.preventDefault) {
@@ -233,19 +233,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 },
                 submitForm: function(){
-                    //检查子菜单类别是否都填了
+                    // 检查子菜单类别是否都填了
                     var self = this;
                     function checkValidate(item){
                         var needContent = self.needContent(item);
                         if(needContent && !item.content)
                         {
-                            swalAlert('请填写"'+item.name+'"的' + needContent);
+                            rfAffirm('请填写"'+item.name+'"的' + needContent);
                             self.crtItem = item;
                             return false;
                         }
 	                    if(item.type == 'view' && !new RegExp('^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|localhost|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&%\$#\=~_\-]+))*$').test(item.content))
 			    		{
-                            swalAlert('您填写的链接地址格式不正确');
+                            rfAffirm('您填写的链接地址格式不正确');
 			            	self.crtItem = item;
 			            	return false;
 			    		}
@@ -285,8 +285,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             data: {id:id,list:this.list,title:title},
                             success: function(data){
                                 prevent = true;
-                                if(data.flg == 2) {
-                                    alert(data.msg);
+                                if(data.code == 404) {
+                                    rfAffirm(data.message);
                                 }else{
                                     window.location = '<?= Url::to(['index']) ?>';
                                 }

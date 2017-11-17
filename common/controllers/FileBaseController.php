@@ -6,16 +6,16 @@ use yii\web\UploadedFile;
 use yii\filters\AccessControl;
 use crazyfd\qiniu\Qiniu;
 use OSS\OssClient;
-use common\controllers\BaseController;
 use common\helpers\FileHelper;
 use common\helpers\StringHelper;
 
 /**
- * 文件图片上传控制器
+ * 文件上传控制器
+ *
  * Class FileBaseController
  * @package backend\controllers
  */
-class FileBaseController extends BaseController
+class FileBaseController extends \common\controllers\BaseController
 {
     /**
      * 关闭csrf验证
@@ -54,7 +54,7 @@ class FileBaseController extends BaseController
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@'],//登录
+                        'roles' => ['@'],// 登录
                     ],
                 ],
             ],
@@ -104,22 +104,22 @@ class FileBaseController extends BaseController
 
         $base64Data = $_POST['img'];
         $img = base64_decode($base64Data);
-        $file_exc = ".jpg";//图片后缀
+        $file_exc = ".jpg";// 图片后缀
         if(!($file_path = $this->getPath($type)))
         {
             $result->message = '文件夹创建失败，请确认是否开启attachment文件夹写入权限';
             return $this->getResult();
         }
 
-        $file_new_name = Yii::$app->params[$type]['prefix'] . StringHelper::random(10) . $file_exc;//保存的图片名
+        $file_new_name = Yii::$app->params[$type]['prefix'] . StringHelper::random(10) . $file_exc;// 保存的图片名
         $filePath = Yii::getAlias("@attachment/") . $file_path . $file_new_name;
-        //移动文件
-        if (!(file_put_contents($filePath, $img) && file_exists($filePath))) //移动失败
+        // 移动文件
+        if (!(file_put_contents($filePath, $img) && file_exists($filePath))) // 移动失败
         {
             $result->code = 404;
             $result->message = '上传失败';
         }
-        else //移动成功
+        else // 移动成功
         {
             $result->code = 200;
             $result->message = '上传成功';
@@ -134,6 +134,8 @@ class FileBaseController extends BaseController
 
     /**
      * 七牛云存储
+     *
+     * @return array
      */
     public function actionQiniu()
     {
@@ -169,6 +171,7 @@ class FileBaseController extends BaseController
 
     /**
      * 阿里云OSS上传
+     *
      * @return array
      */
     public function actionAliOss()
@@ -182,13 +185,13 @@ class FileBaseController extends BaseController
         try
         {
             $file = $_FILES['file'];
-            $file_name = $file['name'];//原名称
-            $file_exc = StringHelper::clipping($file_name);//后缀
+            $file_name = $file['name'];// 原名称
+            $file_exc = StringHelper::clipping($file_name);// 后缀
             $name = 'rf_alioss_' . time() . StringHelper::randomNum() . $file_exc;
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
             $oosResult = $ossClient->uploadFile($bucket,$name,$file['tmp_name']);
-            //私有获取图片信息
-            //$singUrl = $ossClient->signUrl($bucket, $name, 60*60*24);
+            // 私有获取图片信息
+            // $singUrl = $ossClient->signUrl($bucket, $name, 60*60*24);
 
             $result->code = 200;
             $result->message = '上传成功';
@@ -207,38 +210,39 @@ class FileBaseController extends BaseController
 
     /**
      * 通用上传 支持文件，图片，语音等格式等上传
+     *
      * @param $type
      */
     public function upload($type)
     {
         $result = $this->setResult();
 
-        //错误状态表
+        // 错误状态表
         $stateMap = Yii::$app->params['uploadState'];
-        //图片上传配置
+        // 图片上传配置
         $uploadConfig = Yii::$app->params[$type];
-        //默认返回状态
+        // 默认返回状态
         $result->message = $stateMap['ERROR_UNKNOWN'];
 
         if ($file = $_FILES['file'])
         {
-            $file_size = $file['size'];//大小
-            $file_name = $file['name'];//原名称
-            $file_exc = StringHelper::clipping($file_name);//后缀
+            $file_size = $file['size'];// 大小
+            $file_name = $file['name'];// 原名称
+            $file_exc = StringHelper::clipping($file_name);// 后缀
 
-            if($file_size > $uploadConfig['maxSize'])//判定大小是否超出限制
+            if($file_size > $uploadConfig['maxSize'])// 判定大小是否超出限制
             {
                 $result->message = $stateMap['ERROR_SIZE_EXCEED'];
                 return $this->getResult();
             }
-            else if(!$this->checkType($file_exc, $type))//检测类型
+            else if(!$this->checkType($file_exc, $type))// 检测类型
             {
                 $result->message = $stateMap['ERROR_TYPE_NOT_ALLOWED'];
                 return $this->getResult();
             }
             else
             {
-                //相对路径
+                // 相对路径
                 if(!($path = $this->getPath($type)))
                 {
                     $result->message = '文件夹创建失败，请确认是否开启attachment文件夹写入权限';
@@ -246,7 +250,7 @@ class FileBaseController extends BaseController
                 }
 
                 $filePath = $path . $uploadConfig['prefix'] . StringHelper::random(10) . $file_exc;
-                //利用yii2自带的上传
+                // 利用yii2自带的上传
                 $uploadFile = UploadedFile::getInstanceByName('file');
                 if($uploadFile->saveAs(Yii::getAlias("@attachment/") . $filePath))
                 {
@@ -269,6 +273,7 @@ class FileBaseController extends BaseController
 
     /**
      * 文件类型检测
+     *
      * @param $ext
      * @param $type
      * @return bool
@@ -285,18 +290,19 @@ class FileBaseController extends BaseController
 
     /**
      * 获取文件路径
+     *
      * @param $type
      * @return string
      */
     public function getPath($type)
     {
-        //文件路径
+        // 文件路径
         $file_path = Yii::$app->params[$type]['path'];
-        //子路径
+        // 子路径
         $sub_name = Yii::$app->params[$type]['subName'];
         $path = $file_path . date($sub_name,time()) . "/";
         $add_path = Yii::getAlias("@attachment/") . $path;
-        //创建路径
+        // 创建路径
         FileHelper::mkdirs($add_path);
         return $path;
     }

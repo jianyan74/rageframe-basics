@@ -6,6 +6,7 @@ use jianyan\basics\common\models\wechat\ReplyVideo;
 
 /**
  * 视频回复控制器
+ *
  * Class ReplyVideoController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -15,6 +16,7 @@ class ReplyVideoController extends RuleController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return array|ReplyVideo|null|\yii\db\ActiveRecord
      */

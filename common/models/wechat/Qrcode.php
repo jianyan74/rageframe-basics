@@ -99,7 +99,7 @@ class Qrcode extends ActiveRecord
     {
         if($this->isNewRecord)
         {
-            //临时
+            // 临时
             if($this->model == self::MODEL_TEM)
             {
                 if(empty($this->expire_seconds))

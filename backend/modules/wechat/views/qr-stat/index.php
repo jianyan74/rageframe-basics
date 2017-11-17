@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                     <div class="tab-pane active">
                         <div class="panel-body">
                             <div class="ibox float-e-margins">
-                                <div class="col-sm-9">
+                                <div class="col-sm-8">
                                     <form action="" method="get" class="form-horizontal" role="form" id="form">
                                         <div class="col-sm-4">
                                             <div class="input-group drp-container">
@@ -61,11 +61,11 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="ibox-tools">
-                                        【总计】关注扫描 <strong class="text-danger"><?= $attention_count ?></strong> 次
-                                        已关注扫描 <strong class="text-danger"><?= $scan_count ?></strong> 次
-                                        扫描 <strong class="text-danger"><?= $pages->totalCount ?></strong> 次
+                                        关注扫描 <strong class="text-danger"><?= $attention_count ?></strong> 次 &nbsp;
+                                        已关注扫描 <strong class="text-danger"><?= $scan_count ?></strong> 次 &nbsp;
+                                        总计 <strong class="text-danger"><?= $pages->totalCount ?></strong> 次 &nbsp;
                                         <a href="<?= Url::to(['export','from_date' => $from_date,'to_date' => $to_date,'type' => $type,'keyword' => $keyword]);?>">导出Excel</a>
                                     </div>
                                 </div>
@@ -78,6 +78,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                             <th>场景名称</th>
                                             <th>场景ID/场景值</th>
                                             <th>关注扫描</th>
+                                            <th>当前关注状态</th>
                                             <th>openid</th>
                                             <th>扫描时间</th>
                                             <th>操作</th>
@@ -91,6 +92,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                 <td><?= $model->name ?></td>
                                                 <td><?= $model->scene_id ? $model->scene_id : $model->scene_str ;?></td>
                                                 <td><?= QrcodeStat::$typeExplain[$model->type]; ?></td>
+                                                <td><?= isset($model->fans->follow) && $model->fans->follow == 1 ? '已关注': '取消关注'; ?></td>
                                                 <td><?= $model->openid ?></td>
                                                 <td><?= Yii::$app->formatter->asDatetime($model->append) ?></td>
                                                 <td>

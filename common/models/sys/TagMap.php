@@ -37,7 +37,7 @@ class TagMap extends \yii\db\ActiveRecord
      */
     static public function addTags($article_id,$tags)
     {
-        //删除原有标签关联
+        // 删除原有标签关联
         TagMap::deleteAll(['article_id' => $article_id]);
         if($article_id && $tags)
         {
@@ -48,7 +48,7 @@ class TagMap extends \yii\db\ActiveRecord
             }
 
             $field = ['tag_id', 'article_id'];
-            //批量插入数据
+            // 批量插入数据
             Yii::$app->db->createCommand()->batchInsert(TagMap::tableName(),$field, $data)->execute();
 
             return true;

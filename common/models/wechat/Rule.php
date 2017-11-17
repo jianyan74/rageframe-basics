@@ -20,15 +20,6 @@ use yii\behaviors\TimestampBehavior;
 class Rule extends ActiveRecord
 {
     /**
-     * 状态启用
-     */
-    const STATUS_ON  = 1;
-    /**
-     * 状态禁用
-     */
-    const STATUS_OFF = -1;
-
-    /**
      * 模块类别
      */
     const RULE_MODULE_BASE = 'basic';
@@ -37,6 +28,7 @@ class Rule extends ActiveRecord
     const RULE_MODULE_IMAGES = 'images';
     const RULE_MODULE_VOICE = 'voice';
     const RULE_MODULE_VIDEO = 'video';
+    const RULE_MODULE_ADDON = 'addon';
     const RULE_MODULE_USER_API = 'user-api';
     const RULE_MODULE_WX_CARD = 'wxcard';
     const RULE_MODULE_DEFAULT = 'default';
@@ -49,12 +41,13 @@ class Rule extends ActiveRecord
         self::RULE_MODULE_BASE => '文字回复',
         self::RULE_MODULE_IMAGES => '图片回复',
         self::RULE_MODULE_NEWS => '图文回复',
-        //self::RULE_MODULE_MUSIC => '音乐回复',
+        // self::RULE_MODULE_MUSIC => '音乐回复',
         self::RULE_MODULE_VOICE => '语音回复',
         self::RULE_MODULE_VIDEO => '视频回复',
+        // self::RULE_MODULE_ADDON => '模块回复',
         self::RULE_MODULE_USER_API => '自定义接口回复',
-        //self::RULE_MODULE_WX_CARD => '微信卡卷回复',
-        //self::RULE_MODULE_DEFAULT => '默认回复',
+        // self::RULE_MODULE_WX_CARD => '微信卡卷回复',
+        // self::RULE_MODULE_DEFAULT => '默认回复',
     ];
 
     /**
@@ -96,13 +89,36 @@ class Rule extends ActiveRecord
     }
 
     /**
+     * 删除规则
+     * @param $module
+     * @return false|int
+     */
+    public static function deleted($module)
+    {
+        $model = self::find()
+            ->where(['module' => $module])
+            ->one();
+
+        if($model)
+        {
+            return $model->delete();
+        }
+    }
+
+    /**
      * 删除其他数据
      */
     public function afterDelete()
     {
         $id = $this->id;
-        RuleKeyword::deleteAll(['rule_id'=>$id]);
-        //删除关联数据
+        // 关键字删除
+        RuleKeyword::deleteAll(['rule_id' => $id]);
+        // 规则统计
+        RuleStat::deleteAll(['rule_id' => $id]);
+        // 关键字规则统计
+        RuleKeywordStat::deleteAll(['rule_id' => $id]);
+
+        // 删除关联数据
         switch ($this->module)
         {
             case  self::RULE_MODULE_BASE :
@@ -122,11 +138,11 @@ class Rule extends ActiveRecord
                 break;
 
             case  self::RULE_MODULE_VOICE :
-                //ReplyBasic::deleteAll(['rule_id'=>$id]);
+                ReplyVoice::deleteAll(['rule_id' => $id]);
                 break;
 
             case  self::RULE_MODULE_VIDEO :
-                //ReplyBasic::deleteAll(['rule_id'=>$id]);
+                ReplyVideo::deleteAll(['rule_id' => $id]);
                 break;
 
             case  self::RULE_MODULE_USER_API :
@@ -134,7 +150,11 @@ class Rule extends ActiveRecord
                 break;
 
             case  self::RULE_MODULE_WX_CARD :
-                //::deleteAll(['rule_id'=>$id]);
+                // ::deleteAll(['rule_id'=>$id]);
+                break;
+
+            default :
+                ReplyAddon::deleteAll(['rule_id' => $id]);
                 break;
         }
 
@@ -163,7 +183,7 @@ class Rule extends ActiveRecord
     public static function findRuleTitle($rule_id)
     {
         $rule = Rule::findOne($rule_id);
-        return $rule ? $rule->name : false;
+        return $rule ? $rule->name : '规则被删除';
     }
 
     /**

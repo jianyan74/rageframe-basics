@@ -12,12 +12,8 @@ use Yii;
  */
 class Test extends \yii\db\ActiveRecord
 {
-
-
-    //省市区
+    // 省市区
     public $provinces;
     public $city;
     public $area;
-
-
 }

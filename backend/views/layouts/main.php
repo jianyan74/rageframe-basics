@@ -78,11 +78,11 @@ AppAsset::register($this);
 
 <script type="text/javascript">
     $(function () {
-        //小模拟框清除
+        // 小模拟框清除
         $('#ajaxModal').on('hide.bs.modal', function () {
             $(this).removeData("bs.modal");
         });
-        //大模拟框清除
+        // 大模拟框清除
         $('#ajaxModalLg').on('hide.bs.modal', function () {
             $(this).removeData("bs.modal");
         })
@@ -90,7 +90,7 @@ AppAsset::register($this);
 </script>
 
 <script type="text/javascript">
-    //status => 1:启用;-1禁用;
+    // status => 1:启用;-1禁用;
     function rfStatus(obj){
         var id = $(obj).parent().parent().attr('id');
         var status; self = $(obj);

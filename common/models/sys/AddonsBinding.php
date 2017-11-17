@@ -83,16 +83,16 @@ class AddonsBinding extends \yii\db\ActiveRecord
 
     /**
      * 批量删除
-     * @param $addons_name 模块名称
+     * @param string $addons_name 模块名称
      */
     public static function deleted($addons_name)
     {
-        AddonsBinding::deleteAll(['addons_name'=>$addons_name]);
+        AddonsBinding::deleteAll(['addons_name' => $addons_name]);
     }
 
     /**
      * 获取菜单和导航列表
-     * @param $addons_name 模块名称
+     * @param string $addons_name 模块名称
      * @return array
      */
     public static function getList($addons_name)

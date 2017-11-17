@@ -72,7 +72,7 @@ class Setting extends ActiveRecord
         $defaultList = [];
         switch ($name)
         {
-            //历史消息参数设置
+            // 历史消息参数设置
             case 'history' :
                 $defaultList = [
                     'is_msg_history' => [
@@ -90,10 +90,10 @@ class Setting extends ActiveRecord
                 ];
                 break;
 
-            //特殊消息回复
+            // 特殊消息回复
             case 'special' :
 
-                //获取支持的模块
+                // 获取支持的模块
                 $modules = Addons::getModuleList();
 
                 $list = Account::$mtype;

@@ -1,16 +1,17 @@
 <?php
 namespace jianyan\basics\backend\modules\sys\controllers;
 
-use jianyan\basics\backend\modules\sys\models\AuthAssignment;
 use yii;
 use yii\data\Pagination;
 use common\helpers\SysArrayHelper;
 use backend\controllers\MController;
 use jianyan\basics\backend\modules\sys\models\AuthItem;
 use jianyan\basics\backend\modules\sys\models\AuthItemChild;
+use jianyan\basics\backend\modules\sys\models\AuthAssignment;
 
 /**
  * RBAC角色控制器
+ *
  * Class AuthRoleController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -91,7 +92,7 @@ class AuthRoleController extends MController
         $parent   = $request->get('parent');
 
         $userAuth = [];
-        //验证是否总管理员
+        // 验证是否总管理员
         if(Yii::$app->params['adminAccount'] != Yii::$app->user->id)
         {
             $itemNames = AuthAssignment::getUserItemName(Yii::$app->user->id);
@@ -120,9 +121,9 @@ class AuthRoleController extends MController
 
         if ($request->isPost)
         {
-            //提交过来的信息
+            // 提交过来的信息
             $PostAuth = $request->post();
-            //授权
+            // 授权
             $AuthItemChild = new AuthItemChild();
             if($AuthItemChild->accredit($PostAuth['parent'],$PostAuth['auth']))
             {

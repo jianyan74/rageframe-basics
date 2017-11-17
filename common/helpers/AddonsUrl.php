@@ -5,14 +5,16 @@ use yii;
 use yii\helpers\Url;
 
 /**
- * Class Url
- * @package common\helpers
  * 插件Url生成辅助类
+ *
+ * Class AddonsUrl
+ * @package jianyan\basics\common\helpers
  */
 class AddonsUrl
 {
     /**
      * 生成模块Url
+     *
      * @param array $url
      * @param bool $scheme
      * @return bool|string
@@ -24,6 +26,7 @@ class AddonsUrl
 
     /**
      * 通过绝对路径生成模块Url
+     *
      * @return string
      */
     public static function toAbsoluteUrl(array $url, $scheme = false)
@@ -33,6 +36,7 @@ class AddonsUrl
 
     /**
      * 生成插件前台Url
+     *
      * @return string
      */
     public static function toFront(array $url, $scheme = false)
@@ -42,6 +46,7 @@ class AddonsUrl
 
     /**
      * 生成插件微信Url
+     *
      * @return string
      */
     public static function toWechat(array $url, $scheme = false)
@@ -50,7 +55,8 @@ class AddonsUrl
     }
 
     /**
-     * 生成插件微信Url
+     * 生成插件微信Api Url
+     *
      * @return string
      */
     public static function toWechatApi(array $url, $scheme = false)
@@ -60,6 +66,7 @@ class AddonsUrl
 
     /**
      * 生成插件基类跳转链接
+     *
      * @return string
      */
     public static function toRoot(array $url, $scheme = false)

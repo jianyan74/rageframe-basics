@@ -8,6 +8,7 @@ use jianyan\basics\common\models\wechat\RuleKeyword;
 
 /**
  * 规则控制器
+ *
  * Class RuleController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -37,6 +38,7 @@ class RuleController extends WController
         }
 
         $data = Rule::find()->with('ruleKeyword')
+            ->andWhere(['in','module',array_keys(Rule::$moduleExplain)])
             ->andFilterWhere(['module' => $module])
             ->andFilterWhere($where)
             ->andFilterWhere(['like', 'name', $keyword]);
@@ -59,6 +61,7 @@ class RuleController extends WController
 
     /**
      * 编辑
+     *
      * @return mixed|string|yii\web\Response
      */
     public function actionEdit()
@@ -66,14 +69,14 @@ class RuleController extends WController
         $request = Yii::$app->request;
         $id = $request->get('id');
 
-        //回复规则
+        // 回复规则
         $rule = $this->findRuleModel($id);
-        //默认关键字
+        // 默认关键字
         $keyword = new RuleKeyword();
-        //基础
+        // 基础
         $model = $this->findModel($id);
 
-        //关键字列表
+        // 关键字列表
         $ruleKeywords = [
             RuleKeyword::TYPE_MATCH => [],
             RuleKeyword::TYPE_REGULAR => [],
@@ -91,16 +94,15 @@ class RuleController extends WController
 
         if ($rule->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post()) && $keyword->load(Yii::$app->request->post()))
         {
-
             $transaction = Yii::$app->db->beginTransaction();
             try
             {
-                //编辑
+                // 编辑
                 if($rule->save())
                 {
-                    //获取规则ID
+                    // 获取规则ID
                     $model->rule_id = $rule->id;
-                    //其他匹配包含关键字
+                    // 其他匹配包含关键字
                     $otherKeywords = Yii::$app->request->post('ruleKey',[]);
                     $resultKeywords = $keyword->updateKeywords($keyword->content,$otherKeywords,$ruleKeywords,$rule->id,$this->_module,$rule);
 
@@ -137,6 +139,7 @@ class RuleController extends WController
 
     /**
      * 修改排序和状态
+     *
      * @param $id
      * @return array
      */
@@ -167,6 +170,7 @@ class RuleController extends WController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -184,6 +188,7 @@ class RuleController extends WController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Rule|static
      */

@@ -8,6 +8,7 @@ use dosamigos\qrcode\QrCode as DosQrCode;
 
 /**
  * 二维码管理
+ *
  * Class QrController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -27,7 +28,7 @@ class QrController extends WController
         {
             if($type == 1)
             {
-                $where = ['like', 'name', $keyword];//标题
+                $where = ['like', 'name', $keyword];// 标题
             }
         }
 
@@ -47,8 +48,9 @@ class QrController extends WController
     }
 
     /**
-     * @return string|\yii\web\Response
      * 创建
+     *
+     * @return string|yii\web\Response
      */
     public function actionAdd()
     {
@@ -84,6 +86,7 @@ class QrController extends WController
 
     /**
      * 验证表单
+     *
      * @return array
      */
     public function actionValidateForm()
@@ -97,6 +100,7 @@ class QrController extends WController
 
     /**
      * ajax编辑
+     *
      * @return string|yii\web\Response
      */
     public function actionEdit()
@@ -117,6 +121,7 @@ class QrController extends WController
 
     /**
      * 删除全部过期的二维码
+     *
      * @return mixed
      */
     public function actionDeleteAll()
@@ -133,6 +138,7 @@ class QrController extends WController
 
     /**
      * 删除二维码
+     *
      * @param $id
      * @return mixed
      */
@@ -166,6 +172,7 @@ class QrController extends WController
 
     /**
      * 长链接二维码
+     *
      * @return string
      */
     public function actionLongQr()
@@ -179,23 +186,30 @@ class QrController extends WController
      */
     public function actionTransform()
     {
-        $result = [];
-        $result['flg'] = 2;
-        $result['msg'] = "二维码转化失败";
+        $result = $this->setResult();
+        $result->message = '二维码转化失败';
 
         $postUrl = Yii::$app->request->post('shortUrl','');
-        //长链接转短链接
+        // 长链接转短链接
         $url = $this->_app->url;
-        $shortUrl  = $url->shorten($postUrl);
-
-        if($shortUrl['errcode'] == 0)
+        try
         {
-            $result['flg'] = 1;
-            $result['msg'] = "二维码转化成功";
-            $result['short_url'] = $shortUrl['short_url'];
+            $shortUrl  = $url->shorten($postUrl);
+            if($shortUrl['errcode'] == 0)
+            {
+                $result->code = 200;
+                $result->message = '二维码转化成功';
+                $result->data = [
+                    'short_url' => $shortUrl['short_url']
+                ];
+            }
+        }
+        catch (\Exception $e)
+        {
+            $result->message = $e->getMessage();
         }
 
-        echo json_encode($result);
+        return $this->getResult();
     }
 
     /**

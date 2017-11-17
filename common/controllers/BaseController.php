@@ -9,6 +9,7 @@ use common\helpers\ResultDataHelper;
 
 /**
  * 基类控制器
+ *
  * Class BaseController
  * @package common\controllers
  */
@@ -16,18 +17,21 @@ class BaseController extends Controller
 {
     /**
      * 默认分页大小
+     *
      * @var int
      */
     protected $_pageSize = 20;
 
     /**
      * ajax信息返回
+     *
      * @var
      */
     protected $_result;
 
     /**
      * 解析Yii2错误信息
+     *
      * @param $errors
      * @return string
      */
@@ -39,6 +43,7 @@ class BaseController extends Controller
 
     /**
      * 写入消息返回
+     *
      * @return ResultDataHelper
      */
     public function setResult()
@@ -48,6 +53,7 @@ class BaseController extends Controller
 
     /**
      * 获取消息返回
+     *
      * @return array
      */
     public function getResult()

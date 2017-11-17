@@ -81,10 +81,10 @@ class ActionLog extends \yii\db\ActiveRecord
      */
     public function addLog($action, $model, $remark = null, $record_id = null)
     {
-        //行为id
+        // 行为id
         !$record_id && $record_id = 0;
         $logModel = new ActionLog();
-        //判断是否登录
+        // 判断是否登录
         if (!Yii::$app->user->isGuest)
         {
             $logModel->manager_id = Yii::$app->user->id;
@@ -98,8 +98,8 @@ class ActionLog extends \yii\db\ActiveRecord
         $logModel->log_url = Yii::$app->request->getUrl();
         $logModel->remark = $remark;
 
-        //IP地址信息来源
-        $ipInfo = \common\helpers\ApiHelper::IpInfoSina(Yii::$app->request->userIP);
+        // IP地址信息来源
+        $ipInfo = \common\helpers\ApiHelper::ipInfoSina(Yii::$app->request->userIP);
         if($ipInfo)
         {
             $logModel->country = $ipInfo['country'];

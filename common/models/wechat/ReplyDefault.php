@@ -1,10 +1,10 @@
 <?php
 namespace jianyan\basics\common\models\wechat;
 
-use jianyan\basics\common\models\sys\Addons;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use jianyan\basics\common\models\sys\Addons;
 
 /**
  * This is the model class for table "{{%wechat_reply_default}}".
@@ -53,14 +53,15 @@ class ReplyDefault extends ActiveRecord
     /**
      * 返回回复信息
      * 如果是特殊消息进来的的$message是一个对象
-     * @param string $type-触发的类型 follow:关注;text:文字信息
-     * @param null $message-用户发送的内容
+     *
+     * @param string $type 触发的类型 follow:关注;text:文字信息
+     * @param null $message 用户发送的内容
      * @return array|bool|mixed|null
      */
     public static function defaultReply($type = 'follow', $message = null)
     {
         $defaultModel = self::findDefault();
-        //默认回复内容
+        // 默认回复内容
         $reply = $type == 'follow' ? $defaultModel->follow_content :  $defaultModel->default_content;
 
         switch ($type)
@@ -79,16 +80,16 @@ class ReplyDefault extends ActiveRecord
             /** 文字回复关注 **/
             case "text" :
 
-                //查询用户关键字匹配
+                // 查询用户关键字匹配
                 $default = RuleKeyword::match($message);
                 if($default == false)
                 {
-                    //系统默认回复
+                    // 系统默认回复
                     $default = RuleKeyword::match($reply);
                     $default && $default['module'] = Rule::RULE_MODULE_DEFAULT;
                 }
 
-                //查询关键字并返回
+                // 查询关键字并返回
                 if($default)
                 {
                     return $default;
@@ -103,7 +104,7 @@ class ReplyDefault extends ActiveRecord
                 $special = Setting::getSetting('special');
                 if(isset($special[$message->MsgType]))
                 {
-                    //关键字
+                    // 关键字
                     if($special[$message->MsgType]['type'] == Setting::SPECIAL_TYPE_KEYWORD)
                     {
                         $default = RuleKeyword::match($special[$message->MsgType]['content']);
@@ -114,7 +115,7 @@ class ReplyDefault extends ActiveRecord
                     }
                     else
                     {
-                        //模块处理
+                        // 模块处理
                         !empty($special[$message->MsgType]['selected']) && $reply = Addons::getWechatMessage($message, $special[$message->MsgType]['selected']);
                         if($reply)
                         {
@@ -129,7 +130,7 @@ class ReplyDefault extends ActiveRecord
                 break;
         }
 
-        //返回默认回复
+        // 返回默认回复
         return $reply ? ['content' => $reply, 'module'  => Rule::RULE_MODULE_DEFAULT] : false;
     }
 

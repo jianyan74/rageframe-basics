@@ -10,6 +10,7 @@ use jianyan\basics\common\models\wechat\FansGroups;
 
 /**
  * 粉丝管理
+ *
  * Class FansController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -17,6 +18,7 @@ class FansController extends WController
 {
     /**
      * 粉丝首页
+     *
      * @return string
      */
     public function actionIndex()
@@ -32,7 +34,7 @@ class FansController extends WController
             $where = ['or',['like', 'openid', $keyword],['like', 'nickname', $keyword]];
         }
 
-        //关联角色查询
+        // 关联角色查询
         $data = Fans::find()
             ->with('member')
             ->where($where)
@@ -54,13 +56,14 @@ class FansController extends WController
             'follow'  => $follow,
             'keyword' => $keyword,
             'group_id' => $group_id,
-            'all_fans' =>  Fans::find()->andWhere(['follow' => $follow])->count(),
+            'all_fans' =>  Fans::getCountFollowFans(),
             'fansGroup' => $get_groups,
         ]);
     }
 
     /**
      * 粉丝详情
+     *
      * @param $id
      * @return string
      */
@@ -75,6 +78,7 @@ class FansController extends WController
 
     /**
      * 移动分组
+     *
      * @return array
      * @throws NotFoundHttpException
      */
@@ -83,29 +87,25 @@ class FansController extends WController
         $request = Yii::$app->request;
         if($request->isAjax)
         {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+            $result = $this->setResult();
 
-            $result = [];
-            $result['flg'] = 2;
-            $result['msg'] = "修改失败!";
-
-            $openid    = $request->post('openid');
-            $group_id    = $request->post('group_id');
+            $openid = $request->post('openid');
+            $group_id = $request->post('group_id');
 
             $this->_app->user_group->moveUser($openid, $group_id);
             $model = Fans::find()->where(['openid'=>$openid])->one();
             $model->group_id = $group_id;
             if($model->save())
             {
-                $result['flg'] = 1;
-                $result['msg'] = "修改成功!";
+                $result->code = 200;
+                $result->message =  "修改成功!";
             }
             else
             {
-                $result['msg'] = $this->analysisError($model->getFirstErrors());
+                $result->message = $this->analysisError($model->getFirstErrors());
             }
 
-            return $result;
+            return $this->getResult();
         }
         else
         {
@@ -121,13 +121,13 @@ class FansController extends WController
         $request = Yii::$app->request;
         $next_openid = $request->get('next_openid','');
 
-        //设置关注全部为为关注
+        // 设置关注全部为为关注
         if (empty($next_openid))
         {
             Fans::updateAll(['follow' => Fans::FOLLOW_OFF ]);
         }
 
-        //获取全部列表
+        // 获取全部列表
         $fans_list = $this->_app->user->lists();
         $fans_count = $fans_list['total'];
 
@@ -135,7 +135,7 @@ class FansController extends WController
         for ($i = 0; $i < $total_page; $i++)
         {
             $fans = array_slice($fans_list['data']['openid'], $i * 500, 500);
-            //系统内的粉丝
+            // 系统内的粉丝
             $system_fans = Fans::find()
                 ->where(['in','openid',$fans])
                 ->select('openid')
@@ -159,12 +159,12 @@ class FansController extends WController
 
             if (!empty($add_fans))
             {
-                //批量插入数据
+                // 批量插入数据
                 $field = ['member_id', 'openid','follow','followtime','tag','append','updated'];
                 Yii::$app->db->createCommand()->batchInsert(Fans::tableName(),$field, $add_fans)->execute();
             }
 
-            //更新当前粉丝为关注
+            // 更新当前粉丝为关注
             Fans::updateAll(['follow' =>1 ],['in','openid',$fans]);
         }
 
@@ -182,19 +182,19 @@ class FansController extends WController
      */
     public function actionSync()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = $this->setResult();
 
         $request = Yii::$app->request;
         $type = $request->post('type','') == 'all' ? 'all' : 'check';
         $page = $request->post('page',0);
 
-        //全部同步
+        // 全部同步
         if ($type == 'all')
         {
             $limit = 10;
             $offset = $limit * $page;
 
-            //关联角色查询
+            // 关联角色查询
             $data = Fans::find()->where(['follow' => 1]);
             $models = $data->offset($offset)
                 ->orderBy('id desc')
@@ -204,35 +204,36 @@ class FansController extends WController
 
             if(!empty($models))
             {
-                //同步粉丝信息
+                // 同步粉丝信息
                 foreach ($models as $fans)
                 {
                     Fans::sync($fans['openid'],$this->_app);
                 }
 
-                $result['flg'] = 1;
-                $result['msg'] = "同步成功!";
-                $result['page'] = $page + 1;
-                return $result;
+                $result->code = 200;
+                $result->message = "同步成功!";
+                $result->data = [
+                    'page' => $page + 1
+                ];
+
+                return $this->getResult();
             }
 
-            $result['flg'] = 2;
-            $result['msg'] = "同步完成!";
-            return $result;
+            $result->message = "同步完成!";
+            return $this->getResult();
         }
 
-        //选中同步
+        // 选中同步
         if ($type == 'check')
         {
             $openids = $request->post('openids');
             if (empty($openids) || !is_array($openids))
             {
-                $result['flg'] = 2;
-                $result['msg'] = "请选择粉丝!";
-                return $result;
+                $result->message = "请选择粉丝!";
+                return $this->getResult();
             }
 
-            //系统内的粉丝
+            // 系统内的粉丝
             $sync_fans = Fans::find()
                 ->where(['in','openid',$openids])
                 ->asArray()
@@ -240,16 +241,15 @@ class FansController extends WController
 
             if (!empty($sync_fans))
             {
-                //同步粉丝信息
+                // 同步粉丝信息
                 foreach ($sync_fans as $fans)
                 {
                     Fans::sync($fans['openid'],$this->_app);
                 }
             }
 
-            $result['flg'] = 2;
-            $result['msg'] = "同步成功!";
-            return $result;
+            $result->message = "同步完成!";
+            return $this->getResult();
         }
     }
 }

@@ -101,7 +101,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <br>
                         真实内存使用：<?= $info['sysInfo']['memRealUsed'] ?>　
                         真实内存空闲：<?= $info['sysInfo']['memRealFree'] ?>　
-                        使用率：<?= $info['sysInfo']['memRealPercent'] ?>
+                        使用率：<?= $info['sysInfo']['memRealPercent'] ?>%
                         <div class="progress progress-striped active">
                             <div style="width: <?= $info['sysInfo']['memRealPercent'] ?>%" class="progress-bar progress-bar-danger"></div>
                             <div style="width: <?= 100 - $info['sysInfo']['memRealPercent'] ?>%" class="progress-bar progress-bar-success"></div>
@@ -112,6 +112,27 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                     <td>系统平均负载</td>
                     <td colspan="2"><?= $info['sysInfo']['loadAvg'] ?></td>
                     <td>负载说明：一分钟、五分钟、以及十五分钟的系统负载均值</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5><i class="fa fa-cog"></i>  PHP信息</h5>
+        </div>
+        <div class="ibox-content">
+            <table class="table">
+                <tr>
+                    <td>禁用的函数</td>
+                    <td ><?= $disable_functions; ?></td>
+                </tr>
+                <tr>
+                    <td>脚本内存限制</td>
+                    <td><?= ini_get('memory_limit'); ?></td>
+                </tr>
+                <tr>
+                    <td>Socket超时时间</td>
+                    <td><?= ini_get('default_socket_timeout'); ?> 秒</td>
                 </tr>
             </table>
         </div>
@@ -192,7 +213,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 <br>
                 真实内存使用：{{sysInfo.memRealUsed}}　
                 真实内存空闲：{{sysInfo.memRealFree}}　
-                使用率：{{sysInfo.memRealPercent}}
+                使用率：{{sysInfo.memRealPercent}}%
                 <div class="progress progress-striped active">
                     <div style="width: {{sysInfo.memRealPercent}}%" class="progress-bar progress-bar-danger"></div>
                     <div style="width: {{100 - sysInfo.memRealPercent}}%" class="progress-bar progress-bar-success"></div>
@@ -279,8 +300,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 
     function setTime(){
         var d = new Date(), str = '';
-        str += d.getFullYear() + ' 年 '; //获取当前年份
-        str += d.getMonth() + 1 + ' 月 '; //获取当前月份（0——11）
+        str += d.getFullYear() + ' 年 '; // 获取当前年份
+        str += d.getMonth() + 1 + ' 月 '; // 获取当前月份（0——11）
         str += d.getDate() + ' 日  ';
         str += d.getHours() + ' 时 ';
         str += d.getMinutes() + ' 分 ';

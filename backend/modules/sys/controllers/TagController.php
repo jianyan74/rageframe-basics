@@ -8,6 +8,7 @@ use backend\controllers\MController;
 
 /**
  * 标签管理控制器
+ *
  * Class TagController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -33,6 +34,7 @@ class TagController extends MController
 
     /**
      * 编辑/新增
+     *
      * @return string|\yii\web\Response
      */
     public function actionEdit()
@@ -53,6 +55,7 @@ class TagController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -70,6 +73,7 @@ class TagController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|Tag|static
      */

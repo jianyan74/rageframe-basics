@@ -61,6 +61,7 @@ class Versions extends ActiveRecord
 
     /**
      * 插入时间戳
+     *
      * @return array
      */
     public function behaviors()

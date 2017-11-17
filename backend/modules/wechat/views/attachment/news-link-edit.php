@@ -190,24 +190,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         rfAffirm('同步到微信中,请不要关闭当前页面');
 
-                        //ajax提交
+                        // ajax提交
                         $.ajax({
                             type:"post",
                             url:"<?= Url::to(['news-link-edit'])?>",
                             dataType: "json",
                             data: {
                                 attach_id : "<?= $attach_id ?>",
-                                list:JSON.stringify(this.postList) //图文列表数据
+                                list:JSON.stringify(this.postList) // 图文列表数据
                             },
                             success: function(data){
-                                if(data.flg == 1){
+                                if(data.code == 200){
                                     window.location.href = "<?= Url::to(['news-index'])?>";
                                 }
                             }
                         });
                     },
                     uploadNewthumb_url: function(){
-                        $('.webuploader-container input').trigger('click');//触发上传组件的选图功能
+                        $('.webuploader-container input').trigger('click');// 触发上传组件的选图功能
                     },
                     validateFileds: function(valueList, errorMsgList){
                         for(var i=0; i<valueList.length; i++)
@@ -225,7 +225,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     var self = this;
                     var list = <?= $list ?>;
 
-                    //上传组件上传完图片后会抛送此事件，此时将图片在服务器上的地址给到我们的crtPost.thumb_url里面
+                    // 上传组件上传完图片后会抛送此事件，此时将图片在服务器上的地址给到我们的crtPost.thumb_url里面
                     $(document).on('setUploadedImg', function(e, uploaderName, imgSrc){
                         if(uploaderName == 'thumb_url')
                         {
@@ -239,7 +239,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         self.isEditMode = true;
                     }
-                    //新建回复规则的情况
+                    // 新建回复规则的情况
                     else
                     {
                         self.addPost();
@@ -258,6 +258,6 @@ $this->params['breadcrumbs'][] = $this->title;
             });
         };
 
-        setTimeout(init, 0);//延迟一帧执行，为了让后面的UEditor.php中的那句UE.getEditor先执行，这样我们才能在init中通过UE.getEditor语句拿到已经初始化好的editor实例
+        setTimeout(init, 0);// 延迟一帧执行，为了让后面的UEditor.php中的那句UE.getEditor先执行，这样我们才能在init中通过UE.getEditor语句拿到已经初始化好的editor实例
     });
 </script>

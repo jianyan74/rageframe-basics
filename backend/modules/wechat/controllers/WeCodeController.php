@@ -6,6 +6,7 @@ use linslin\yii2\curl;
 
 /**
  * 获取图片信息
+ *
  * Class WeCodeController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */

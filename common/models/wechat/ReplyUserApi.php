@@ -61,7 +61,7 @@ class ReplyUserApi extends \yii\db\ActiveRecord
     {
         try
         {
-            //读取接口信息
+            // 读取接口信息
             if($model->cache_time > 0)
             {
                 // 尝试从缓存中取回 $data
@@ -70,13 +70,13 @@ class ReplyUserApi extends \yii\db\ActiveRecord
                 $data = $cache->get($key);
                 if ($data === false)
                 {
-                    $data = self::ApiData($model, $content);
+                    $data = self::ApiData($model, Yii::$app->params['wxMessage']);
                     $cache->set($key, $data, $model->cache_time);
                 }
             }
             else
             {
-                $data = self::ApiData($model, $content);
+                $data = self::ApiData($model, Yii::$app->params['wxMessage']);
             }
 
             return $data;
@@ -117,12 +117,12 @@ class ReplyUserApi extends \yii\db\ActiveRecord
     public static function getList()
     {
         $api_dir = Yii::$app->params['userApiPath'];
-        //获取api列表
+        // 获取api列表
         $dirs = array_map('basename', glob($api_dir.'/*'));
         $list = [];
         foreach ($dirs as $dir)
         {
-            //正则匹配文件名
+            // 正则匹配文件名
             if(preg_match('/Api.(php)$/', $dir))
             {
                 $list[] = $dir;

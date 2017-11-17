@@ -7,6 +7,7 @@ use jianyan\basics\common\models\wechat\FansGroups;
 
 /**
  * 粉丝分组
+ *
  * Class FansGroupsController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -43,6 +44,7 @@ class FansGroupsController extends WController
 
     /**
      * 更新修改数据
+     *
      * @return yii\web\Response
      * @throws NotFoundHttpException
      */
@@ -55,7 +57,7 @@ class FansGroupsController extends WController
             $group_add = $request->post('group_add','');
             $group_update = $request->post('group_update','');
 
-            //更新分组
+            // 更新分组
             if($group_update)
             {
                 foreach ($group_update as $key => $value)
@@ -71,7 +73,7 @@ class FansGroupsController extends WController
                 }
             }
 
-            //插入分组
+            // 插入分组
             if($group_add)
             {
                 foreach ($group_add as $value)
@@ -90,6 +92,7 @@ class FansGroupsController extends WController
 
     /**
      * 同步粉丝
+     *
      * @return mixed
      */
     public function actionSynchro()
@@ -100,6 +103,7 @@ class FansGroupsController extends WController
 
     /**
      * 返回分组模型
+     *
      * @return array|FansGroups|null|yii\db\ActiveRecord
      */
     protected function findModel()

@@ -73,17 +73,19 @@ class Account extends ActiveRecord
 
     /**
      * 获取小程序
-     * @param $addon_name 模块名称
-     * @return array|Account|null|\yii\db\ActiveRecord
+     *
+     * @param $id
+     * @param string $addonName 模块名称
+     * @return array|bool|null|ActiveRecord
      */
-    public static function getAccount($id,$addon_name)
+    public static function getAccount($id, $addonName)
     {
-        if (empty($id) || empty($addon_name))
+        if (empty($id) || empty($addonName))
         {
             return false;
         }
 
-        if (empty(($model = self::find()->where(['addon_name' => $addon_name,'id'=>$id])->one())))
+        if (empty(($model = self::find()->where(['addon_name' => $addonName,'id'=>$id])->one())))
         {
             return false;
         }
@@ -93,6 +95,7 @@ class Account extends ActiveRecord
 
     /**
      * 关联版本号
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getVersions()
@@ -102,6 +105,7 @@ class Account extends ActiveRecord
 
     /**
      * 插入token
+     *
      * @param bool $insert
      * @return bool
      */
@@ -127,6 +131,7 @@ class Account extends ActiveRecord
 
     /**
      * 插入时间戳
+     *
      * @return array
      */
     public function behaviors()

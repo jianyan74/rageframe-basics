@@ -151,14 +151,14 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             dataType: "json",
             data: {group_id:group_id,openid:openid},
             success: function(data){
-                if(data.flg == 2) {
-                    alert(data.msg);
+                if(data.code == 404) {
+                    rfAffirm(data.msg);
                 }
             }
         });
     });
 
-    //同步所有粉丝openid
+    // 同步所有粉丝openid
     function getAllFans() {
 
         rfAffirm('同步中,请不要关闭当前页面');
@@ -174,7 +174,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         });
     }
 
-    //同步粉丝资料
+    // 同步粉丝资料
     function sync(type,page = 0,openids = null){
 
         $.ajax({
@@ -183,17 +183,17 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             dataType: "json",
             data: {type:type,page:page,openids:openids},
             success: function(data){
-                if(data.flg == 1) {
-                    sync(type,data.page);
+                if(data.code == 200) {
+                    sync(type,data.data.page);
                 }else{
-                    rfAffirm(data.msg);
+                    rfAffirm(data.message);
                     window.location.reload();
                 }
             }
         });
     }
 
-    //同步选中的粉丝
+    // 同步选中的粉丝
     $("#sync").click(function () {
         var openids = [];
         $("#list :checkbox").each(function () {
@@ -206,7 +206,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         sync('check',0,openids);
     });
 
-    //多选框选择
+    // 多选框选择
     $(".check-all").click(function(){
         if(this.checked){
             $("#list :checkbox").prop("checked", true);

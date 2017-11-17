@@ -8,6 +8,7 @@ use common\helpers\ExcelHelper;
 
 /**
  * 二维码扫描统计
+ *
  * Class QrStatController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
@@ -27,7 +28,7 @@ class QrStatController extends WController
         $where = [];
         if($keyword)
         {
-            $where = ['like', 'name', $keyword];//标题
+            $where = ['like', 'name', $keyword];// 标题
         }
 
         $data = QrcodeStat::find()
@@ -44,9 +45,9 @@ class QrStatController extends WController
             ->limit($pages->limit)
             ->all();
 
-        //关注统计
+        // 关注统计
         $attention_count = $attention_data->andWhere(['type' => QrcodeStat::TYPE_ATTENTION])->count();
-        //扫描统计
+        // 扫描统计
         $scan_count = $scan_data->andWhere(['type' => QrcodeStat::TYPE_SCAN])->count();
 
         return $this->render('index',[
@@ -63,6 +64,7 @@ class QrStatController extends WController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -101,7 +103,7 @@ class QrStatController extends WController
         $header = [
             ['field' => 'id', 'name' =>  'ID', 'type' => 'text'],
             ['field' => 'name', 'name' =>  '场景名称', 'type' => 'text'],
-            ['field' => 'fans.openid', 'name' =>  'openid', 'type' => 'text'],//表示获取二维数组的字段
+            ['field' => 'fans.openid', 'name' =>  'openid', 'type' => 'text'],// 表示获取二维数组的字段
             ['field' => 'fans.nickname', 'name' =>  '昵称', 'type' => 'text'],
             ['field' => 'scene_str', 'name' =>  '场景值', 'type' => 'text'],
             ['field' => 'scene_id', 'name' =>  '场景ID', 'type' => 'text'],
@@ -109,7 +111,7 @@ class QrStatController extends WController
             ['field' => 'append', 'name' => '创建日期', 'type' => 'date', 'rule' => 'Y-m-d H:i:s'],
         ];
 
-        //导出Excel
+        // 导出Excel
         ExcelHelper::exportExcelData($dataList, $header, '扫描统计_' . time());
     }
 }

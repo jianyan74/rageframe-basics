@@ -3,10 +3,12 @@ namespace jianyan\basics\common\helpers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
 use common\helpers\StringHelper;
 
 /**
  * 插件帮助类
+ *
  * Class AddonsHelp
  * @package common\helpers
  */
@@ -14,13 +16,16 @@ class AddonsHelp
 {
     /**
      * 渲染模块目录
+     *
+     * @var string
      */
     public static $skipPath = 'admin';
 
     /**
+     * 获取插件类
+     *
      * @param $name
      * @return string
-     * 获取插件类
      */
     public static function getAddonsClass($name)
     {
@@ -30,6 +35,7 @@ class AddonsHelp
 
     /**
      * 获取插件的根目录目录
+     *
      * @param $name
      * @return string
      */
@@ -40,19 +46,20 @@ class AddonsHelp
 
     /**
      * 解析模块地址
+     *
      * @param $route -路由
      * @param $addonName -模块名称
      * @param string $address -模块目录[admin,home]
      * @return array
      */
-    public static function analysisBusinessRoute($route,$addonName,$address = null)
+    public static function analysisBusinessRoute($route, $addonName, $address = null)
     {
         $address = !empty($address) ? $address : self::$skipPath;
 
         Yii::$app->params['addon']['skipPath'] = $address;
         $result = self::analysisRoute($route);
 
-        //实例化对象地址
+        // 实例化对象地址
         $class = "\\addons\\{$addonName}\\{$address}\\controllers\\".$result['controllerName'];
         $result['class'] = $class;
         $result['addon'] = $addonName;
@@ -63,16 +70,17 @@ class AddonsHelp
 
     /**
      * 配置基类路由解析
-     * @param $route -路由
-     * @param $addonsName -模块名称
+     *
+     * @param string $route 路由
+     * @param string $addonsName 模块名称
      * @return array
      */
-    public static function analysisBaseRoute($route,$addonsName)
+    public static function analysisBaseRoute($route, $addonsName)
     {
         Yii::$app->params['addon']['skipPath'] = self::$skipPath;
         $result = self::analysisRoute($route);
 
-        //实例化对象地址
+        // 实例化对象地址
         $class = "\\addons\\{$addonsName}\\".$result['controller'];
         $result['class'] = $class;
         $result['addon'] = $addonsName;
@@ -83,12 +91,19 @@ class AddonsHelp
 
     /**
      * 地址解析
+     *
      * @param $route
      * @return array
      */
     public static function analysisRoute($route)
     {
         $route = explode('/',$route);
+
+        if(count($route) < 2)
+        {
+            throw new NotFoundHttpException('路由解析错误,请检查路由地址');
+        }
+
         $controller = StringHelper::strUcwords($route[0]);
         $action = StringHelper::strUcwords($route[1]);
 
@@ -104,8 +119,9 @@ class AddonsHelp
 
     /**
      * 重组url
-     * @param $url -重组地址
-     * @param bool $type -地址类型
+     *
+     * @param array $url 重组地址
+     * @param bool $type 地址类型
      * @return array|bool
      */
     public static function regroupUrl(array $url,$type = false)
@@ -114,7 +130,7 @@ class AddonsHelp
         $addonsUrl['route'] = self::regroupRoute($url);
         $addonsUrl['addon'] = Yii::$app->request->get('addon');
 
-        //删除默认跳转url
+        // 删除默认跳转url
         unset($url[0]);
         foreach ($url as $key => $vo)
         {
@@ -126,6 +142,7 @@ class AddonsHelp
 
     /**
      * 重组小程序入口
+     *
      * @param array $url
      * @return array
      */
@@ -135,7 +152,7 @@ class AddonsHelp
         $addonsUrl['route'] = self::regroupRoute($url);
         $addonsUrl['addon'] = Yii::$app->request->get('addon');
 
-        //删除默认跳转url
+        // 删除默认跳转url
         unset($url[0]);
         foreach ($url as $key => $vo)
         {
@@ -147,7 +164,8 @@ class AddonsHelp
 
     /**
      * 重组路由
-     * @param $url
+     *
+     * @param array $url
      * @return string
      */
     public static function regroupRoute($url)
@@ -155,7 +173,7 @@ class AddonsHelp
         $oldRoute = Yii::$app->request->get('route');
 
         $route = $url[0];
-        //如果只填写了方法转为控制器方法
+        // 如果只填写了方法转为控制器方法
         if(count(explode('/',$route)) < 2)
         {
             $oldRoute = explode('/',$oldRoute);
@@ -168,6 +186,7 @@ class AddonsHelp
 
     /**
      * 基于数组创建目录
+     *
      * @param $files
      */
     public static function createDirOrFiles($files)
@@ -187,6 +206,7 @@ class AddonsHelp
 
     /**
      * 生成导航菜单
+     *
      * @param $data
      * @param $field
      * @return string

@@ -1,20 +1,20 @@
 <?php
 
 $config = [
+    'components' => [
+        /** ------ 后台操作日志 ------ **/
+        'actionlog' => [
+            'class' => 'jianyan\basics\common\models\sys\ActionLog',
+        ],
+    ],
     'modules' => [
-        /* 系统 modules */
+        /* 系统模块 */
         'sys' => [
             'class' => 'jianyan\basics\backend\modules\sys\Module',
         ],
-        /* 微信 modules */
+        /* 微信模块 */
         'wechat' => [
             'class' => 'jianyan\basics\backend\modules\wechat\Module',
-        ],
-    ],
-    'components' => [
-        /**--------------------*后台操作日志--------------------**/
-        'actionlog' => [
-            'class' => 'jianyan\basics\common\models\sys\ActionLog',
         ],
     ],
 ];

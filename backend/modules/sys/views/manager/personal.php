@@ -58,13 +58,13 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                             'layout'=>'{picker}{input}',
                             'pluginOptions' => [
                                 'format'         => 'yyyy-mm-dd',
-                                'todayHighlight' => true,//今日高亮
-                                'autoclose'      => true,//选择后自动关闭
-                                'todayBtn'       => true,//今日按钮显示
+                                'todayHighlight' => true,// 今日高亮
+                                'autoclose'      => true,// 选择后自动关闭
+                                'todayBtn'       => true,// 今日按钮显示
                             ],
                             'options'=>[
                                 'class'     => 'form-control no_bor',
-                                'readonly'  => 'readonly',//禁止输入
+                                'readonly'  => 'readonly',// 禁止输入
                             ]
                         ]); ?>
                         <?= \backend\widgets\provinces\Provinces::widget([
@@ -148,9 +148,9 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
 <script src="/resource/backend/other/cropper/html2canvas.min.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-    //做个下简易的验证  大小 格式
+    // 做个下简易的验证  大小 格式
     $('#avatarInput').on('change', function(e) {
-        var filemaxsize = 1024 * 5;//5M
+        var filemaxsize = 1024 * 5;// 5M
         var target = $(e.target);
         var Size = target[0].files[0].size / 1024;
         if(Size > filemaxsize) {
@@ -163,8 +163,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         } else {
             var filename = document.querySelector("#avatar-name");
             var texts = document.querySelector("#avatarInput").value;
-            var teststr = texts; //你这里的路径写错了
-            testend = teststr.match(/[^\\]+\.[^\(]+/i); //直接完整文件名的
+            var teststr = texts; // 你这里的路径写错了
+            testend = teststr.match(/[^\\]+\.[^\(]+/i); // 直接完整文件名的
             filename.innerHTML = testend;
         }
 
@@ -204,7 +204,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
         });
     }
 
-    //提交表单时候触发
+    // 提交表单时候触发
     function SendForm(){
         var status = "<?php echo Yii::$app->user->identity->id == $model->id ? true : false ;?>";
         if(status){

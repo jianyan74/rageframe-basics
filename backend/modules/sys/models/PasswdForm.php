@@ -11,10 +11,13 @@ use jianyan\basics\common\models\sys\Manager;
 class PasswdForm extends Model
 {
     public $passwd;
+
     public $passwd_new;
+
     public $passwd_repetition;
 
     private $_user;
+
     /**
      * @inheritdoc
      */
@@ -24,7 +27,7 @@ class PasswdForm extends Model
             [['passwd', 'passwd_new', 'passwd_repetition'], 'filter', 'filter' => 'trim'],
             [['passwd', 'passwd_new', 'passwd_repetition'], 'required'],
             [['passwd', 'passwd_new', 'passwd_repetition'], 'string', 'min' => 6, 'max' => 15],
-            [['passwd_repetition'], 'compare','compareAttribute'=>'passwd_new'],//验证新密码和重复密码是否相等
+            [['passwd_repetition'], 'compare','compareAttribute'=>'passwd_new'],// 验证新密码和重复密码是否相等
             ['passwd', 'validatePassword'],
             ['passwd_new', 'notCompare'],
         ];

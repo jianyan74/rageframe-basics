@@ -48,7 +48,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= $form->field($model, 'wechat_message')->checkboxList(\jianyan\basics\common\models\wechat\Account::$mtype)->hint('当前模块能够直接处理的消息类型(没有上下文的对话语境, 能直接处理消息并返回数据). 如果公众平台传递过来的消息类型不在设定的类型列表中, 那么系统将不会把此消息路由至此模块')?>
                                         <div class="alert-warning alert">
                                             注意: 关键字路由只能针对文本消息有效, 文本消息最为重要. 其他类型的消息并不能被直接理解, 多数情况需要使用文本消息来进行语境分析, 再处理其他相关消息类型<br>
-                                            注意: 上下文锁定的模块不受此限制, 上下文锁定期间, 任何类型的消息都会路由至锁定模块
+                                            需要在非文字回复的模块中添加才能生效
+                                        </div>
+                                        <?= $form->field($model, 'is_rule')->checkbox()->hint('是否要在自定义模块回复编辑时添加此规则的相应的规则 ') ?>
+                                        <div class="alert-warning alert">
+                                            注意: 如果需要嵌入规则, 那么此模块必须能够处理文本类型消息 (WechatMessage)<br>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group desk-menu" style="display:none;">
@@ -194,16 +198,8 @@ $this->params['breadcrumbs'][] = $this->title;
         }
 
         if(value == 'addon'){
-            $('.desk-menu').show();
-            $('.field-addons-wechatmessage').show();
-            $('.alert-warning').show();
-            $('.alert-warning').next().show();
             $('.field-addons-wxapp_support').show();
         }else{
-            $('.desk-menu').hide();
-            $('.field-addons-wechatmessage').hide();
-            $('.alert-warning').hide();
-            $('.alert-warning').next().hide();
             $('.field-addons-wxapp_support').hide();
         }
 
@@ -211,9 +207,6 @@ $this->params['breadcrumbs'][] = $this->title;
     });
 
     function hideInit(){
-        $('.field-addons-wechatmessage').hide();
-        $('.alert-warning').hide();
-        $('.alert-warning').next().hide();
         $('.field-addons-wxapp_support').hide();
     }
 

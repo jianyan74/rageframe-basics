@@ -9,6 +9,7 @@ use jianyan\basics\common\models\sys\ConfigCate;
 
 /**
  * 配置分类控制器
+ *
  * Class ConfigCateController
  * @package jianyan\basics\backend\modules\sys\controllers
  */
@@ -16,6 +17,7 @@ class ConfigCateController extends MController
 {
     /**
      * 首页
+     *
      * @return string
      */
     public function actionIndex()
@@ -33,6 +35,7 @@ class ConfigCateController extends MController
 
     /**
      * 编辑/新增
+     *
      * @return string|\yii\web\Response
      */
     public function actionEdit()
@@ -44,9 +47,9 @@ class ConfigCateController extends MController
         $parent_title = $request->get('parent_title','无');
         $model        = $this->findModel($id);
 
-        //等级
+        // 等级
         !empty($level) && $model->level = $level;
-        //上级id
+        // 上级id
         !empty($pid) && $model->pid = $pid;
 
         if ($model->load(Yii::$app->request->post()))
@@ -70,6 +73,7 @@ class ConfigCateController extends MController
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -87,6 +91,7 @@ class ConfigCateController extends MController
 
     /**
      * ajax修改
+     *
      * @return array
      */
     public function actionUpdateAjax()
@@ -114,6 +119,7 @@ class ConfigCateController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|ConfigCate|static
      */

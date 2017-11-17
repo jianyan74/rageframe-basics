@@ -199,7 +199,7 @@ class Attachment extends \yii\db\ActiveRecord
      */
     public function beforeDelete()
     {
-        //删除文章详细详细
+        // 删除文章详细详细
         if($this->type == self::TYPE_NEWS)
         {
             News::delAll($this->id);
