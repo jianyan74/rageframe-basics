@@ -24,14 +24,22 @@ class CacheController extends MController
         Yii::$app->cache->flush();
 
         // 清理前台文件缓存
-        $cache = new FileCache();
-        $cache->cachePath = Yii::getAlias('@frontend') . '/runtime/cache';
-        $cache->gc(true, false);
+        $frontend_cache_path = Yii::getAlias('@frontend') . '/runtime/cache';
+        if (is_dir($frontend_cache_path))
+        {
+            $cache = new FileCache();
+            $cache->cachePath = $frontend_cache_path;
+            $cache->gc(true, false);
+        }
 
         // 清理微信文件缓存
-        $cache = new FileCache();
-        $cache->cachePath = Yii::getAlias('@wechat') . '/runtime/cache';
-        $cache->gc(true, false);
+        $wechat_cache_path = Yii::getAlias('@wechat') . '/runtime/cache';
+        if (is_dir($wechat_cache_path))
+        {
+            $cache = new FileCache();
+            $cache->cachePath = $wechat_cache_path;
+            $cache->gc(true, false);
+        }
 
         // 删除备份缓存
         $path = Yii::$app->params['dataBackupPath'];
