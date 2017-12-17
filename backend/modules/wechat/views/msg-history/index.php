@@ -113,7 +113,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     <?php if(!$model->module){ ?>
                                         <span class="label label-default">未触发</span>
                                     <?php }else{ ?>
-                                        <span class="label label-info"><?= isset(Rule::$moduleExplain[$model->module]) ? Rule::$moduleExplain[$model->module] : $model->module; ?></span>
+                                        <span class="label label-info"><?= isset(Rule::$moduleExplain[$model->module]) ? Rule::$moduleExplain[$model->module] : $model->module . '模块'; ?></span>
                                     <?php } ?>
                                 </td>
                                 <td><?= $model->openid; ?></td>

@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use common\helpers\SysArrayHelper;
 
 /**
  * This is the model class for table "{{%sys_config_cate}}".
@@ -97,6 +98,20 @@ class ConfigCate extends ActiveRecord
             ->all();
 
         return ArrayHelper::map($cates,'id','title');
+    }
+
+    /**
+     * 删除子分类
+     *
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        $models = self::find()->all();
+        $ids = SysArrayHelper::getChildsId($models, $this->id);
+        self::deleteAll(['in', 'id', $ids]);
+
+        return parent::beforeDelete();
     }
 
     /**

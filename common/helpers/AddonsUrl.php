@@ -21,7 +21,7 @@ class AddonsUrl
      */
     public static function to(array $url, $scheme = false)
     {
-        return urldecode(Url::to(AddonsHelp::regroupUrl($url),$scheme));
+        return urldecode(Url::to(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE),$scheme));
     }
 
     /**
@@ -31,7 +31,7 @@ class AddonsUrl
      */
     public static function toAbsoluteUrl(array $url, $scheme = false)
     {
-        return urldecode(Yii::$app->urlManager->createUrl(AddonsHelp::regroupUrl($url),$scheme));
+        return urldecode(Yii::$app->urlManager->createUrl(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE),$scheme));
     }
 
     /**
@@ -41,7 +41,7 @@ class AddonsUrl
      */
     public static function toFront(array $url, $scheme = false)
     {
-        return urldecode(Yii::$app->urlManagerFrontend->createAbsoluteUrl(AddonsHelp::regroupUrl($url),$scheme));
+        return urldecode(Yii::$app->urlManagerFrontend->createAbsoluteUrl(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE),$scheme));
     }
 
     /**
@@ -51,7 +51,7 @@ class AddonsUrl
      */
     public static function toWechat(array $url, $scheme = false)
     {
-        return urldecode(Yii::$app->urlManagerWechat->createAbsoluteUrl(AddonsHelp::regroupUrl($url),$scheme));
+        return urldecode(Yii::$app->urlManagerWechat->createAbsoluteUrl(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE),$scheme));
     }
 
     /**
@@ -61,7 +61,7 @@ class AddonsUrl
      */
     public static function toWechatApi(array $url, $scheme = false)
     {
-        return urldecode(Yii::$app->urlManagerWechat->createAbsoluteUrl(AddonsHelp::regroupApiUrl($url),$scheme));
+        return urldecode(Yii::$app->urlManagerWechat->createAbsoluteUrl(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_API_EXECUTE),$scheme));
     }
 
     /**
@@ -71,6 +71,6 @@ class AddonsUrl
      */
     public static function toRoot(array $url, $scheme = false)
     {
-        return urldecode(Url::to(AddonsHelp::regroupUrl($url,true),$scheme));
+        return urldecode(Url::to(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_CENTRE),$scheme));
     }
 }

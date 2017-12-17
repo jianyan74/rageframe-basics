@@ -2,8 +2,12 @@
     "name": "jianyan74/rageframe-basics",
     "description": "RageFrame核心包",
     "keywords": [
+        "yii",
         "yii2",
         "rageframe",
+        "cms",
+        "cmf",
+        "php",
         "jianyan74"
     ],
     "authors": [
@@ -13,10 +17,10 @@
         }
     ],
     "type": "project",
-    "license": "BSD-3-Clause",
+    "license": "Apache-2.0",
     "homepage": "https://github.com/jianyan74/rageframe-basics",
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.0",
         "yiisoft/yii2": ">=2.0.6"
     },
     "autoload": {

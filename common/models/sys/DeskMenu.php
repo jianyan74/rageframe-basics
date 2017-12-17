@@ -5,6 +5,7 @@ namespace jianyan\basics\common\models\sys;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use common\helpers\SysArrayHelper;
 
 /**
  * This is the model class for table "{{%menu}}".
@@ -65,6 +66,20 @@ class DeskMenu extends ActiveRecord
             'append'   => '创建时间',
             'updated'  => '修改时间',
         ];
+    }
+
+    /**
+     * 删除子分类
+     *
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        $models = self::find()->all();
+        $ids = SysArrayHelper::getChildsId($models, $this->id);
+        self::deleteAll(['in', 'id', $ids]);
+
+        return parent::beforeDelete();
     }
 
     /**

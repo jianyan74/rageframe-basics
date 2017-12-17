@@ -8,7 +8,6 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use common\enums\StatusEnum;
 use common\helpers\SysArrayHelper;
-use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%cate}}".
@@ -101,6 +100,20 @@ class Cate extends ActiveRecord
 
         $cates = SysArrayHelper::itemsMerge($cates);
         return ArrayHelper::map(SysArrayHelper::itemsMergeDropDown($cates),'id','title');
+    }
+
+    /**
+     * 删除子分类
+     *
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        $models = self::find()->all();
+        $ids = SysArrayHelper::getChildsId($models, $this->id);
+        self::deleteAll(['in', 'id', $ids]);
+
+        return parent::beforeDelete();
     }
 
     /**

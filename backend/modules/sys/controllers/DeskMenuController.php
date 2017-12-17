@@ -16,11 +16,16 @@ class DeskMenuController extends MController
 {
     /**
      * 首页
+     *
      * @return string
      */
     public function actionIndex()
     {
-        $models = DeskMenu::find()->orderBy('sort Asc,append Asc')->asArray()->all();
+        $models = DeskMenu::find()
+            ->orderBy('sort Asc,append Asc')
+            ->asArray()
+            ->all();
+
         $models = SysArrayHelper::itemsMerge($models,'id');
 
         return $this->render('index', [
@@ -45,9 +50,6 @@ class DeskMenuController extends MController
         !empty($level) && $model->level = $level;// 等级
         !empty($pid) && $model->pid = $pid;// 上级id
 
-        // 设置状态默认值
-        !$model->status && $model->status = DeskMenu::STATUS_ON;
-
         if ($model->load(Yii::$app->request->post()))
         {
             if($request->isAjax)
@@ -64,13 +66,14 @@ class DeskMenuController extends MController
         }
 
         return $this->renderAjax('edit', [
-            'model'         => $model,
-            'parent_title'  => $parent_title,
+            'model' => $model,
+            'parent_title' => $parent_title,
         ]);
     }
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
@@ -88,6 +91,7 @@ class DeskMenuController extends MController
 
     /**
      * 返回模型
+     *
      * @param $id
      * @return $this|DeskMenu|static
      */

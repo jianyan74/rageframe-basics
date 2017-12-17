@@ -7,6 +7,7 @@ use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\sys\Config;
 use jianyan\basics\common\models\sys\ConfigCate;
 use common\helpers\SysArrayHelper;
+use common\enums\StatusEnum;
 use backend\controllers\MController;
 
 /**
@@ -32,27 +33,19 @@ class ConfigController extends MController
      */
     public function actionIndex()
     {
-        $cate  = Yii::$app->request->get('cate',0);
-
-        $where = [];
-        if($cate)
-        {
-            $where['cate'] = $cate;
-        }
-
-        $data = Config::find()
-            ->where($where)
-            ->with('cateChild');
+        $cate = Yii::$app->request->get('cate','');
+        $data = Config::find()->andFilterWhere(['cate' => $cate]);
         $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('cate asc,cate_child asc,sort asc')
+            ->with('cateChild')
             ->limit($pages->limit)
             ->all();
 
         return $this->render('index',[
-            'models'    => $models,
-            'pages'     => $pages,
-            'cate'     => $cate,
+            'models' => $models,
+            'pages' => $pages,
+            'cate' => $cate,
             'configCate' => ConfigCate::getListRoot(),
         ]);
     }
@@ -65,8 +58,8 @@ class ConfigController extends MController
     public function actionEdit()
     {
         $request  = Yii::$app->request;
-        $id       = $request->get('id');
-        $model    = $this->findModel($id);
+        $id = $request->get('id');
+        $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -74,8 +67,8 @@ class ConfigController extends MController
         }
 
         return $this->render('edit', [
-            'model'           => $model,
-            'configTypeList'  => Yii::$app->params['configTypeList'],
+            'model' => $model,
+            'configTypeList' => Yii::$app->params['configTypeList'],
         ]);
     }
 
@@ -88,7 +81,7 @@ class ConfigController extends MController
     {
         // 所有的配置信息
         $list = Config::find()
-            ->where(['status' => 1])
+            ->where(['status' => StatusEnum::ENABLED])
             ->orderBy('sort asc')
             ->asArray()
             ->all();
@@ -193,5 +186,4 @@ class ConfigController extends MController
 
         return $model;
     }
-
 }

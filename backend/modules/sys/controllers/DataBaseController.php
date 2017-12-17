@@ -19,20 +19,21 @@ class DataBaseController extends MController
 
     public function init()
     {
-        $path   = Yii::$app->params['dataBackupPath'];
+        $path = Yii::$app->params['dataBackupPath'];
         // 读取备份配置
         $config = [
-            'path'     => realpath($path) . DIRECTORY_SEPARATOR,
-            'part'     => Yii::$app->params['dataBackPartSize'],
+            'path' => realpath($path) . DIRECTORY_SEPARATOR,
+            'part' => Yii::$app->params['dataBackPartSize'],
             'compress' => Yii::$app->params['dataBackCompress'],
-            'level'    => Yii::$app->params['dataBackCompressLevel'],
-            'lock'     => Yii::$app->params['dataBackLock'],
+            'level' => Yii::$app->params['dataBackCompressLevel'],
+            'lock' => Yii::$app->params['dataBackLock'],
         ];
-        $this->path     = $path;
-        $this->config   = $config;
+
+        $this->path = $path;
+        $this->config = $config;
 
         // 判断目测是否存在，不存在则创建
-        if(!is_dir($path))
+        if (!is_dir($path))
         {
             mkdir($path, 0755, true);
         }

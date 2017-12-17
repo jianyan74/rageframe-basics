@@ -49,8 +49,12 @@ class RuleController extends WController
             ->limit($pages->limit)
             ->all();
 
+        $moduleExplain = Rule::$moduleExplain;
+        // 删除默认回复
+        unset($moduleExplain[Rule::RULE_MODULE_DEFAULT]);
+
         return $this->render('index',[
-            'modules' => Rule::$moduleExplain,
+            'modules' => $moduleExplain,
             'module' => $module,
             'models' => $models,
             'pages' => $pages,

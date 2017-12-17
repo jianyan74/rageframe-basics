@@ -32,8 +32,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>名称</th>
                                             <th>标题</th>
+                                            <th>标识</th>
                                             <th>排序</th>
                                             <th>具体分组</th>
                                             <th>类型</th>
@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <?php foreach($models as $model){ ?>
                                             <tr id = <?= $model->id?>>
                                                 <td><?= $model->id?></td>
-                                                <td><a href="<?= Url::to(['edit','id'=>$model->id])?>"><?= $model->name?></a></td>
                                                 <td><?= $model->title ?></td>
+                                                <td><a href="<?= Url::to(['edit','id'=>$model->id])?>"><?= $model->name?></a></td>
                                                 <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="rfSort(this)"></td>
                                                 <td><?= isset($model['cateChild']['title']) ? $model['cateChild']['title'] : '' ?></td>
                                                 <td><?= Yii::$app->params['configTypeList'][$model->type] ?></td>

@@ -11,6 +11,7 @@ use jianyan\basics\common\models\sys\AddonsBinding;
 use common\enums\StatusEnum;
 use common\helpers\AddonsHelp;
 use common\helpers\StringHelper;
+use common\helpers\FileHelper;
 use backend\controllers\MController;
 
 /**
@@ -328,7 +329,7 @@ class AddonsController extends MController
             $model['install'] && $files[] = "{$addon_dir}{$model['install']}";
             $model['uninstall'] && $files[] = "{$addon_dir}{$model['uninstall']}";
             $model['upgrade'] && $files[] = "{$addon_dir}{$model['upgrade']}";
-            AddonsHelp::createDirOrFiles($files);
+            FileHelper::createDirOrFiles($files);
 
             /*********************************是否嵌入规则*********************************/
             $is_rule = $model->is_rule ? 'true' : 'false';

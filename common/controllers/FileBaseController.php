@@ -157,8 +157,8 @@ class FileBaseController extends \common\controllers\BaseController
             $result->code = 200;
             $result->message = '上传成功';
             $result->data = [
-                'path' => 'http://'.$url,
-                'urlPath' => 'http://'.$url,
+                'path' => 'http://' . $url,
+                'urlPath' => 'http://' . $url,
             ];
         }
         catch (\Exception $e)

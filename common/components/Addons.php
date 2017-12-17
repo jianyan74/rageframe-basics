@@ -146,7 +146,7 @@ class Addons extends WechatController
      */
     public function redirectAddon($url, $statusCode = 302)
     {
-        return $this->redirect(AddonsHelp::regroupUrl($url),$statusCode);
+        return $this->redirect(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE),$statusCode);
     }
 
     /**

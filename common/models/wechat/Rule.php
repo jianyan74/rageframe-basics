@@ -47,7 +47,7 @@ class Rule extends ActiveRecord
         // self::RULE_MODULE_ADDON => '模块回复',
         self::RULE_MODULE_USER_API => '自定义接口回复',
         // self::RULE_MODULE_WX_CARD => '微信卡卷回复',
-        // self::RULE_MODULE_DEFAULT => '默认回复',
+         self::RULE_MODULE_DEFAULT => '默认回复',
     ];
 
     /**

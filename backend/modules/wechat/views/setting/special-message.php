@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 <?php } ?>
                                             </select>
                                         </div>
-                                        <div class="hint-block">如果【<?= $row['title'] ?>】到达时, 并且此时并不在对话上下文中, 将会采用选中的模块来处理. 如果选择"不处理", 那么这个消息将会使用系统默认回复来回复</div>
+                                        <div class="hint-block">如果【<?= $row['title'] ?>】到达时, 将会采用选中的模块来处理. 如果选择"不处理", 那么这个消息将会使用系统默认回复来回复</div>
                                         <div class="help-block"></div>
                                     </div>
                                 <?php } ?>

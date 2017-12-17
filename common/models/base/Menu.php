@@ -102,7 +102,12 @@ class Menu extends ActiveRecord
         if($id != Yii::$app->params['adminAccount'] && Yii::$app->config->info('SYS_MENU_SHOW_TYPE') == 1)
         {
             // 查询用户权限
-            $authAssignment = SysAuthAssignment::find()->with('itemNameChild')->where(['user_id' => $id])->asArray()->one();
+            $authAssignment = SysAuthAssignment::find()
+                ->with('itemNameChild')
+                ->where(['user_id' => $id])
+                ->asArray()
+                ->one();
+
             // 匹配菜单
             if(isset($authAssignment['itemNameChild']))
             {
@@ -124,6 +129,20 @@ class Menu extends ActiveRecord
         }
 
         return SysArrayHelper::itemsMerge($models,'id');
+    }
+
+    /**
+     * 删除子菜单
+     *
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        $menus = self::find()->all();
+        $ids = SysArrayHelper::getChildsId($menus, $this->id);
+        self::deleteAll(['in', 'id', $ids]);
+
+        return parent::beforeDelete();
     }
 
     /**

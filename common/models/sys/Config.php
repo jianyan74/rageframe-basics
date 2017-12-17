@@ -24,6 +24,13 @@ use yii\db\ActiveRecord;
 class Config extends ActiveRecord
 {
     /**
+     * 缓存key
+     *
+     * @var string
+     */
+    protected $_cacheKey = "backend:sys:config:info";
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
@@ -75,39 +82,47 @@ class Config extends ActiveRecord
 
     /**
      * 返回配置名称
-     * @param $name
-     * @return bool|mixed
+     *
+     * @param string $name 字段名称
+     * @param bool $noCache true 不从缓存读取 false 从缓存读取
+     * @return bool|string
      */
-    public function info($name)
+    public function info($name, $noCache = false)
     {
         // 获取缓存信息
-        $info = $this->getConfigInfo();
+        $info = $this->getConfigInfo($noCache);
         return isset($info[$name]) ? trim($info[$name]) : false;
     }
 
     /**
      * 返回配置名称
-     * @param $name
-     * @return bool|mixed
+     *
+     * @param bool $noCache true 不从缓存读取 false 从缓存读取
+     * @return array|bool|mixed
      */
-    public function infoAll()
+    public function infoAll($noCache = false)
     {
-        $info = $this->getConfigInfo();
+        $info = $this->getConfigInfo($noCache);
         return $info ? $info : false;
     }
 
     /**
      * 获取全部配置信息
+     *
+     * @param bool $noCache true 不从缓存读取 false 从缓存读取
      * @return array|mixed
      */
-    protected function getConfigInfo()
+    protected function getConfigInfo($noCache)
     {
         // 获取缓存信息
-        $key = "_siteConfigInfo";
-        $info = Yii::$app->cache->get($key);
-        if(!$info)
+        $cacheKey = $this->_cacheKey;
+        $info = Yii::$app->cache->get($cacheKey);
+        if(!$info || $noCache == true)
         {
-            $config = Config::find()->where(['status' => 1])->all();
+            $config = Config::find()
+                ->where(['status' => 1])
+                ->all();
+
             $info = [];
             foreach ($config as $row)
             {
@@ -115,14 +130,17 @@ class Config extends ActiveRecord
             }
 
             // 设置缓存
-            Yii::$app->cache->set($key,$info);
+            Yii::$app->cache->set($cacheKey, $info);
         }
 
         return $info;
     }
 
     /**
-     * 分析枚举类型配置值 格式 a:名称1,b:名称2
+     * 分析枚举类型配置值
+     *
+     * 格式 a:名称1,b:名称2
+     *
      * @param $string
      * @return array
      */
@@ -135,12 +153,12 @@ class Config extends ActiveRecord
             foreach ($array as $val)
             {
                 list($k, $v) = explode(':', $val);
-                $value[$k]   = $v;
+                $value[$k] = $v;
             }
         }
         else
         {
-            $value  =   $array;
+            $value = $array;
         }
 
         return $value;
@@ -153,22 +171,24 @@ class Config extends ActiveRecord
     public function beforeSave($insert)
     {
         // 清除缓存
-        Yii::$app->cache->delete("_siteConfigInfo");
+        Yii::$app->cache->delete($this->_cacheKey);
         return parent::beforeSave($insert);
     }
 
     /**
      * 行为
+     *
      * @return bool
      */
     public function beforeDelete()
     {
-        Yii::$app->cache->delete("_siteConfigInfo");
+        Yii::$app->cache->delete($this->_cacheKey);
         return parent::beforeDelete();
     }
 
     /**
-     * 关联具体分类
+     * 关联子分类
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCateChild()

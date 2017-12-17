@@ -24,10 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($model, 'type')->dropDownList($configTypeList)?>
                         <div class="row">
                             <div class="col-md-6">
-                                <?= $form->field($model, 'cate')->dropDownList(ConfigCate::getChildList(),['prompt'=>'请选择分类',]) ?>
+                                <?= $form->field($model, 'cate')->dropDownList(ConfigCate::getChildList(),['prompt' => '请选择分类',]) ?>
                             </div>
                             <div class="col-md-6">
-                                <?= $form->field($model, 'cate_child')->dropDownList(ConfigCate::getChildList($model->cate), ['prompt'=>'请选择具体分类']) ?>
+                                <?= $form->field($model, 'cate_child')->dropDownList(ConfigCate::getChildList($model->cate), ['prompt' => '请选择具体分类']) ?>
                             </div>
                         </div>
                         <?= $form->field($model, 'extra')->textarea()->hint('如果是枚举型 需要配置该项')?>
@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+
 <script>
     $("select[name='Config[cate]']").change(function(){
         var pid = $(this).val();

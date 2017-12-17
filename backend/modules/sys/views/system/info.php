@@ -41,6 +41,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <?= extension_loaded('swoole')
                                 ? '<span class="label label-primary">swoole支持</span>'
                                 : '<span class="label label-default">swoole不支持</span>'; ?>
+                            <?= extension_loaded('mongodb')
+                                ? '<span class="label label-primary">mongodb支持</span>'
+                                : '<span class="label label-default">mongodb不支持</span>'; ?>
                         </td>
                     </tr>
                     <tr>

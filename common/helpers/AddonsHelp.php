@@ -15,6 +15,21 @@ use common\helpers\StringHelper;
 class AddonsHelp
 {
     /**
+     * 插件功能路由
+     */
+    const THROUNGH_ADDONS_EXECUTE = ['addons/execute'];
+
+    /**
+     * 插件设置路由
+     */
+    const THROUNGH_ADDONS_CENTRE = ['addons/centre'];
+
+    /**
+     * 插件接口(小程序)路由
+     */
+    const THROUNGH_API_EXECUTE = ['api/centre'];
+
+    /**
      * 渲染模块目录
      *
      * @var string
@@ -47,9 +62,9 @@ class AddonsHelp
     /**
      * 解析模块地址
      *
-     * @param $route -路由
-     * @param $addonName -模块名称
-     * @param string $address -模块目录[admin,home]
+     * @param string $route 路由
+     * @param string $addonsName 模块名称
+     * @param string $address 模块目录admin,home
      * @return array
      */
     public static function analysisBusinessRoute($route, $addonName, $address = null)
@@ -60,10 +75,10 @@ class AddonsHelp
         $result = self::analysisRoute($route);
 
         // 实例化对象地址
-        $class = "\\addons\\{$addonName}\\{$address}\\controllers\\".$result['controllerName'];
+        $class = "\\addons\\{$addonName}\\{$address}\\controllers\\" . $result['controllerName'];
         $result['class'] = $class;
         $result['addon'] = $addonName;
-        Yii::$app->params['addon'] = ArrayHelper::merge(Yii::$app->params['addon'],$result);
+        Yii::$app->params['addon'] = ArrayHelper::merge(Yii::$app->params['addon'], $result);
 
         return $result;
     }
@@ -81,10 +96,10 @@ class AddonsHelp
         $result = self::analysisRoute($route);
 
         // 实例化对象地址
-        $class = "\\addons\\{$addonsName}\\".$result['controller'];
+        $class = "\\addons\\{$addonsName}\\" . $result['controller'];
         $result['class'] = $class;
         $result['addon'] = $addonsName;
-        Yii::$app->params['addon'] = ArrayHelper::merge(Yii::$app->params['addon'],$result);
+        Yii::$app->params['addon'] = ArrayHelper::merge(Yii::$app->params['addon'], $result);
 
         return $result;
     }
@@ -97,7 +112,7 @@ class AddonsHelp
      */
     public static function analysisRoute($route)
     {
-        $route = explode('/',$route);
+        $route = explode('/', $route);
 
         if(count($route) < 2)
         {
@@ -113,7 +128,7 @@ class AddonsHelp
             'controller' => $controller,
             'action' => $action,
             'controllerName' => $controller . 'Controller',
-            'actionName' => "action".$action,
+            'actionName' => "action" . $action,
         ];
     }
 
@@ -121,34 +136,11 @@ class AddonsHelp
      * 重组url
      *
      * @param array $url 重组地址
-     * @param bool $type 地址类型
-     * @return array|bool
-     */
-    public static function regroupUrl(array $url,$type = false)
-    {
-        $addonsUrl = $type ? ['addons/centre'] : ['addons/execute'];
-        $addonsUrl['route'] = self::regroupRoute($url);
-        $addonsUrl['addon'] = Yii::$app->request->get('addon');
-
-        // 删除默认跳转url
-        unset($url[0]);
-        foreach ($url as $key => $vo)
-        {
-            $addonsUrl[$key] = $vo;
-        }
-
-        return $addonsUrl;
-    }
-
-    /**
-     * 重组小程序入口
-     *
-     * @param array $url
+     * @param array $addonsUrl 路由地址
      * @return array
      */
-    public static function regroupApiUrl(array $url)
+    public static function regroupUrl(array $url, array $addonsUrl)
     {
-        $addonsUrl = ['api/execute'];
         $addonsUrl['route'] = self::regroupRoute($url);
         $addonsUrl['addon'] = Yii::$app->request->get('addon');
 
@@ -174,44 +166,24 @@ class AddonsHelp
 
         $route = $url[0];
         // 如果只填写了方法转为控制器方法
-        if(count(explode('/',$route)) < 2)
+        if (count(explode('/',$route)) < 2)
         {
-            $oldRoute = explode('/',$oldRoute);
+            $oldRoute = explode('/', $oldRoute);
             $oldRoute[1] = $url[0];
-            $route = implode('/',$oldRoute);
+            $route = implode('/', $oldRoute);
         }
 
         return $route;
     }
 
     /**
-     * 基于数组创建目录
-     *
-     * @param $files
-     */
-    public static function createDirOrFiles($files)
-    {
-        foreach ($files as $key => $value)
-        {
-            if(substr($value, -1) == '/')
-            {
-                @mkdir($value);
-            }
-            else
-            {
-                @file_put_contents($value, '');
-            }
-        }
-    }
-
-    /**
      * 生成导航菜单
      *
      * @param $data
-     * @param $field
+     * @param string $field 字段
      * @return string
      */
-    public static function bindingsToString($data,$field)
+    public static function bindingsToString($data, $field)
     {
         $str = "";
         if(isset($data[$field]))

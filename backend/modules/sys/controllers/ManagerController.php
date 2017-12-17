@@ -44,7 +44,7 @@ class ManagerController extends MController
 
         // 验证是否超级管理员
         $manager = [];
-        if(Yii::$app->user->identity->id != Yii::$app->params['adminAccount'])
+        if(Yii::$app->user->id != Yii::$app->params['adminAccount'])
         {
             $manager = ['type' => Manager::TYPE_USER];
         }
@@ -189,7 +189,7 @@ class ManagerController extends MController
      */
     public function actionPersonal()
     {
-        $id       = Yii::$app->user->identity->id;
+        $id       = Yii::$app->user->id;
         $model    = $this->findModel($id);
 
         // 提交表单
@@ -217,7 +217,7 @@ class ManagerController extends MController
 
         if($model->load($request->post()) && $model->validate())
         {
-            $id       = Yii::$app->user->identity->id;
+            $id       = Yii::$app->user->id;
             $manager  = $this->findModel($id);
             $manager->password_hash = $model->passwd_new;
 
