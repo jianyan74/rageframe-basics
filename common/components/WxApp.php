@@ -48,6 +48,7 @@ class WxApp extends BaseController
         $this->_accountId = !empty($request->get('account_id','')) ? $request->get('account_id') : $request->post('account_id','');
 
         $this->_account = Account::getAccount($this->_accountId, $this->_addonName);
+
         if($this->_account)
         {
             $options = [
@@ -87,7 +88,7 @@ class WxApp extends BaseController
         {
             try
             {
-                $oauth = $this->_app->mini_program->auth->session($code);
+                $oauth = $this->_app->auth->session($code);
                 $result->code = 200;
                 $result->message = '获取成功';
                 $result->data = [
@@ -144,8 +145,7 @@ class WxApp extends BaseController
             return $this->getResult();
         }
 
-        $miniProgram = $this->_app->mini_program;
-        $userinfo = $miniProgram->encryptor->decryptData($oauth['session_key'], $iv, $encryptedData);
+        $userinfo = $this->_app->encryptor->decryptData($oauth['session_key'], $iv, $encryptedData);
 
         $openid = $userinfo['openId'];
         if(empty($fans = Fans::getFans($openid)))

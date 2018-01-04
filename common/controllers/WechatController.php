@@ -85,7 +85,7 @@ class WechatController extends \common\controllers\BaseController
 
         // 微信支付参数配置
         Yii::$app->params['wechatPayConfig'] = [
-            'notify_url'         => $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify'])
+            'notify_url' => $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify'])
         ];
 
             // 实例化EasyWechat SDK
@@ -122,13 +122,13 @@ class WechatController extends \common\controllers\BaseController
     protected function wechatPay(array $attributes)
     {
         $attributes['trade_type'] = 'JSAPI';
-        $app = Yii::$app->wechat->getPayApp();
-        $result = $app->order->unify($attributes);
+        $payment = Yii::$app->wechat->getPayApp();
+        $result = $payment->order->unify($attributes);
 
-        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS')
+        if ($result['return_code'] == 'SUCCESS')
         {
-            $prepayId = $result->prepay_id;
-            $config = $jssdk->sdkConfig($prepayId); // 返回数组
+            $prepayId = $result['prepay_id'];
+            $config = $payment->jssdk->sdkConfig($prepayId);
         }
         else
         {
@@ -145,12 +145,14 @@ class WechatController extends \common\controllers\BaseController
      */
     protected function wechatQrPay($attributes)
     {
-        $attributes['trade_type'] = Order::NATIVE;
-        $result = $this->_app->order->unify($attributes);
-        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS')
+        $attributes['trade_type'] = 'NATIVE';
+        $payment = Yii::$app->wechat->getPayApp();
+        $result = $payment->order->unify($attributes);
+
+        if ($result['return_code'] == 'SUCCESS')
         {
-            $prepayId = $result->prepay_id;
-            $codeUrl = $result->code_url;
+            $prepayId = $result['prepay_id'];
+            $codeUrl = $result['code_url'];
         }
         else
         {

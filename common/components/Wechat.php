@@ -137,19 +137,20 @@ class Wechat extends Component
              */
             'oauth' => [
                 'scopes'   => ['snsapi_userinfo'],
-                'callback' => '/examples/oauth_callback.php',
+                'callback' => '/examples/oauth_callback.html',
             ]
         ], Yii::$app->params['wechatConfig']);
 
         $this->_defaultWechatPayConfig = ArrayHelper::merge([
+            'app_id'             => $rfConfig['WECHAT_APPID'],
             'mch_id'             => $rfConfig['WECHAT_MCHID'],
             'key'                => $rfConfig['WECHAT_API_KEY'],            // API 密钥
-
             // 如需使用敏感接口（如退款、发送红包等）需要配置 API 证书路径(登录商户平台下载 API 证书)
             'cert_path'          => $rfConfig['WECHAT_APICLIENT_CERT'],     // XXX: 绝对路径！！！！
             'key_path'           => $rfConfig['WECHAT_APICLIENT_KEY'],      // XXX: 绝对路径！！！！
-
-            'notify_url'         => Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify'])
+            // 支付回调地址
+            'notify_url'         => Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']),
+            'sandbox'            => false, // 设置为 false 或注释则关闭沙箱模式
         ], Yii::$app->params['wechatPayConfig']);
 
         parent::init();
@@ -248,7 +249,7 @@ class Wechat extends Component
     {
         if (!self::$_payApp)
         {
-            self::$_app = Factory::payment($this->_defaultWechatPayConfig);
+            self::$_payApp = Factory::payment($this->_defaultWechatPayConfig);
         }
 
         return self::$_payApp;
