@@ -4,7 +4,8 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 use Yii;
 use jianyan\basics\common\models\wechat\Attachment;
 use jianyan\basics\common\models\wechat\MassRecord;
-use jianyan\basics\common\models\wechat\FansGroups;
+use jianyan\basics\common\models\wechat\FansTags;
+use jianyan\basics\common\models\wechat\Rule;
 
 /**
  * 群发记录控制器
@@ -14,6 +15,20 @@ use jianyan\basics\common\models\wechat\FansGroups;
  */
 class MassRecordController extends WController
 {
+    /**
+     * 群发消息
+     *
+     * @var array
+     */
+    protected $_send = [
+        'text' => 'sendText',
+        'news' => 'sendNews',
+        'voice' => 'sendVoice',
+        'image' => 'sendImage',
+        'video' => 'sendVideo',
+        'card' => 'sendCard',
+    ];
+
     /**
      * 获取粉丝分组 - 群发
      *
@@ -32,21 +47,23 @@ class MassRecordController extends WController
         {
             try
             {
-                $broadcast = $this->_app->broadcast;
-                if(!$model['group'])
+                $broadcast = $this->_app->broadcasting;
+                $method = $this->_send[$model->type];
+
+                if(!$model['tag_id'])
                 {
-                    $model->group_name = '全部粉丝';
-                    $result = $broadcast->send($model['type'], $model['media_id']);
+                    $model->tag_name = '全部粉丝';
+                    $result = $broadcast->$method($model->media_id);
                 }
                 else
                 {
-                    $model->group = $model['group'];
-                    $result = $broadcast->send($model['type'], $model['media_id'], $model['group']);
+                    $result = $broadcast->$method($model->media_id, $model->tag_id);
 
                     // 获取分组信息
-                    $group = FansGroups::getGroup($model['group']);
-                    $model->group_name = $group['name'];
-                    $model->fans_num = $group['count'];
+                    $tag = FansTags::getTag($model['tag_id']);
+
+                    $model->tag_name = $tag['name'];
+                    $model->fans_num = $tag['count'];
                 }
 
                 $model->final_send_time = time();
@@ -56,18 +73,15 @@ class MassRecordController extends WController
             catch (\Exception $e)
             {
                 // 接口调用错误提示
-                return $this->message($e->getMessage(),$this->redirect(['attachment/'.$model['type'].'-index']),'error');
+                return $this->message($e->getMessage(),$this->redirect(['attachment/' . $model['type'] . '-index']),'error');
             }
 
-            return $this->message("发送成功",$this->redirect(['attachment/'.$model['type'].'-index']));
+            return $this->message("发送成功",$this->redirect(['attachment/' . $model['type'] . '-index']));
         }
-
-        $groups = FansGroups::updateGroupList();
-        unset($groups[0], $groups[1]);
 
         return $this->renderAjax('send-fans',[
             'model' => $model,
-            'groups' => $groups,
+            'tags' => FansTags::getTags($this->_app),
         ]);
     }
 

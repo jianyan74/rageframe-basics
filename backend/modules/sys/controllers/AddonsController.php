@@ -5,6 +5,7 @@ use Yii;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use Overtrue\Pinyin\Pinyin;
 use jianyan\basics\common\models\sys\Addons;
 use jianyan\basics\common\models\sys\AddonsBinding;
@@ -997,7 +998,7 @@ HTML;
         Yii::$app->params['addon']['info'] = $model;
         Yii::$app->params['addon']['binding'] = AddonsBinding::getList($model['name']);
 
-        if(!$id && Yii::$app->params['addon']['binding'])
+        if(!$id && Yii::$app->params['addon']['binding']['cover'])
         {
             $id = Yii::$app->params['addon']['binding']['cover'][0]['id'];
         }
@@ -1015,7 +1016,15 @@ HTML;
     public function actionQr()
     {
         $getUrl = Yii::$app->request->get('shortUrl');
-        return \dosamigos\qrcode\QrCode::png($getUrl,false,0,5,4);
+
+        $qr = Yii::$app->get('qr');
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        Yii::$app->response->headers->add('Content-Type', $qr->getContentType());
+
+        return $qr->setText($getUrl)
+            ->setSize(150)
+            ->setMargin(7)
+            ->writeString();
     }
 
     /**

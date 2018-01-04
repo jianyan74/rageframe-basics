@@ -35,7 +35,7 @@ class ConfigController extends MController
     {
         $cate = Yii::$app->request->get('cate','');
         $data = Config::find()->andFilterWhere(['cate' => $cate]);
-        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $pages = new Pagination(['totalCount' => $data->count(), 'pageSize' => $this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('cate asc,cate_child asc,sort asc')
             ->with('cateChild')
@@ -135,7 +135,13 @@ class ConfigController extends MController
 
         if($request->isAjax)
         {
-            $config = $request->post('config');
+            if(!($config = $request->post('config','')))
+            {
+                $result->code = 200;
+                $result->message = "修改成功";
+                return $this->getResult();
+            }
+
             foreach ($config as $key => $value)
             {
                 $model = Config::find()->where(['name' => $key])->one();

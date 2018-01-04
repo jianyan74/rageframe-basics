@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <label class="col-sm-3 control-label">昵称/openid</label>
                             <div class="col-sm-6">
                                 <div class="input-group m-b">
-                                    <input type="hidden" class="form-control" name="group_id" value="<?= $group_id?>"/>
+                                    <input type="hidden" class="form-control" name="tag_id" value="<?= $tag_id?>"/>
                                     <input type="text" class="form-control" name="keyword" value="" placeholder="<?= $keyword?>"/>
                                     <span class="input-group-btn">
                                     <button class="btn btn-white"><i class="fa fa-search"></i> 搜索</button>
@@ -47,15 +47,13 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             <div class="tabs-container">
                 <div class="tabs-right">
                     <ul class="nav nav-tabs">
-                        <li <?php if($group_id == ''){ ?>class="active"<?php } ?>>
+                        <li <?php if($tag_id == ''){ ?>class="active"<?php } ?>>
                             <a href="<?= Url::to(['index'])?>"> 全部粉丝(<strong class="text-danger"><?= $all_fans ?></strong>)</a>
                         </li>
-                        <?php foreach ($fansGroup as $k => $group){ ?>
-                            <?php if($group['id'] > 1){ ?>
-                                <li <?php if($group['id'] == $group_id){ ?>class="active"<?php } ?>>
-                                    <a href="<?= Url::to(['index','group_id'=> $group['id']])?>"> <?= $group['name'] ?>(<strong class="text-danger"><?= $group['count'] ?></strong>)</a>
-                                </li>
-                            <?php } ?>
+                        <?php foreach ($fansTags as $k => $tag){ ?>
+                            <li <?php if($tag['id'] == $tag_id){ ?>class="active"<?php } ?>>
+                                <a href="<?= Url::to(['index','tag_id' => $tag['id']])?>"> <?= $tag['name'] ?>(<strong class="text-danger"><?= $tag['count'] ?></strong>)</a>
+                            </li>
                         <?php } ?>
                     </ul>
                     <div class="tab-content">
@@ -74,46 +72,54 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                 <th>性别</th>
                                                 <th>是否关注</th>
                                                 <th>关注/取消时间</th>
-                                                <th>粉丝分组</th>
+                                                <th>粉丝标签</th>
                                                 <th>openid</th>
                                                 <th>操作</th>
                                             </tr>
                                             </thead>
                                             <tbody id="list">
                                             <?php foreach($models as $model){ ?>
-                                                <tr openid = "<?= $model->openid?>">
-                                                    <td><input type="checkbox" name="openid[]" value="<?= $model['openid']?>"></td>
-                                                    <td class="feed-element">
-                                                        <img src="<?= $model->headimgurl ?>" class="img-circle">
-                                                    </td>
-                                                    <td><?= $model->nickname ?></td>
-                                                    <td><?= $model->sex == 1 ? '男' : '女' ?></td>
-                                                    <td>
-                                                        <?php if($model->follow == Fans::FOLLOW_OFF){ ?>
-                                                            <span class="label label-danger">已取消</span>
-                                                        <?php }else{ ?>
-                                                            <span class="label label-info">已关注</span>
+                                            <tr openid = "<?= $model->openid; ?>">
+                                                <td><input type="checkbox" name="openid[]" value="<?= $model['openid']?>"></td>
+                                                <td class="feed-element">
+                                                    <img src="<?= $model->headimgurl ?>" class="img-circle">
+                                                </td>
+                                                <td><?= $model->nickname ?></td>
+                                                <td><?= $model->sex == 1 ? '男' : '女' ?></td>
+                                                <td>
+                                                    <?php if($model->follow == Fans::FOLLOW_OFF){ ?>
+                                                        <span class="label label-danger">已取消</span>
+                                                    <?php }else{ ?>
+                                                        <span class="label label-info">已关注</span>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+                                                    <?php if($model->follow == Fans::FOLLOW_OFF){ ?>
+                                                        <?= Yii::$app->formatter->asDatetime($model->unfollowtime) ?>
+                                                    <?php }else{ ?>
+                                                        <?= Yii::$app->formatter->asDatetime($model->followtime) ?>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+                                                    <?php if($model['tags']){ ?>
+                                                        <?php foreach ($model['tags'] as $value){ ?>
+                                                            <span class="label label-success"><?= $allTag[$value['tag_id']]; ?></span>
                                                         <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if($model->follow == Fans::FOLLOW_OFF){ ?>
-                                                            <?= Yii::$app->formatter->asDatetime($model->unfollowtime) ?>
-                                                        <?php }else{ ?>
-                                                            <?= Yii::$app->formatter->asDatetime($model->followtime) ?>
+                                                    <?php }else{ ?>
+                                                        <span class="label label-default">无标签</span>
+                                                    <?php } ?>
+                                                    <a  href="<?= Url::to(['move-tag','fan_id' => $model->id])?>" data-toggle='modal' data-target='#ajaxModal' style="color: #0f0f0f"><i class="fa fa-sort-down"></i></a>
+                                                    <select class="form-control m-b groups" style="display: none">
+                                                        <?php foreach ($fansTags as $value){ ?>
+                                                            <option value="<?= $value['id'] ?>" <?php if($value['id'] == $model->group_id){ ?>selected<?php } ?>><?= $value['name'] ?></option>
                                                         <?php } ?>
-                                                    </td>
-                                                    <td>
-                                                        <select class="form-control m-b groups">
-                                                            <?php foreach ($fansGroup as $value){ ?>
-                                                                <option value="<?= $value['id'] ?>" <?php if($value['id'] == $model->group_id){ ?>selected<?php } ?>><?= $value['name'] ?></option>
-                                                            <?php } ?>
-                                                        </select>
-                                                    </td>
-                                                    <td><?= $model->openid ?></td>
-                                                    <td>
-                                                        <a href="<?= Url::to(['view','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">用户详情</span></a>
-                                                    </td>
-                                                </tr>
+                                                    </select>
+                                                </td>
+                                                <td><?= $model->openid ?></td>
+                                                <td>
+                                                    <a href="<?= Url::to(['view','id'=>$model->id])?>" data-toggle='modal' data-target='#ajaxModal'><span class="btn btn-info btn-sm">用户详情</span></a>
+                                                </td>
+                                            </tr>
                                             <?php } ?>
                                             </tbody>
                                         </table>

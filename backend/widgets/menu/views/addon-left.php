@@ -8,10 +8,10 @@ use common\enums\StatusEnum;
 
 <div class="ibox-content">
     <div class="file-manager">
-        <?php if(Yii::$app->params['addon']['info']['setting'] == StatusEnum::ENABLED || !empty($list[AddonsBinding::ENTRY_COVER]) || Yii::$app->params['addon']['info']['is_rule'] == StatusEnum::ENABLED){ ?>
+        <?php if(Yii::$app->params['addon']['info']['setting'] == StatusEnum::ENABLED || !empty(Yii::$app->params['addon']['binding']['cover']) || Yii::$app->params['addon']['info']['is_rule'] == StatusEnum::ENABLED){ ?>
             <h4> 核心设置</h4>
             <ul class="folder-list" style="padding: 10px;">
-                <?php if(!empty($list[AddonsBinding::ENTRY_COVER])){ ?>
+                <?php if(!empty(Yii::$app->params['addon']['binding']['cover'])){ ?>
                 <li>
                     <a href="<?php echo Url::to(['/sys/addons/cover','addon'=> Yii::$app->params['addon']['info']['name']])?>" title="应用入口">
                         <i class="fa fa-arrow-circle-right"></i>

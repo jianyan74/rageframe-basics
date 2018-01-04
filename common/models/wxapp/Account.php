@@ -85,7 +85,7 @@ class Account extends ActiveRecord
             return false;
         }
 
-        if (empty(($model = self::find()->where(['addon_name' => $addonName,'id'=>$id])->one())))
+        if (empty(($model = self::find()->where(['addon_name' => $addonName,'id' => $id])->one())))
         {
             return false;
         }

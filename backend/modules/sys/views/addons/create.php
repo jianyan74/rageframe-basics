@@ -199,8 +199,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
         if(value == 'addon'){
             $('.field-addons-wxapp_support').show();
+            $('.desk-menu').show();
         }else{
             $('.field-addons-wxapp_support').hide();
+            $('.desk-menu').hide();
         }
 
         $('#addons-type').html(str);

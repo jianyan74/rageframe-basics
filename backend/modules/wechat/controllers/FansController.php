@@ -1,12 +1,13 @@
 <?php
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
+use jianyan\basics\common\models\wechat\FansTagMap;
 use yii;
 use yii\data\Pagination;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\wechat\Fans;
-use jianyan\basics\common\models\wechat\FansGroups;
+use jianyan\basics\common\models\wechat\FansTags;
 
 /**
  * 粉丝管理
@@ -24,40 +25,48 @@ class FansController extends WController
     public function actionIndex()
     {
         $request  = Yii::$app->request;
-        $follow     = $request->get('follow',1);
-        $group_id     = $request->get('group_id','');
+        $follow   = $request->get('follow',1);
+        $tag_id   = $request->get('tag_id','');
         $keyword  = $request->get('keyword','');
 
         $where = [];
         if($keyword)
         {
-            $where = ['or',['like', 'openid', $keyword],['like', 'nickname', $keyword]];
+            $where = ['or',['like', 'f.openid', $keyword],['like', 'f.nickname', $keyword]];
         }
 
         // 关联角色查询
         $data = Fans::find()
-            ->with('member')
             ->where($where)
-            ->andWhere(['follow' => $follow])
-            ->andFilterWhere(['group_id'=> $group_id]);
+            ->alias('f')
+            ->andWhere(['f.follow' => $follow])
+            ->joinWith("tags AS t", true, 'LEFT JOIN')
+            ->filterWhere(['t.tag_id' => $tag_id]);
 
-        $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' => $this->_pageSize]);
         $models = $data->offset($pages->offset)
+            ->with('tags','member')
             ->orderBy('followtime desc,unfollowtime desc')
             ->limit($pages->limit)
             ->all();
 
-        $get_groups = FansGroups::getGroups();
-        unset($get_groups[1]);
+        // 全部标签
+        $tags = FansTags::getTags($this->_app);
+        $allTag = [];
+        foreach ($tags as $tag)
+        {
+            $allTag[$tag['id']] = $tag['name'];
+        }
 
         return $this->render('index',[
             'models'  => $models,
             'pages'   => $pages,
             'follow'  => $follow,
             'keyword' => $keyword,
-            'group_id' => $group_id,
-            'all_fans' =>  Fans::getCountFollowFans(),
-            'fansGroup' => $get_groups,
+            'tag_id' => $tag_id,
+            'all_fans' => Fans::getCountFollowFans(),
+            'fansTags' => $tags,
+            'allTag' => $allTag,
         ]);
     }
 
@@ -76,41 +85,55 @@ class FansController extends WController
         ]);
     }
 
-    /**
-     * 移动分组
-     *
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function actionMoveUser()
+    public function actionMoveTag($fan_id)
     {
-        $request = Yii::$app->request;
-        if($request->isAjax)
+        $fans = Fans::find()
+            ->where(['id' => $fan_id])
+            ->with('tags')
+            ->asArray()
+            ->one();
+
+        // 用户当前标签
+        $fansTags = [];
+        foreach ($fans['tags'] as $value)
         {
-            $result = $this->setResult();
-
-            $openid = $request->post('openid');
-            $group_id = $request->post('group_id');
-
-            $this->_app->user_group->moveUser($openid, $group_id);
-            $model = Fans::find()->where(['openid'=>$openid])->one();
-            $model->group_id = $group_id;
-            if($model->save())
-            {
-                $result->code = 200;
-                $result->message =  "修改成功!";
-            }
-            else
-            {
-                $result->message = $this->analysisError($model->getFirstErrors());
-            }
-
-            return $this->getResult();
+            $fansTags[] = $value['tag_id'];
         }
-        else
+
+        if(Yii::$app->request->isPost)
         {
-            throw new NotFoundHttpException('请求出错!');
+            $tags = Yii::$app->request->post('tag_id',[]);
+
+            FansTagMap::deleteAll(['fan_id' => $fan_id]);
+            foreach ($tags as $tag_id)
+            {
+                // 判断新标签
+                if(!in_array($tag_id, $fansTags))
+                {
+                    $this->_app->user_tag->tagUsers([$fans['openid']], $tag_id);
+                }
+
+                $model = new FansTagMap();
+                $model->fan_id = $fan_id;
+                $model->tag_id = $tag_id;
+                $model->save();
+            }
+
+            foreach ($fansTags as $tag_id)
+            {
+                if(!in_array($tag_id, $tags))
+                {
+                    $this->_app->user_tag->untagUsers([$fans['openid']], $tag_id);
+                }
+            }
+
+            return $this->redirect(['index']);
         }
+
+        return $this->renderAjax('move-tag', [
+            'tags' => FansTags::getTags($this->_app),
+            'fansTags' => $fansTags,
+        ]);
     }
 
     /**
@@ -128,7 +151,7 @@ class FansController extends WController
         }
 
         // 获取全部列表
-        $fans_list = $this->_app->user->lists();
+        $fans_list = $this->_app->user->list();
         $fans_count = $fans_list['total'];
 
         $total_page = ceil($fans_count / 500);
@@ -207,7 +230,7 @@ class FansController extends WController
                 // 同步粉丝信息
                 foreach ($models as $fans)
                 {
-                    Fans::sync($fans['openid'],$this->_app);
+                    Fans::sync($fans['openid'], $this->_app);
                 }
 
                 $result->code = 200;

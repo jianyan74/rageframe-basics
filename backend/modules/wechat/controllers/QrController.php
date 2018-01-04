@@ -3,8 +3,8 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\data\Pagination;
+use yii\web\Response;
 use jianyan\basics\common\models\wechat\Qrcode;
-use dosamigos\qrcode\QrCode as DosQrCode;
 
 /**
  * 二维码管理
@@ -64,16 +64,16 @@ class QrController extends WController
             {
                 $model->scene_id = Qrcode::getSceneId();
                 $result = $qrcode->temporary($model->scene_id,$model->expire_seconds);
-                $model->expire_seconds = $result->expire_seconds; // 有效秒数
+                $model->expire_seconds = $result['expire_seconds']; // 有效秒数
             }
             else
             {
                 $result = $qrcode->forever($model->scene_str);// 或者 $qrcode->forever("foo");
             }
 
-            $model->ticket = $result->ticket;
+            $model->ticket = $result['ticket'];
             $model->type = Qrcode::TYPE_SCENE;
-            $model->url = $result->url; // 二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片
+            $model->url = $result['url']; // 二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片
             $model->save();
 
             return $this->redirect(['index']);
@@ -218,6 +218,14 @@ class QrController extends WController
     public function actionQr()
     {
         $getUrl = Yii::$app->request->get('shortUrl',Yii::$app->request->hostInfo);
-        return DosQrCode::png($getUrl,false,0,5,4);
+
+        $qr = Yii::$app->get('qr');
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        Yii::$app->response->headers->add('Content-Type', $qr->getContentType());
+
+        return $qr->setText($getUrl)
+            ->setSize(150)
+            ->setMargin(7)
+            ->writeString();
     }
 }

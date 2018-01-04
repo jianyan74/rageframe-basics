@@ -3,37 +3,39 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 
 use yii;
 use yii\web\NotFoundHttpException;
-use jianyan\basics\common\models\wechat\FansGroups;
+use jianyan\basics\common\models\wechat\FansTags;
 
 /**
- * 粉丝分组
+ * 粉丝标签
  *
- * Class FansGroupsController
+ * Class FansTagsController
  * @package jianyan\basics\backend\modules\wechat\controllers
  */
-class FansGroupsController extends WController
+class FansTagsController extends WController
 {
     /**
-     * 分组首页
+     * 标签首页
+     *
      * @return string
      */
     public function actionList()
     {
         return $this->render('index',[
-            'groups' => FansGroups::getGroups()
+            'tags' => FansTags::getTags($this->_app)
         ]);
     }
 
     /**
      * 删除
+     *
      * @param $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        if($this->_app->user_group->delete($id))
+        if($this->_app->user_tag->delete($id))
         {
-            FansGroups::updateGroupList();
+            FansTags::updateTagsList($this->_app);
             return $this->message("删除成功",$this->redirect(['list']));
         }
         else
@@ -54,34 +56,34 @@ class FansGroupsController extends WController
 
         if($request->isPost)
         {
-            $group_add = $request->post('group_add','');
-            $group_update = $request->post('group_update','');
+            $tag_add = $request->post('tag_add','');
+            $tag_update = $request->post('tag_update','');
 
-            // 更新分组
-            if($group_update)
+            // 更新标签
+            if($tag_update)
             {
-                foreach ($group_update as $key => $value)
+                foreach ($tag_update as $key => $value)
                 {
                     if($value)
                     {
-                        $this->_app->user_group->update($key,$value);
+                        $this->_app->user_tag->update($key,$value);
                     }
                     else
                     {
-                        $this->message("分组名称不能为空",$this->redirect(['list'],'error'));
+                        $this->message("标签名称不能为空",$this->redirect(['list'],'error'));
                     }
                 }
             }
 
-            // 插入分组
-            if($group_add)
+            // 插入标签
+            if($tag_add)
             {
-                foreach ($group_add as $value)
+                foreach ($tag_add as $value)
                 {
-                    $this->_app->user_group->create($value);
+                    $this->_app->user_tag->create($value);
                 }
             }
-            FansGroups::updateGroupList();
+            FansTags::updateTagsList($this->_app);
             return $this->redirect(['list']);
         }
         else
@@ -97,20 +99,20 @@ class FansGroupsController extends WController
      */
     public function actionSynchro()
     {
-        FansGroups::updateGroupList();
+        FansTags::updateTagsList($this->_app);
         return $this->message("粉丝同步成功",$this->redirect(['list']));
     }
 
     /**
-     * 返回分组模型
+     * 返回标签模型
      *
-     * @return array|FansGroups|null|yii\db\ActiveRecord
+     * @return array|FansTags|null|yii\db\ActiveRecord
      */
     protected function findModel()
     {
-        if (empty(($model = FansGroups::find()->one())))
+        if (empty(($model = FansTags::find()->one())))
         {
-            return new FansGroups;
+            return new FansTags;
         }
 
         return $model;

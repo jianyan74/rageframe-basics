@@ -99,6 +99,7 @@ class Attachment extends \yii\db\ActiveRecord
             'model' => '是否永久',
             'link_type' => '是否微信图文',
             'tag' => 'Tag',
+            'description' => '视频说明',
             'append' => '创建时间',
             'updated' => '修改时间',
         ];
@@ -111,8 +112,7 @@ class Attachment extends \yii\db\ActiveRecord
      */
     public static function addImage($wxResult, $imagePath)
     {
-        $prefix =  Yii::getAlias("@rootPath/").'web';
-
+        $prefix =  Yii::getAlias("@rootPath/") . 'web';
         $img_info = getimagesize($imagePath);
 
         $image_model = new Attachment();
@@ -147,9 +147,9 @@ class Attachment extends \yii\db\ActiveRecord
         return $image_model->save() ? true : false;
     }
 
-    public static function addVideo($wxResult,$imagePath,$file_name)
+    public static function addVideo($wxResult, $imagePath, $file_name)
     {
-        $prefix =  Yii::getAlias("@rootPath/").'web';
+        $prefix =  Yii::getAlias("@rootPath/") . 'web';
 
         $image_model = new Attachment();
         $image_model->media_id = $wxResult['media_id'];
@@ -168,7 +168,7 @@ class Attachment extends \yii\db\ActiveRecord
      */
     public static function getList($type)
     {
-        return self::find()->where(['type'=>$type])
+        return self::find()->where(['type' => $type])
             ->with('news')
             ->orderBy('append desc')
             ->asArray()

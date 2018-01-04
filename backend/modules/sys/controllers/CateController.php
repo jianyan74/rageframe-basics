@@ -81,11 +81,11 @@ class CateController extends MController
 
         if(!$pid)
         {
-            $str = Html::tag('option',"请选择二级分类", ['value'=>'']);
+            $str = Html::tag('option',"请选择二级分类", ['value' => '']);
             return json_encode($str);
         }
 
-        $str = Html::tag('option',"请选择二级分类", ['value'=>'']);
+        $str = Html::tag('option',"请选择二级分类", ['value' => '']);
 
         foreach($model as $value=>$name)
         {

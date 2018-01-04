@@ -6,9 +6,8 @@ use Yii;
 
 class Account extends \yii\db\ActiveRecord
 {
-    /**
-     * 事件
-     */
+    /***************************************************事件**************************************************/
+
     const TYPE_EVENT = "event";
     /**
      * 关注事件
@@ -38,6 +37,9 @@ class Account extends \yii\db\ActiveRecord
      * 二维码扫描事件
      */
     const TYPE_SCAN = "SCAN";
+
+    /***************************************************消息**************************************************/
+
     /**
      * 文本消息
      */
@@ -110,12 +112,12 @@ class Account extends \yii\db\ActiveRecord
 
     /**
      * 验证token是否一致
-     * @param $signature -微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数
-     * @param $timestamp -时间戳
-     * @param $nonce -随机数
+     * @param string $signature 微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数
+     * @param $timestamp 时间戳
+     * @param $nonce 随机数
      * @return bool
      */
-    public static function verifyToken($signature,$timestamp,$nonce)
+    public static function verifyToken($signature, $timestamp, $nonce)
     {
         $token = Yii::$app->config->info('WECHAT_TOKEN');
         $tmpArr = [$token,$timestamp,$nonce];

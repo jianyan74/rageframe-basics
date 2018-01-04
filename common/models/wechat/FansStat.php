@@ -1,5 +1,4 @@
 <?php
-
 namespace jianyan\basics\common\models\wechat;
 
 use Yii;
@@ -163,7 +162,7 @@ class FansStat extends \yii\db\ActiveRecord
         }
 
         // 获取微信统计数据
-        $stats = $app->stats;
+        $stats = $app->data_cube;
         // 增减
         $userSummary = $stats->userSummary($sevenDays[6], $sevenDays[0]);
         // 累计用户

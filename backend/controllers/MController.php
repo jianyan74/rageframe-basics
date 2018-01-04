@@ -5,7 +5,6 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\web\UnauthorizedHttpException;
-use common\components\WechatConfig;
 
 /**
  * 后台基类控制器
@@ -15,7 +14,19 @@ use common\components\WechatConfig;
  */
 class MController extends \common\controllers\BaseController
 {
-    use WechatConfig;
+    /**
+     * EasyWechat SDK
+     *
+     * @var
+     */
+    protected $_app;
+
+    /**
+     * EasyWechat Debug 模式，bool 值：true/false
+     *
+     * 当值为 false 时，所有的日志都不会记录
+     */
+    protected $_debug = true;
 
     /**
      * csrf验证
@@ -37,8 +48,10 @@ class MController extends \common\controllers\BaseController
      */
     public function init()
     {
+        Yii::$app->params['wechatConfig']['debug'] = $this->_debug;
+
         // 实例化EasyWechat SDK
-        $this->setApp();
+        $this->_app = Yii::$app->wechat->getApp();
 
         // 分页
         Yii::$app->config->info('SYS_PAGE') && $this->_pageSize = Yii::$app->config->info('SYS_PAGE');

@@ -3,7 +3,7 @@ namespace jianyan\basics\common\components;
 
 use yii;
 use yii\helpers\ArrayHelper;
-use EasyWeChat\Foundation\Application;
+use EasyWeChat\Factory;
 use common\controllers\BaseController;
 use jianyan\basics\common\models\wxapp\Account;
 use jianyan\basics\common\models\wechat\Fans;
@@ -47,20 +47,23 @@ class WxApp extends BaseController
         $this->_addonName = !empty($request->get('addon','')) ? $request->get('addon') : $request->post('addon','');
         $this->_accountId = !empty($request->get('account_id','')) ? $request->get('account_id') : $request->post('account_id','');
 
-        $this->_account = Account::getAccount($this->_accountId,$this->_addonName);
+        $this->_account = Account::getAccount($this->_accountId, $this->_addonName);
         if($this->_account)
         {
             $options = [
-                'mini_program' => [
-                    'app_id'   => $this->_account['key'],
-                    'secret'   => $this->_account['secret'],
-                    // token 和 aes_key 开启消息推送后可见
-                    'token'    => $this->_account['token'],
-                    'aes_key'  => $this->_account['encodingaeskey']
+                'app_id'   => $this->_account['key'],
+                'secret'   => $this->_account['secret'],
+                // token 和 aes_key 开启消息推送后可见
+                'token'    => $this->_account['token'],
+                'aes_key'  => $this->_account['encodingaeskey'],
+                'response_type' => 'array',
+                'log' => [
+                    'level' => 'debug',
+                    'file'  => '/tmp/rageframe/wechat/' . date('Y-m') . '/' . date('d') . '/wxapp.log',
                 ],
             ];
 
-            $this->_app = new Application($options);
+            $this->_app = Factory::miniProgram($options);
         }
 
         return true;
@@ -84,7 +87,7 @@ class WxApp extends BaseController
         {
             try
             {
-                $oauth = $this->_app->mini_program->sns->getSessionKey($code);
+                $oauth = $this->_app->mini_program->auth->session($code);
                 $result->code = 200;
                 $result->message = '获取成功';
                 $result->data = [
@@ -134,7 +137,7 @@ class WxApp extends BaseController
             return $this->getResult();
         }
 
-        $sign = sha1(htmlspecialchars_decode($request->post('rawData').$oauth['session_key']));
+        $sign = sha1(htmlspecialchars_decode($request->post('rawData') . $oauth['session_key']));
         if ($sign !== $request->post('signature'))
         {
             $result->message = '签名错误';
@@ -171,7 +174,7 @@ class WxApp extends BaseController
     {
         $auth_key = Yii::$app->security->generateRandomString() . '_' . time();
 
-        Yii::$app->cache->set($auth_key,ArrayHelper::toArray($oauth),7195);
+        Yii::$app->cache->set($auth_key,ArrayHelper::toArray($oauth), 7195);
 
         return $auth_key;
     }

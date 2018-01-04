@@ -68,36 +68,37 @@ class QrcodeStat extends ActiveRecord
 
     /**
      * 判断二维码扫描事件
+     *
      * @param $message
      * @return bool|mixed
      */
     public static function scan($message)
     {
-        if($message->Event == Account::TYPE_SUBSCRIBE && !empty($message->Ticket))// 关注
+        if($message['Event'] == Account::TYPE_SUBSCRIBE && !empty($message['Ticket']))// 关注
         {
-            $ticket = trim($message->Ticket);
-            $qrCode = Qrcode::find()->where(['ticket'=>$ticket])->one();
+            $ticket = trim($message['Ticket']);
+            $qrCode = Qrcode::find()->where(['ticket' => $ticket])->one();
             if($qrCode)
             {
-                static::insertStat($qrCode,$message->FromUserName,self::TYPE_ATTENTION);
+                static::insertStat($qrCode,$message['FromUserName'], self::TYPE_ATTENTION);
                 return $qrCode->keyword;
             }
         }
-        elseif($message->Event == Account::TYPE_SCAN)// 扫描
+        elseif($message['Event'] == Account::TYPE_SCAN)// 扫描
         {
-            if(is_numeric($message->EventKey))
+            if(is_numeric($message['EventKey']))
             {
-                $where = ['scene_id'=> $message->EventKey];
+                $where = ['scene_id' => $message['EventKey']];
             }
             else
             {
-                $where = ['scene_str'=> $message->EventKey];
+                $where = ['scene_str' => $message['EventKey']];
             }
 
             $qrCode = Qrcode::find()->where($where)->one();
             if($qrCode)
             {
-                static::insertStat($qrCode,$message->FromUserName,self::TYPE_SCAN);
+                static::insertStat($qrCode,$message['FromUserName'],self::TYPE_SCAN);
                 return $qrCode->keyword;
             }
         }

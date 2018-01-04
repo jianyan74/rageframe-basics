@@ -3,10 +3,12 @@
 namespace jianyan\basics\common\models\wechat;
 
 use Yii;
-use EasyWeChat\Message\Image;
-use EasyWeChat\Message\Video;
-use EasyWeChat\Message\Voice;
-use EasyWeChat\Message\News;
+use EasyWeChat\Kernel\Messages\Text;
+use EasyWeChat\Kernel\Messages\Image;
+use EasyWeChat\Kernel\Messages\Video;
+use EasyWeChat\Kernel\Messages\Voice;
+use EasyWeChat\Kernel\Messages\News;
+use EasyWeChat\Kernel\Messages\NewsItem;
 use jianyan\basics\common\models\sys\Addons;
 use common\enums\StatusEnum;
 
@@ -100,8 +102,8 @@ class RuleKeyword extends \yii\db\ActiveRecord
         {
             // 查询直接接管的
             $takeKeyword = RuleKeyword::find()
-                ->where(['type' => self::TYPE_TAKE,'status' => StatusEnum::ENABLED])
-                ->andFilterWhere(['>','displayorder',$keyword->displayorder])
+                ->where(['type' => self::TYPE_TAKE, 'status' => StatusEnum::ENABLED])
+                ->andFilterWhere(['>', 'displayorder', $keyword->displayorder])
                 ->orderBy('displayorder desc,id desc')
                 ->one();
             $takeKeyword && $keyword = $takeKeyword;
@@ -150,7 +152,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
                         $count_news = count($news);
                         foreach ($news as $vo)
                         {
-                            $new_news = new News([
+                            $new_news = new NewsItem([
                                 'title' => $vo['title'],
                                 'description' => $vo['digest'],
                                 'url' => $vo['url'],
@@ -161,30 +163,25 @@ class RuleKeyword extends \yii\db\ActiveRecord
                         }
                     }
 
-                    $result['content'] = $news_list;
+                    $result['content'] = new News($news_list);
 
                     break;
                 // 图片回复
                 case  Rule::RULE_MODULE_IMAGES :
-                    $result['content'] = new Image([
-                        'media_id' => $model->mediaid,
-                    ]);
+                    $result['content'] = new Image($model->mediaid);
 
                     break;
                 // 视频回复
                 case Rule::RULE_MODULE_VIDEO :
-                    $result['content'] = new Video([
+                    $result['content'] = new Video($model->mediaid, [
                         'title' => $model->title,
-                        'media_id' => $model->mediaid,
                         'description' => $model->description,
                     ]);
 
                     break;
                 // 语音回复
                 case Rule::RULE_MODULE_VOICE :
-                    $result['content'] = new Voice([
-                        'media_id' => $model->mediaid
-                    ]);
+                    $result['content'] = new Voice($model->mediaid);
 
                     break;
                 // 自定义接口回复

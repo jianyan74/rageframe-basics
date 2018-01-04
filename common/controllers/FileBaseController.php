@@ -4,10 +4,10 @@ namespace jianyan\basics\common\controllers;
 use yii;
 use yii\web\UploadedFile;
 use yii\filters\AccessControl;
-use crazyfd\qiniu\Qiniu;
-use OSS\OssClient;
 use common\helpers\FileHelper;
 use common\helpers\StringHelper;
+use crazyfd\qiniu\Qiniu;
+use OSS\OssClient;
 
 /**
  * 文件上传控制器

@@ -86,7 +86,7 @@ class MsgHistory extends ActiveRecord
             $msgHistory = new MsgHistory();
             if($msg_history['type'] == 'text')
             {
-                $add['message'] = $message->Content;
+                $add['message'] = $message['Content'];
             }
             else
             {

@@ -40,8 +40,8 @@ class MassRecord extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['fans_num', 'group', 'attach_id', 'status', 'cron_id', 'send_time', 'final_send_time', 'append'], 'integer'],
-            [['group_name'], 'string', 'max' => 50],
+            [['fans_num', 'tag_id', 'attach_id', 'status', 'cron_id', 'send_time', 'final_send_time', 'append'], 'integer'],
+            [['tag_name'], 'string', 'max' => 50],
             [['msg_type','type'], 'string', 'max' => 10],
             [['content'], 'string', 'max' => 10000],
             [['media_id'], 'string', 'max' => 100],
@@ -55,11 +55,11 @@ class MassRecord extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'group_name' => '分组名称',
+            'tag_name' => '标签名称',
             'fans_num' => '粉丝数量',
             'msg_type' => '消息类别',
             'content' => '内容',
-            'group' => '分组',
+            'tag_id' => '标签id',
             'attach_id' => '资源关联id',
             'media_id' => '微信资源id',
             'type' => '类别',

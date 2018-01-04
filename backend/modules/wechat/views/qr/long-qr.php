@@ -75,9 +75,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 if(data.code == 404) {
                     rfAffirm(data.message);
                 }else{
-                    $('#url').val(data.short_url);
+                    $('#url').val(data.data.short_url);
                     $('#longUrl').text("当前显示 "+longurl+" 的二维码");
-                    $('#qrsrc').attr('src', img_url + '?shortUrl=' + data.short_url);
+                    $('#qrsrc').attr('src', img_url + '?shortUrl=' + data.data.short_url);
                     change.html('立即转换');
                 }
             }

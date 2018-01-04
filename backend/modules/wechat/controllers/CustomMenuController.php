@@ -98,7 +98,6 @@ class CustomMenuController extends WController
             ->all();
 
         return $this->render('index',[
-            'is_menu_open' => $menus->is_menu_open,
             'pages'   => $pages,
             'models'  => $models,
         ]);
@@ -134,6 +133,7 @@ class CustomMenuController extends WController
                         $sub_button = [];
                         $sub_button['name'] = $sub['name'];
                         $sub_button['type'] = $sub['type'];
+
                         if($sub['type'] == 'click' || $sub['type'] == 'view')
                         {
                             $sub_button[$this->menuTypes[$sub['type']]['meta']] = $sub['content'];
@@ -150,7 +150,6 @@ class CustomMenuController extends WController
                 {
                     $arr['name'] = $button['name'];
                     $arr['type'] = $button['type'];
-                    $arr[$this->menuTypes[$button['type']]['meta']] = $button['content'];
 
                     if($button['type'] == 'click' || $button['type'] == 'view')
                     {
@@ -171,7 +170,7 @@ class CustomMenuController extends WController
             if($model->save())
             {
                 $menu = $this->_app->menu;
-                $menu->add($buttons);
+                $menu->create($buttons);
 
                 $result->code = 200;
                 $result->message = "修改成功!";
@@ -224,7 +223,8 @@ class CustomMenuController extends WController
     }
 
     /**
-     * 修改菜单
+     * 替换菜单为当前的菜单
+     *
      * @param $id
      * @return yii\web\Response
      */
@@ -243,7 +243,89 @@ class CustomMenuController extends WController
     }
 
     /**
+     * 同步菜单
+     */
+    public function actionSync()
+    {
+        $result = $this->setResult();
+
+        $menu = $this->_app->menu;
+        $current = $menu->current();
+
+        if($current['is_menu_open'] == true)
+        {
+            $buttons = $current['selfmenu_info']['button'];
+            $model = new CustomMenu;
+            $model = $model->loadDefaultValues();
+            $model->title = "默认菜单";
+
+
+            $data = [];
+            foreach ($buttons as &$button)
+            {
+                $arr = [];
+                $arr['name'] = $button['name'];
+                $arr['type'] = 'click';
+                $arr['content'] = '';
+
+                // 判断是否有子菜单
+                if(isset($button['sub_button']))
+                {
+                    $button['sub_button'] = $button['sub_button']['list'];
+                    unset($button['sub_button']['list']);
+
+                    foreach ($button['sub_button'] as $sub)
+                    {
+                        $sub_button = [];
+                        $sub_button['name'] = $sub['name'];
+                        $sub_button['type'] = $sub['type'];
+
+                        if($sub['type'] == 'view')
+                        {
+                            $sub_button['content'] = $sub['url'];
+                        }
+                        else
+                        {
+                            $sub_button['content'] = $sub['key'];
+                        }
+
+                        $arr['sub'][] = $sub_button;
+                    }
+                }
+                else
+                {
+                    $arr['type'] = $button['type'];
+                    if($button['type'] == 'view')
+                    {
+                        $arr['content'] = $button['url'];
+                    }
+                    else
+                    {
+                        $arr['content'] = $button['key'];
+                    }
+                }
+
+                $data[] = $arr;
+            }
+
+            $model->menu_data = serialize($buttons);
+            $model->data = serialize($data);
+            $model->save();
+
+            $result->code = 200;
+            $result->message = "同步成功";
+        }
+        else
+        {
+            $result->message = "当前没有菜单消息";
+        }
+
+        return $this->getResult();
+    }
+
+    /**
      * 返回模型
+     *
      * @param $id
      * @return $this|CustomMenu|static
      */

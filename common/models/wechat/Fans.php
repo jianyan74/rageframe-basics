@@ -57,7 +57,7 @@ class Fans extends ActiveRecord
     public function rules()
     {
         return [
-            [['sex','member_id', 'follow', 'followtime', 'unfollowtime', 'group_id', 'last_updated', 'append', 'updated'], 'integer'],
+            [['sex','member_id', 'follow', 'followtime', 'unfollowtime', 'last_updated', 'append', 'updated'], 'integer'],
             [['openid'], 'required'],
             [['unionid'], 'string', 'max' => 64],
             [['openid', 'nickname'], 'string', 'max' => 50],
@@ -109,10 +109,11 @@ class Fans extends ActiveRecord
 
     /**
      * 关注
+     *
      * @param $openid
      * @param $app
      */
-    public static function follow($openid,$app)
+    public static function follow($openid, $app)
     {
         $fans = static::findModel($openid);
 
@@ -168,14 +169,13 @@ class Fans extends ActiveRecord
 
     /**
      * 同步关注的用户信息
-     * @param $openid
-     * @param $app
+     *
+     * @param string $openid 用户openid
+     * @param object $app
      */
-    public static function sync($openid,$app)
+    public static function sync($openid, $app)
     {
         $user = $app->user->get($openid);
-        $user = ArrayHelper::toArray($user);
-
         if($user['subscribe'] == 1)
         {
             $fans = static::findModel($openid);
@@ -184,6 +184,14 @@ class Fans extends ActiveRecord
             $fans->followtime = $user['subscribe_time'];
             $fans->follow = self::FOLLOW_ON;
             $fans->save();
+
+            // 同步标签
+            $labelData = [];
+            foreach ($user['tagid_list'] as $tag)
+            {
+                $labelData[] = [$fans->id, $tag];
+            }
+            FansTagMap::add($fans->id, $labelData);
         }
     }
 
@@ -226,6 +234,16 @@ class Fans extends ActiveRecord
         }
 
         return $model;
+    }
+
+    /**
+     * 标签关联
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTags()
+    {
+        return $this->hasMany(FansTagMap::className(),['fan_id' => 'id']);
     }
 
     /**

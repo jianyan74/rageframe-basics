@@ -231,9 +231,9 @@ class Addons extends ActiveRecord
             }
 
             $class = new $class;
-            if(!method_exists($class,'run'))
+            if(!method_exists($class, 'run'))
             {
-                throw new NotFoundHttpException($class . '/actionRespond 方法未找到');
+                throw new NotFoundHttpException($class . '/actionRun 方法未找到');
             }
 
             return $class->run($message);

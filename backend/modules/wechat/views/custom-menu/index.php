@@ -18,6 +18,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <div class="panel-body">
                             <div class="ibox float-e-margins">
                                 <div class="ibox-tools">
+                                    <a class="btn btn-primary btn-xs" id="getNewMenu">
+                                        <i class="fa fa-cloud-download"></i>  同步菜单
+                                    </a>
                                     <a class="btn btn-primary btn-xs" href="<?php echo Url::to(['edit','type'=>1])?>">
                                         <i class="fa fa-plus"></i>  创建默认菜单
                                     </a>
@@ -79,3 +82,28 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         </div>
     </div>
 </div>
+
+<script type="application/javascript">
+    // 获取资源
+    $("#getNewMenu").click(function(){
+        rfAffirm('同步中,请不要关闭当前页面');
+        sync();
+    });
+
+    // 同步粉丝资料
+    function sync(offset = 0,count = 20){
+        $.ajax({
+            type:"get",
+            url:"<?= Url::to(['sync'])?>",
+            dataType: "json",
+            success: function(data){
+                if(data.code == 200) {
+                    rfAffirm(data.message);
+                    window.location.reload();
+                }else{
+                    rfAffirm(data.message);
+                }
+            }
+        });
+    }
+</script>

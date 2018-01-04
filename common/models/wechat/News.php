@@ -112,7 +112,7 @@ class News extends ActiveRecord
      * @param $id
      * @return $this|Attachment|static
      */
-    public static function getNewsList($sort=0)
+    public static function getNewsList($sort = 0)
     {
         $list = self::find()->where(['sort' => $sort])
             ->orderBy('id asc')

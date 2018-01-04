@@ -12,18 +12,17 @@ interface WxMsgInterface
     /**
      * 微信发来的文字消息格式为：
      *
-     * object{
+     * array(
      *     'ToUserName' => 'gh_test',
      *     'FromUserName' => 'oXtOes8fAzWA4cIhnNB4C5ORQFOs',
      *     'CreateTime' => '1509085635',
      *     'MsgType' => 'text',
      *     'Content' => '北京天气',
      *     'MsgId' => '6481473449631879587',
-     * }
+     * )
      * 其他的自行打印
-     * 注意这个是一个对象 请用对象的方式使用
      *
-     * @param object $message
+     * @param array $message
      * @return mixed
      */
     public function run($message);

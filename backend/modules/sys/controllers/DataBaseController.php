@@ -74,7 +74,7 @@ class DataBaseController extends MController
         $config = $this->config;
 
         // 检查是否有正在执行的任务
-        $lock = "{$config['path']}".$config['lock'];
+        $lock = "{$config['path']}" . $config['lock'];
 
         if(is_file($lock))
         {
@@ -216,12 +216,11 @@ class DataBaseController extends MController
         $result->message = "请指定要优化的表";
         if($tables)
         {
-            $Db      = \Yii::$app->db;
             // 判断是否是数组
             if(is_array($tables))
             {
                 $tables = implode('`,`', $tables);
-                $list = $Db->createCommand("OPTIMIZE TABLE `{$tables}`")->queryAll();
+                $list = Yii::$app->db->createCommand("OPTIMIZE TABLE `{$tables}`")->queryAll();
 
                 $result->message = "数据表优化出错请重试";
                 if($list)
@@ -234,7 +233,7 @@ class DataBaseController extends MController
             }
             else
             {
-                $list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
+                $list = Yii::$app->db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
 
                 // 判断是否成功
                 $result->message = "数据表'{$tables}'优化出错！错误信息:". $list['Msg_text'];
@@ -262,13 +261,12 @@ class DataBaseController extends MController
         $result->message = "请指定要修复的表";
         if($tables)
         {
-            $Db      = \Yii::$app->db;
             // 判断是否是数组
             if(is_array($tables))
             {
                 $tables = implode('`,`', $tables);
                 $result->message = "数据表修复出错请重试";
-                if($list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryAll())
+                if($list = Yii::$app->db->createCommand("REPAIR TABLE `{$tables}`")->queryAll())
                 {
                     $result->code = 200;
                     $result->message = "数据表修复化完成";
@@ -276,7 +274,7 @@ class DataBaseController extends MController
             }
             else
             {
-                $list = $Db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
+                $list = Yii::$app->db->createCommand("REPAIR TABLE `{$tables}`")->queryOne();
                 $result->message = "数据表'{$tables}'修复出错！错误信息:". $list['Msg_text'];
                 if($list['Msg_text'] == "OK")
                 {
@@ -363,7 +361,7 @@ class DataBaseController extends MController
         $size = 0;
         foreach($files as $name => $file)
         {
-            $size     += filesize($file);
+            $size    += filesize($file);
             $basename = basename($file);
             $match    = sscanf($basename, '%4s%2s%2s-%2s%2s%2s-%d');
             $gz       = preg_match('/^\d{8,8}-\d{6,6}-\d+\.sql.gz$/', $basename);

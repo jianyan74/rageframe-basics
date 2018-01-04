@@ -102,13 +102,12 @@ class ReplyDefault extends ActiveRecord
 
                 $reply = null;
                 $special = Setting::getSetting('special');
-                if(isset($special[$message->MsgType]))
+                if(isset($special[$message['MsgType']]))
                 {
                     // 关键字
-                    if($special[$message->MsgType]['type'] == Setting::SPECIAL_TYPE_KEYWORD)
+                    if($special[$message['MsgType']]['type'] == Setting::SPECIAL_TYPE_KEYWORD)
                     {
-                        $default = RuleKeyword::match($special[$message->MsgType]['content']);
-                        if($default)
+                        if($default = RuleKeyword::match($special[$message['MsgType']]['content']))
                         {
                             return $default;
                         }
@@ -116,12 +115,12 @@ class ReplyDefault extends ActiveRecord
                     else
                     {
                         // 模块处理
-                        !empty($special[$message->MsgType]['selected']) && $reply = Addons::getWechatMessage($message, $special[$message->MsgType]['selected']);
+                        !empty($special[$message['MsgType']]['selected']) && $reply = Addons::getWechatMessage($message, $special[$message['MsgType']]['selected']);
                         if($reply)
                         {
                             return [
                                 'content' => $reply,
-                                'module'  => $special[$message->MsgType]['selected']
+                                'module'  => $special[$message['MsgType']]['selected']
                             ];
                         }
                     }
@@ -136,6 +135,7 @@ class ReplyDefault extends ActiveRecord
 
     /**
      * 查询默认回复
+     *
      * @return array|ReplyDefault|null|ActiveRecord
      */
     public static function findDefault()
@@ -150,6 +150,7 @@ class ReplyDefault extends ActiveRecord
 
     /**
      * 行为
+     *
      * @return array
      */
     public function behaviors()

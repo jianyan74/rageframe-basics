@@ -6,7 +6,7 @@ use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\Response;
-use EasyWeChat\Message\Article;
+use EasyWeChat\Kernel\Messages\Article;
 use jianyan\basics\common\models\wechat\Attachment;
 use jianyan\basics\common\models\wechat\News;
 use jianyan\basics\backend\modules\wechat\models\NewsPreview;
@@ -32,6 +32,34 @@ class AttachmentController extends WController
      * @var
      */
     protected $_getWecahtMediatUrl;
+
+    /**
+     * 发送预览群发消息给指定的 openId 用户
+     *
+     * @var array
+     */
+    protected $_preview = [
+        'text' => 'previewText',
+        'news' => 'previewNews',
+        'voice' => 'previewVoice',
+        'image' => 'previewImage',
+        'video' => 'previewVideo',
+        'card' => 'previewCard',
+    ];
+
+    /**
+     * 发送预览群发消息给指定的微信号用户
+     *
+     * @var array
+     */
+    protected $_previewByName = [
+        'text' => 'previewTextByName',
+        'news' => 'previewNewsByName',
+        'voice' => 'previewVoiceByName',
+        'image' => 'previewImageByName',
+        'video' => 'previewVideoByName',
+        'card' => 'previewCardByName',
+    ];
 
     /**
      * @return array
@@ -102,11 +130,11 @@ class AttachmentController extends WController
                 if(strpos(urldecode($item['thumb_url']),$this->_wechaMediatUrl) === false)
                 {
                     // 上传到微信
-                    $image_material = $material->uploadImage($prefix.$thumb_url);
+                    $image_material = $material->uploadImage($prefix . $thumb_url);
                     $item['thumb_media_id'] = $image_material['media_id'];
                     $item['thumb_url'] = $image_material['url'];
 
-                    Attachment::addImage($image_material,$prefix.$thumb_url);
+                    Attachment::addImage($image_material,$prefix . $thumb_url);
                 }
 
                 // 循环上传文章图片到微信
@@ -116,10 +144,10 @@ class AttachmentController extends WController
                     // 判断是否已经上传到微信了
                     if(strpos(urldecode($src),$this->_wechaMediatUrl) === false)
                     {
-                        $result = $material->uploadArticleImage($prefix.$src);
+                        $result = $material->uploadArticleImage($prefix . $src);
                         $url = $result->url;
                         // 替换图片上传
-                        $item['content'] = str_replace($src,$url,$item['content']);
+                        $item['content'] = str_replace($src, $url, $item['content']);
                     }
                 }
 
@@ -212,7 +240,7 @@ class AttachmentController extends WController
             // 素材库
             $material = $this->_app->material;
             // 本地图片前缀
-            $prefix =  Yii::getAlias("@rootPath/").'web';
+            $prefix =  Yii::getAlias("@rootPath/") . 'web';
 
             $attach_id = $request->post('attach_id');
             $attachment = $this->findModel($attach_id);
@@ -304,16 +332,18 @@ class AttachmentController extends WController
         {
             try
             {
-                $broadcast = $this->_app->broadcast;
+                $broadcast = $this->_app->broadcasting;
                 if($model->type == 1)
                 {
                     // 微信号预览
-                    $broadcast->previewByName($model->msg_type, $model->media_id, $model->content);
+                    $method = $this->_previewByName[$model->msg_type];
+                    $broadcast->$method($model->media_id, $model->content);
                 }
                 else
                 {
                     // openid预览
-                    $broadcast->preview($model->msg_type, $model->media_id, $model->content);
+                    $method = $this->_preview[$model->msg_type];
+                    $broadcast->$method($model->media_id, $model->content);
                 }
             }
             catch (\Exception $e)
@@ -364,11 +394,11 @@ class AttachmentController extends WController
             if($model->attachment)
             {
                 // 本地图片前缀
-                $prefix =  Yii::getAlias("@rootPath/").'web';
+                $prefix =  Yii::getAlias("@rootPath/") . 'web';
                 $material = $this->_app->material;
-                $image_material = $material->uploadImage($prefix.$model->attachment);
+                $image_material = $material->uploadImage($prefix . $model->attachment);
 
-                Attachment::addImage($image_material,$prefix.$model->attachment);
+                Attachment::addImage($image_material, $prefix . $model->attachment);
 
                 return $this->redirect(['image-index']);
             }
@@ -381,6 +411,7 @@ class AttachmentController extends WController
 
     /**
      * 视频首页
+     *
      * @return string
      */
     public function actionVideoIndex()
@@ -409,19 +440,22 @@ class AttachmentController extends WController
     public function actionVideoAdd()
     {
         $model = $this->findModel('');
-        if ($model->load(Yii::$app->request->post()))
+
+        if (Yii::$app->request->isPost)
         {
-            if($model->attachment)
+            $data = Yii::$app->request->post('Attachment');
+            if($data['attachment'])
             {
                 // 本地图片前缀
-                $prefix =  Yii::getAlias("@rootPath/").'web';
+                $prefix =  Yii::getAlias("@rootPath/") . 'web';
                 $material = $this->_app->material;
-                $res_material = $material->uploadVideo($prefix . $model->attachment, $model->file_name, $model->description);
 
-                Attachment::addVideo($res_material, $prefix . $model->attachment, $model->file_name);
+                $res_material = $material->uploadVideo($prefix . $data['attachment'], $data['file_name'], $data['description']);
 
-                return $this->redirect(['video-index']);
+                Attachment::addVideo($res_material, $prefix . $data['attachment'], $data['file_name']);
             }
+
+            return $this->redirect(['video-index']);
         }
 
         return $this->renderAjax('video-add',[
@@ -510,11 +544,11 @@ class AttachmentController extends WController
 
         // 查找素材
         $material = $this->_app->material;
-        $lists = $material->lists($type, $offset, $count);
+        $lists = $material->list($type, $offset, $count);
         $total = $lists['total_count'];
 
         // 素材列表
-        $list = ArrayHelper::toArray($lists['item']);
+        $list = $lists['item'];
 
         $add_material = [];
         $sys_material = [];

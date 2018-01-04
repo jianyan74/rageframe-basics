@@ -6,6 +6,10 @@ $config = [
         'actionlog' => [
             'class' => 'jianyan\basics\common\models\sys\ActionLog',
         ],
+        'qr' => [
+            'class' => '\Da\QrCode\Component\QrCodeComponent',
+            // ... you can configure more properties of the component here
+        ]
     ],
     'modules' => [
         /* 系统模块 */

@@ -94,32 +94,32 @@ class DefaultController extends WController
             // 接收数据
             case 'POST':
 
-                $this->_app->server->setMessageHandler(function ($message)
+                $this->_app->server->push(function ($message)
                 {
                     // 存入公共变量
                     Yii::$app->params['wxMessage'] = $message;
 
-                    $openid = $message->FromUserName;
+                    $openid = $message['FromUserName'];
                     // 默认回复消息
                     $this->_msgHistory = [
                         'openid' => $openid,
-                        'type' => $message->MsgType,
+                        'type' => $message['MsgType'],
                         'rule_id' => MsgHistory::DEFAULT_RULE,
                         'keyword_id' => MsgHistory::DEFAULT_KWYWORD,
                     ];
 
-                    switch ($message->MsgType)
+                    switch ($message['MsgType'])
                     {
                         // 接收类型为事件
                         case Account::TYPE_EVENT:
 
-                            switch ($message->Event)
+                            switch ($message['Event'])
                             {
                                 // 关注事件
                                 case Account::TYPE_SUBSCRIBE:
 
                                     Fans::follow($openid,$this->_app);
-                                    $this->_msgHistory['type'] = $message->Event;
+                                    $this->_msgHistory['type'] = $message['Event'];
                                     $this->_reply = ReplyDefault::defaultReply();
 
                                     break;
@@ -135,8 +135,8 @@ class DefaultController extends WController
                                 case Account::TYPE_CILCK:
 
                                     Fans::follow($openid,$this->_app);
-                                    $this->_msgHistory['type'] = $message->Event;
-                                    $this->_reply = ReplyDefault::defaultReply('text',$message->EventKey);
+                                    $this->_msgHistory['type'] = $message['Event'];
+                                    $this->_reply = ReplyDefault::defaultReply('text', $message['EventKey']);
 
                                     break;
                             }
@@ -144,7 +144,7 @@ class DefaultController extends WController
                             // 二维码扫描事件[包含关注、扫描]
                             if($qrResult = QrcodeStat::scan($message))
                             {
-                                $qrResult = ReplyDefault::defaultReply('text',$qrResult);
+                                $qrResult = ReplyDefault::defaultReply('text', $qrResult);
                                 $qrResult && $this->_reply = $qrResult;
                             }
 
@@ -153,20 +153,20 @@ class DefaultController extends WController
                         // 接收文字消息
                         case Account::TYPE_TEXT :
 
-                            $this->_reply = ReplyDefault::defaultReply('text',$message->Content);
+                            $this->_reply = ReplyDefault::defaultReply('text', $message['Content']);
 
                             break;
 
                         // 默认特殊消息
                         default:
 
-                            $this->_reply = ReplyDefault::defaultReply('special',$message);
+                            $this->_reply = ReplyDefault::defaultReply('special', $message);
 
                             break;
                     }
 
                     // 历史记录
-                    MsgHistory::add($message,$this->_msgHistory,$this->_reply);
+                    MsgHistory::add($message, $this->_msgHistory, $this->_reply);
                     // 返回响应信息
                     return $this->_reply ? $this->_reply['content'] : $this->_reply;
                 });
