@@ -3,8 +3,8 @@ use yii\widgets\ActiveForm;
 use jianyan\basics\backend\widgets\menu\AddonLeftWidget;
 
 $this->title = $title;
-$this->params['breadcrumbs'][] = ['label' =>  '扩展模块','url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' =>  $addonModel['title'],'url' => ['binding','addon' => $addonModel['name']]];
+$this->params['breadcrumbs'][] = ['label' =>  '扩展模块','url' => ['/sys/addons/index']];
+$this->params['breadcrumbs'][] = ['label' =>  $addonModel['title'],'url' => ['/sys/addons/binding','addon' => $addonModel['name']]];
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 ?>
 

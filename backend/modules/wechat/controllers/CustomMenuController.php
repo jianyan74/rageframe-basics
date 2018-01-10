@@ -259,7 +259,6 @@ class CustomMenuController extends WController
             $model = $model->loadDefaultValues();
             $model->title = "默认菜单";
 
-
             $data = [];
             foreach ($buttons as &$button)
             {
@@ -310,7 +309,15 @@ class CustomMenuController extends WController
 
             $model->menu_data = serialize($buttons);
             $model->data = serialize($data);
-            $model->save();
+
+            if($menu = CustomMenu::find()->where(['menu_data' => $model->menu_data,'data' => $model->data])->one())
+            {
+                $menu->save();
+            }
+            else
+            {
+                $model->save();
+            }
 
             $result->code = 200;
             $result->message = "同步成功";

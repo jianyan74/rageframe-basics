@@ -24,16 +24,6 @@ use backend\controllers\MController;
 class AddonsController extends MController
 {
     /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'upload' => Yii::$app->params['ueditorConfig']
-        ];
-    }
-
-    /**
      * 已安装模块列表
      *
      * @return mixed|string

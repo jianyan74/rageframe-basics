@@ -1,7 +1,6 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
-use kucha\ueditor\UEditor;
 use jianyan\basics\common\models\sys\Config;
 
 $this->title = '系统配置';
@@ -80,32 +79,12 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                         <?php }elseif($row['type'] == 'baiduUEditor'){ ?>
                                                             <div class="form-group">
                                                                 <?= Html::label($row['title'],$row['name'],['class' => 'control-label demo']);?>　<?php if($row['is_hide_remark'] != 1){ ?>(<?= $row['remark']?>)<?php } ?>
-                                                                <?= UEditor::widget([
+                                                                <?= \crazydb\ueditor\UEditor::widget([
                                                                     'id' => "config[".$row['name']."]",
                                                                     'attribute' => $row['name'],
                                                                     'name' => $row['name'],
                                                                     'value' => $row['value'],
-                                                                    'clientOptions' => [
-                                                                        // 编辑区域大小
-                                                                        'initialFrameHeight' => '200',
-                                                                        // 定制菜单
-                                                                        'toolbars' => [
-                                                                            [
-                                                                                'fullscreen', 'source', '|', 'undo', 'redo', '|',
-                                                                                'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
-                                                                                'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
-                                                                                'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
-                                                                                'directionalityltr', 'directionalityrtl', 'indent', '|',
-                                                                                'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
-                                                                                'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-                                                                                'simpleupload', 'insertimage', 'emotion', 'insertvideo', 'music', 'attachment', 'map', 'insertframe', 'insertcode', 'pagebreak', 'template', 'background', '|',
-                                                                                'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
-                                                                                'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
-                                                                                'searchreplace', 'help', 'drafts'
-                                                                            ],
-                                                                        ],
-                                                                    ]
-                                                                ]);?>
+                                                                ]) ?>
                                                             </div>
                                                         <?php }elseif($row['type'] == 'image'){ ?>
                                                             <div class="form-group">
@@ -183,7 +162,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-3" id="explain">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <div class="file-manager">
@@ -202,6 +181,15 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 </div>
 
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        var menuYloc = $("#explain").offset().top;
+        $(window).scroll(function () {
+            var offsetTop = menuYloc + $(window).scrollTop() - 73 + "px";
+            $("#explain").animate({ top: offsetTop }, { duration: 600, queue: false });
+        });
+    });
+
     // 单击
     $('.demo').click(function(){
         $('#demo').val($(this).attr('for'));

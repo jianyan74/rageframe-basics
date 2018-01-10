@@ -47,6 +47,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             </div>
                             <div class="flex-row hAlignCenter normalPadding postToolbar">
                                 <div class="flex-col"><a href="<?= Url::to(['mass-record/send-fans','attach_id'=> $model['id']])?>"  title="群发" data-toggle='modal' data-target='#ajaxModal'><i class="fa fa-send"></i></a></div>
+                                <div class="flex-col"><a href="<?= Url::to(['news-preview','attach_id' => $model['id']])?>" title="手机预览" data-toggle='modal' data-target='#ajaxModal'><i class="fa fa-search"></i></a></div>
                                 <div class="flex-col"><a href="<?= Url::to(['delete','attach_id'=> $model['id']])?>" onclick="rfDelete(this);return false;" title="删除"><i class="fa fa-trash"></i></a></div>
                             </div>
                         </div>

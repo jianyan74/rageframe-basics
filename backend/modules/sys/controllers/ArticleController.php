@@ -18,16 +18,6 @@ use backend\controllers\MController;
 class ArticleController extends MController
 {
     /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'upload' => Yii::$app->params['ueditorConfig']
-        ];
-    }
-
-    /**
      * 首页
      */
     public function actionIndex()

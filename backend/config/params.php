@@ -4,7 +4,7 @@ return [
 
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
-    'exploitVersions'          => '1.4.05',
+    'exploitVersions'          => '1.4.12',
     'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',
@@ -127,6 +127,7 @@ return [
     'basicsNoAuthRoute' => [
         'main/index',// 系统主页
         'main/system',// 系统首页
+        'ueditor/index',// 百度编辑器配置及上传
         'sys/system/index',// 系统入口
         'sys/addons/execute',// 模块插件渲染
         'sys/addons/centre',// 模块插件基础设置渲染
@@ -137,10 +138,5 @@ return [
         'sys/provinces/index',// 省市区联动
         'wechat/default/index',// 微信api
         'wechat/we-code/image',// 微信防盗链获取图片
-    ],
-
-    // 不需要验证的方法
-    'basicsNoAuthAction' => [
-        'upload',// 百度编辑器上传
     ],
 ];

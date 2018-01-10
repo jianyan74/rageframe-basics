@@ -1,13 +1,13 @@
 <?php
 namespace jianyan\basics\backend\modules\wechat\controllers;
 
-use jianyan\basics\common\models\wechat\FansTagMap;
 use yii;
 use yii\data\Pagination;
 use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\wechat\Fans;
 use jianyan\basics\common\models\wechat\FansTags;
+use jianyan\basics\common\models\wechat\FansTagMap;
 
 /**
  * 粉丝管理
@@ -85,6 +85,11 @@ class FansController extends WController
         ]);
     }
 
+    /**
+     * 贴标签
+     * @param $fan_id
+     * @return string|Response
+     */
     public function actionMoveTag($fan_id)
     {
         $fans = Fans::find()
@@ -105,9 +110,9 @@ class FansController extends WController
             $tags = Yii::$app->request->post('tag_id',[]);
 
             FansTagMap::deleteAll(['fan_id' => $fan_id]);
+            // 添加标签
             foreach ($tags as $tag_id)
             {
-                // 判断新标签
                 if(!in_array($tag_id, $fansTags))
                 {
                     $this->_app->user_tag->tagUsers([$fans['openid']], $tag_id);
@@ -119,6 +124,7 @@ class FansController extends WController
                 $model->save();
             }
 
+            // 移除标签
             foreach ($fansTags as $tag_id)
             {
                 if(!in_array($tag_id, $tags))
@@ -176,14 +182,14 @@ class FansController extends WController
             {
                 if (empty($new_system_fans) || empty($new_system_fans[$openid]))
                 {
-                    $add_fans[] = [0,$openid,Fans::FOLLOW_ON,0,'',time(),time()];
+                    $add_fans[] = [0, $openid, Fans::FOLLOW_ON, 0, '', time(), time()];
                 }
             }
 
             if (!empty($add_fans))
             {
                 // 批量插入数据
-                $field = ['member_id', 'openid','follow','followtime','tag','append','updated'];
+                $field = ['member_id', 'openid', 'follow', 'followtime', 'tag', 'append', 'updated'];
                 Yii::$app->db->createCommand()->batchInsert(Fans::tableName(),$field, $add_fans)->execute();
             }
 

@@ -2,7 +2,6 @@
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
-use \kucha\ueditor\UEditor;
 
 $this->title = $attachment->isNewRecord ? '创建' : '编辑';
 $this->params['breadcrumbs'][] = ['label' => '微信图文', 'url' => ['news-index']];
@@ -86,32 +85,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <div><input class="appInput largeSize fullWidth borderBottomColorGray" placeholder="请输入标题" v-model="crtPost.title"></div>
                                     <div><input class="appInput fullWidth borderBottomColorGray" placeholder="请输入作者" v-model="crtPost.author"></div>
                                     <div><input class="appInput fullWidth" placeholder="请输入连接地址" v-model="crtPost.content_source_url"></div>
-                                    <?= UEditor::widget([
+                                    <?= \crazydb\ueditor\UEditor::widget([
                                         'id' => "content",
                                         'attribute' => 'content',
                                         'name' => 'content',
                                         'value' => '',
-                                        'clientOptions' => [
-                                            // 编辑区域大小
-                                            'initialFrameHeight' => '400',
-                                            // 定制菜单
-                                            'toolbars' => [
-                                                [
-                                                    'fullscreen', 'source', '|', 'undo', 'redo', '|',
-                                                    'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
-                                                    'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
-                                                    'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
-                                                    'directionalityltr', 'directionalityrtl', 'indent', '|',
-                                                    'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
-                                                    'content_source_url', 'uncontent_source_url', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-                                                    'simpleupload', 'insertimage', 'emotion', 'insertvideo', 'music', 'attachment', 'map', 'template', 'background', '|',
-                                                    'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
-                                                    'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
-                                                    'searchreplace', 'help', 'drafts'
-                                                ],
-                                            ],
-                                        ]
-                                    ]);?>
+                                    ]) ?>
                                 </div>
                                 <div style="width:200px;">
                                     <div class="borderBottomColorGray farPadding">
@@ -146,15 +125,16 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <!-- 上传组件不需要显示出来，我只需要使用它的功能即可 -->
         <div hidden>
-            <?= \backend\widgets\wechatuploader\Image::widget([
+            <?= \backend\widgets\webuploader\Image::widget([
                 'boxId' => 'thumb_url',
                 'name'  =>"thumb_url",
                 'value' =>  '',
                 'options' => [
                     'multiple'   => false,
+                    'vueMaterial' => true,
                 ],
                 'pluginOptions' => [
-                    'uploadMaxSize' => 1024,
+                    'uploadMaxSize' => 1024 * 1024,
                 ]
             ])?>
         </div>

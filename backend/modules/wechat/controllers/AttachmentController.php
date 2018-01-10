@@ -62,16 +62,6 @@ class AttachmentController extends WController
     ];
 
     /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'upload' => Yii::$app->params['ueditorConfig']
-        ];
-    }
-
-    /**
      * 图文首页
      *
      * @return string
@@ -145,7 +135,7 @@ class AttachmentController extends WController
                     if(strpos(urldecode($src),$this->_wechaMediatUrl) === false)
                     {
                         $result = $material->uploadArticleImage($prefix . $src);
-                        $url = $result->url;
+                        $url = $result['url'];
                         // 替换图片上传
                         $item['content'] = str_replace($src, $url, $item['content']);
                     }
@@ -160,8 +150,8 @@ class AttachmentController extends WController
                     'author' => $item['author'],
                     'content' => $item['content'],
                     'digest' => $item['digest'],
-                    'content_source_url' => $item['content_source_url'],
-                    'show_cover_pic' => $item['show_cover_pic'],
+                    'source_url' => $item['content_source_url'],
+                    'show_cover' => $item['show_cover_pic'],
                 ]);
 
                 $article_list[] = $article;
@@ -260,11 +250,11 @@ class AttachmentController extends WController
                 if(strpos(urldecode($item['thumb_url']),$this->_wechaMediatUrl) === false)
                 {
                     // 上传到微信
-                    $image_material = $material->uploadImage($prefix.$thumb_url);
+                    $image_material = $material->uploadImage($prefix . $thumb_url);
                     $item['thumb_media_id'] = $image_material['media_id'];
                     $item['thumb_url'] = $image_material['url'];
 
-                    Attachment::addImage($image_material,$prefix.$thumb_url);
+                    Attachment::addImage($image_material,$prefix . $thumb_url);
                 }
             }
 
@@ -277,7 +267,7 @@ class AttachmentController extends WController
                     $news = News::findOne($vo['id']);
                     $news->sort = $k;
                     $news->attributes = $vo;
-                    $news->url = $vo['content_source_url'];
+                    $news->url = $vo['source_url'];
                     $news->save();
                 }
             }
@@ -295,7 +285,7 @@ class AttachmentController extends WController
                     $vo['attach_id'] = $attachment->id;
                     $news = new News();
                     $news->attributes = $vo;
-                    $news->url = $vo['content_source_url'];
+                    $news->url = $vo['source_url'];
                     $news->sort = $k;
                     $news->save();
                 }

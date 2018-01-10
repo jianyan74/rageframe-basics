@@ -19,16 +19,6 @@ use backend\controllers\MController;
 class ConfigController extends MController
 {
     /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'upload' => Yii::$app->params['ueditorConfig']
-        ];
-    }
-
-    /**
      * 首页
      */
     public function actionIndex()

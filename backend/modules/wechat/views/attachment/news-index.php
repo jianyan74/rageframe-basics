@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <?php if($item['link_type'] == 1){ ?>
                                             <?php if($index == 0){ ?>
                                                 <a class="fontColorWhite" href="<?= $news['url'] ?>" target="_blank" style="left:25%;top: 50%;position: absolute;">文章预览</a>
-                                                <a class="fontColorWhite" href="<?= Url::to(['news-preview','attach_id' => $item['id']])?>"  data-toggle='modal' data-target='#ajaxModal' style="right:25%;top: 50%;position: absolute;">手机预览</a>
+                                                <a class="fontColorWhite" href="<?= Url::to(['news-preview','attach_id' => $item['id']])?>" data-toggle='modal' data-target='#ajaxModal' style="right:25%;top: 50%;position: absolute;">手机预览</a>
                                             <?php }else{ ?>
                                                 <a class="absoluteCenter fontColorWhite" href="<?= $news['url'] ?>" target="_blank">文章预览</a>
                                             <?php } ?>
@@ -92,7 +92,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <div class="flex-row hAlignCenter normalPadding postToolbar">
                                 <?php if($item['link_type'] == 1){ ?>
                                     <div class="flex-col"><a href="<?= Url::to(['mass-record/send-fans','attach_id'=> $item['id']])?>"  title="群发" data-toggle='modal' data-target='#ajaxModal'><i class="fa fa-send"></i></a></div>
-                                    <div class="flex-col"><a href="<?= Url::to(['news-edit','attach_id'=> $item['id']])?>" title="编辑"><i class="fa fa-edit"></i></a></div>
+                                    <div class="flex-col"><a href="<?= Url::to(['news-edit','attach_id'=> $item['id']])?>" title="编辑"><i class="fa fa-pencil"></i></a></div>
                                 <?php }else{ ?>
                                     <div class="flex-col"><a href="<?= Url::to(['news-link-edit','attach_id'=> $item['id']])?>" title="编辑"><i class="fa fa-edit"></i></a></div>
                                 <?php } ?>

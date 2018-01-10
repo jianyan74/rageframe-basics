@@ -27,7 +27,7 @@ class MenuController extends MController
             ->asArray()
             ->all();
 
-        $models = SysArrayHelper::itemsMerge($models,'id');
+        $models = SysArrayHelper::itemsMerge($models, 'id');
 
         return $this->render('index', [
             'models' => $models,

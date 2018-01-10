@@ -2,7 +2,6 @@
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
-use \kucha\ueditor\UEditor;
 
 $this->title = $attachment->isNewRecord ? '创建' : '编辑';
 $this->params['breadcrumbs'][] = ['label' => '微信图文', 'url' => ['news-index']];

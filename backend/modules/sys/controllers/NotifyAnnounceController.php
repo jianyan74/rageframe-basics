@@ -16,16 +16,6 @@ use backend\controllers\MController;
 class NotifyAnnounceController extends MController
 {
     /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'upload' => Yii::$app->params['ueditorConfig']
-        ];
-    }
-
-    /**
      * 系统公告
      *
      * @return string

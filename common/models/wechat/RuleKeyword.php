@@ -84,7 +84,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
      */
     public static function match($content)
     {
-        $keyword = RuleKeyword::find()->andWhere(['or',
+        $keyword = RuleKeyword::find()->where(['or',
             ['and', '{{type}} = :typeMatch', '{{content}} = :content'], // 直接匹配关键字
             ['and', '{{type}} = :typeInclude', 'INSTR(:content, {{content}}) > 0'], // 包含关键字
             ['and', '{{type}} = :typeRegular', ' :content REGEXP {{content}}'], // 正则匹配关键字

@@ -2,6 +2,7 @@
 namespace jianyan\basics\backend\modules\sys\controllers;
 
 use Yii;
+use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
 use jianyan\basics\common\models\wechat\Rule;
 use jianyan\basics\common\models\wechat\ReplyAddon;
@@ -20,15 +21,11 @@ class AddonsRuleController extends RuleController
 {
     public $_module = Rule::RULE_MODULE_ADDON;
 
-    /**
-     * 编辑
-     *
-     * @return mixed|string|yii\web\Response
-     */
-    public function actionEdit()
+    protected $_addonModel;
+
+    public function init()
     {
-        $request = Yii::$app->request;
-        $addon = $request->get('addon');
+        $addon = Yii::$app->request->get('addon','');
         if(!($addonModel = Addons::getAddon($addon)))
         {
             throw new NotFoundHttpException('插件不存在');
@@ -38,12 +35,58 @@ class AddonsRuleController extends RuleController
         Yii::$app->params['addon']['info'] = $addonModel;
         Yii::$app->params['addon']['binding'] = AddonsBinding::getList($addonModel['name']);
 
+        $this->_module = $addon;
+        $this->_addonModel = $addonModel;
+        parent::init();
+    }
+
+    /**
+     * 首页
+     *
+     * @return string
+     */
+    public function actionIndex()
+    {
+        $request = Yii::$app->request;
+        $keyword = $request->get('keyword','');
+
+        $data = Rule::find()->with('ruleKeyword')
+            ->andWhere(['module' => $this->_module])
+            ->andFilterWhere(['like', 'name', $keyword]);
+
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $models = $data->offset($pages->offset)
+            ->orderBy('displayorder desc,append desc')
+            ->limit($pages->limit)
+            ->all();
+
+        return $this->render('index',[
+            'module' => $this->_module,
+            'models' => $models,
+            'pages' => $pages,
+            'keyword' => $keyword,
+            'addonModel' => $this->_addonModel,
+        ]);
+    }
+
+    /**
+     * 编辑
+     *
+     * @return mixed|string|yii\web\Response
+     */
+    public function actionEdit()
+    {
+        $request = Yii::$app->request;
+        $id = $request->get('id', '');
+
         // 回复规则
-        $rule = $this->findRuleModel($addon);
+        $rule = $this->findRuleModel($id);
+
         // 默认关键字
         $keyword = new RuleKeyword();
         // 基础
-        $model = $this->findModel($addon);
+        $model = $this->findModel($id);
+        $model->addon = $this->_module;
 
         // 关键字列表
         $ruleKeywords = [
@@ -67,33 +110,31 @@ class AddonsRuleController extends RuleController
             try
             {
                 // 编辑
-                if($rule->save())
+                if(!$rule->save())
                 {
-                    // 获取规则ID
-                    $model->rule_id = $rule->id;
-                    // 其他匹配包含关键字
-                    $otherKeywords = Yii::$app->request->post('ruleKey',[]);
-                    $resultKeywords = $keyword->updateKeywords($keyword->content, $otherKeywords, $ruleKeywords, $rule->id, $addon, $rule);
+                    throw new \Exception('插入失败！');
+                }
 
-                    if($model->save() && $resultKeywords)
-                    {
-                        $transaction->commit();
-                        return $this->redirect(['/wechat/reply-addon/edit','addon' => $addon]);
-                    }
-                    else
-                    {
-                        throw new \Exception('插入失败');
-                    }
+                // 获取规则ID
+                $model->rule_id = $rule->id;
+                // 其他匹配包含关键字
+                $otherKeywords = Yii::$app->request->post('ruleKey',[]);
+                $resultKeywords = $keyword->updateKeywords($keyword->content, $otherKeywords, $ruleKeywords, $rule->id, $this->_module, $rule);
+
+                if($model->save() && $resultKeywords)
+                {
+                    $transaction->commit();
+                    return $this->redirect(['index','addon' => $this->_module]);
                 }
                 else
                 {
-                    throw new \Exception('插入失败！');
+                    throw new \Exception('插入失败');
                 }
             }
             catch (\Exception $e)
             {
                 $transaction->rollBack();
-                return $this->message($e->getMessage(),$this->redirect(['rule/index']),'error');
+                return $this->message($e->getMessage(),$this->redirect(['index','addon' => $this->_module]),'error');
             }
         }
 
@@ -103,27 +144,21 @@ class AddonsRuleController extends RuleController
             'keyword' => $keyword,
             'title' => '规则管理',
             'ruleKeywords' => $ruleKeywords,
-            'addonModel' => $addonModel,
+            'addonModel' => $this->_addonModel,
             'binding' => Yii::$app->params['addon']['binding'],
         ]);
     }
 
     /**
-     * 返回规则模型
+     * 删除
      *
      * @param $id
-     * @return $this|Rule|static
+     * @return mixed
      */
-    protected function findRuleModel($addon)
+    public function actionDelete($id)
     {
-        if (empty(($model = Rule::find()->with('ruleKeyword')->where(['module' => $addon])->one())))
-        {
-            $model = new Rule;
-            $model->module = $addon;
-            return $model->loadDefaultValues();
-        }
-
-        return $model;
+        $this->findRuleModel($id)->delete();
+        return $this->redirect(['index','addon' => $this->_module]);
     }
 
     /**
@@ -132,19 +167,17 @@ class AddonsRuleController extends RuleController
      * @param $id
      * @return array|ReplyAddon|null|\yii\db\ActiveRecord
      */
-    protected function findModel($addon)
+    protected function findModel($id)
     {
-        if (empty($addon))
+        if (empty($id))
         {
             $model = new ReplyAddon;
-            $model->addon = $addon;
             return $model;
         }
 
-        if (empty(($model = ReplyAddon::find()->where(['addon' => $addon])->one())))
+        if (empty(($model = ReplyAddon::findOne($id))))
         {
             $model = new ReplyAddon;
-            $model->addon = $addon;
             return $model;
         }
 

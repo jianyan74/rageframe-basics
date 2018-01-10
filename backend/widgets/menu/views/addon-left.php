@@ -21,7 +21,7 @@ use common\enums\StatusEnum;
                 <?php } ?>
                 <?php if(Yii::$app->params['addon']['info']['is_rule'] == StatusEnum::ENABLED){ ?>
                     <li>
-                        <a href="<?php echo Url::to(['/sys/addons-rule/edit','addon'=> Yii::$app->params['addon']['info']['name']])?>" title="规则管理">
+                        <a href="<?php echo Url::to(['/sys/addons-rule/index','addon' => Yii::$app->params['addon']['info']['name']])?>" title="规则管理">
                             <i class="fa fa-gavel"></i>
                             规则管理
                         </a>

@@ -43,7 +43,7 @@ class RuleController extends WController
             ->andFilterWhere($where)
             ->andFilterWhere(['like', 'name', $keyword]);
 
-        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $pages = new Pagination(['totalCount' => $data->count(), 'pageSize' => $this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('displayorder desc,append desc')
             ->limit($pages->limit)
@@ -101,28 +101,25 @@ class RuleController extends WController
             $transaction = Yii::$app->db->beginTransaction();
             try
             {
-                // 编辑
-                if($rule->save())
+                if(!$rule->save())
                 {
-                    // 获取规则ID
-                    $model->rule_id = $rule->id;
-                    // 其他匹配包含关键字
-                    $otherKeywords = Yii::$app->request->post('ruleKey',[]);
-                    $resultKeywords = $keyword->updateKeywords($keyword->content,$otherKeywords,$ruleKeywords,$rule->id,$this->_module,$rule);
+                    throw new \Exception('插入失败！');
+                }
 
-                    if($model->save() && $resultKeywords)
-                    {
-                        $transaction->commit();
-                        return $this->redirect(['rule/index','module' => $rule->module]);
-                    }
-                    else
-                    {
-                        throw new \Exception('插入失败');
-                    }
+                // 获取规则ID
+                $model->rule_id = $rule->id;
+                // 其他匹配包含关键字
+                $otherKeywords = Yii::$app->request->post('ruleKey',[]);
+                $resultKeywords = $keyword->updateKeywords($keyword->content, $otherKeywords, $ruleKeywords, $rule->id, $this->_module, $rule);
+
+                if($model->save() && $resultKeywords)
+                {
+                    $transaction->commit();
+                    return $this->redirect(['rule/index','module' => $rule->module]);
                 }
                 else
                 {
-                    throw new \Exception('插入失败！');
+                    throw new \Exception('插入失败');
                 }
             }
             catch (\Exception $e)

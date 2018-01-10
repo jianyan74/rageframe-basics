@@ -14,16 +14,6 @@ use backend\controllers\MController;
 class ArticleSingleController extends MController
 {
     /**
-     * @return array
-     */
-    public function actions()
-    {
-        return [
-            'upload' => Yii::$app->params['ueditorConfig']
-        ];
-    }
-
-    /**
      * 首页
      *
      * @return string

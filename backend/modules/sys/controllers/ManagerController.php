@@ -50,9 +50,16 @@ class ManagerController extends MController
         }
 
         // 关联角色查询
-       $data   = Manager::find()->with('assignment')->where($where)->andWhere($manager);
+       $data   = Manager::find()
+           ->with('assignment')
+           ->where($where)
+           ->andWhere($manager);
+
        $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
-       $models = $data->offset($pages->offset)->orderBy('type desc,created_at desc')->limit($pages->limit)->all();
+       $models = $data->offset($pages->offset)
+           ->orderBy('type desc,created_at desc')
+           ->limit($pages->limit)
+           ->all();
 
        return $this->render('index',[
            'models'  => $models,
