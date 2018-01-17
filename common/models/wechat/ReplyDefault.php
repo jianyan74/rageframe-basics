@@ -52,7 +52,7 @@ class ReplyDefault extends ActiveRecord
 
     /**
      * 返回回复信息
-     * 如果是特殊消息进来的的$message是一个对象
+     * 如果是特殊消息进来的的$message是一个数组
      *
      * @param string $type 触发的类型 follow:关注;text:文字信息
      * @param null $message 用户发送的内容
@@ -90,7 +90,7 @@ class ReplyDefault extends ActiveRecord
                 }
 
                 // 查询关键字并返回
-                if($default)
+                if ($default)
                 {
                     return $default;
                 }
@@ -101,13 +101,15 @@ class ReplyDefault extends ActiveRecord
             case "special" :
 
                 $reply = null;
+                $msgType = $message['MsgType'];
                 $special = Setting::getSetting('special');
-                if(isset($special[$message['MsgType']]))
+
+                if (isset($special[$msgType]))
                 {
                     // 关键字
-                    if($special[$message['MsgType']]['type'] == Setting::SPECIAL_TYPE_KEYWORD)
+                    if ($special[$msgType]['type'] == Setting::SPECIAL_TYPE_KEYWORD)
                     {
-                        if($default = RuleKeyword::match($special[$message['MsgType']]['content']))
+                        if ($default = RuleKeyword::match($special[$msgType]['content']))
                         {
                             return $default;
                         }
@@ -115,12 +117,12 @@ class ReplyDefault extends ActiveRecord
                     else
                     {
                         // 模块处理
-                        !empty($special[$message['MsgType']]['selected']) && $reply = Addons::getWechatMessage($message, $special[$message['MsgType']]['selected']);
-                        if($reply)
+                        !empty($special[$msgType]['selected']) && $reply = Addons::getWechatMessage($message, $special[$msgType]['selected']);
+                        if ($reply)
                         {
                             return [
                                 'content' => $reply,
-                                'module'  => $special[$message['MsgType']]['selected']
+                                'module'  => $special[$msgType]['selected']
                             ];
                         }
                     }

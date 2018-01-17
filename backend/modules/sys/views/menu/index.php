@@ -55,3 +55,19 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         </div>
     </div>
 </div>
+
+<script>
+    //折叠
+    $('.cf').click(function(){
+        var self = $(this);
+        var id = self.parent().parent().attr('id');
+        if(self.hasClass("fa-minus-square")){
+            $('.'+id).hide();
+            self.removeClass("fa-minus-square").addClass("fa-plus-square");
+        } else {
+            $('.'+id).show();
+            self.removeClass("fa-plus-square").addClass("fa-minus-square");
+            $('.'+id).find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+        }
+    });
+</script>

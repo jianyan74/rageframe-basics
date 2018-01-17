@@ -215,6 +215,10 @@ class MsgHistory extends ActiveRecord
                         return "调用二维码直接扫描返回地址:" . $scanCodeInfo['ScanResult'];
                         break;
 
+                    case 'MASSSENDJOBFINISH' :
+                        return "点击图文MsgID为:" . $messgae['MsgID'];
+                        break;
+
                     default :
                         return serialize($messgae);
                         break;

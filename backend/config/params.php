@@ -4,7 +4,7 @@ return [
 
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
-    'exploitVersions'          => '1.4.12',
+    'exploitVersions'          => '1.4.15',
     'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',
@@ -139,4 +139,8 @@ return [
         'wechat/default/index',// 微信api
         'wechat/we-code/image',// 微信防盗链获取图片
     ],
+    // 不需要验证的方法
+    'basicsNoAuthAction' => [
+
+    ]
 ];

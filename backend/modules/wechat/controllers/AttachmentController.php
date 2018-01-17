@@ -242,12 +242,12 @@ class AttachmentController extends WController
             foreach ($list as $key => &$item)
             {
                 // 替换加入显示的数据
-                $item['thumb_url'] = str_replace($this->_getWecahtMediatUrl,'',trim($item['thumb_url']));
+                $item['thumb_url'] = str_replace($this->_getWecahtMediatUrl, '', trim($item['thumb_url']));
                 // 原始封面
                 $thumb_url = $item['thumb_url'];
 
                 // 封面判断是否已经上传到微信了
-                if(strpos(urldecode($item['thumb_url']),$this->_wechaMediatUrl) === false)
+                if(strpos(urldecode($item['thumb_url']), $this->_wechaMediatUrl) === false)
                 {
                     // 上传到微信
                     $image_material = $material->uploadImage($prefix . $thumb_url);
@@ -338,10 +338,10 @@ class AttachmentController extends WController
             }
             catch (\Exception $e)
             {
-                return $this->message($e->getMessage(),$this->redirect(['attachment/'.$model['msg_type'].'-index']),'error');
+                return $this->message($e->getMessage(), $this->redirect(['attachment/' . $model['msg_type'] . '-index']), 'error');
             }
 
-            return $this->message("发送成功",$this->redirect(['attachment/'.$model['msg_type'].'-index']));
+            return $this->message("发送成功", $this->redirect(['attachment/'.$model['msg_type'] . '-index']));
         }
 
         return $this->renderAjax('news-preview',[
