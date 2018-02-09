@@ -66,11 +66,11 @@ class CustomMenuController extends WController
             'value' => 'rselfmenu_1_2',
             'alert' => '微信客户端将调起微信相册，完成选择操作后，将选择的相片发送给开发者的服务器，并推送事件给开发者，同时收起相册。'
         ],
-//        'miniprogram' => [
-//            'name' => '关联小程序',
-//            'meta' => 'key',
-//            'alert' => '点击该菜单跳转到关联的小程序'
-//        ],
+        'miniprogram' => [
+            'name' => '关联小程序',
+            'meta' => 'key',
+            'alert' => '点击该菜单跳转到关联的小程序'
+        ],
     ];
 
     /**
@@ -138,6 +138,12 @@ class CustomMenuController extends WController
                         {
                             $sub_button[$this->menuTypes[$sub['type']]['meta']] = $sub['content'];
                         }
+                        else if($sub['type'] == 'miniprogram')
+                        {
+                            $sub_button['appid'] = $sub['appid'];
+                            $sub_button['pagepath'] = $sub['pagepath'];
+                            $sub_button['url'] = $sub['url'];
+                        }
                         else
                         {
                             $sub_button[$this->menuTypes[$sub['type']]['meta']] = $this->menuTypes[$sub['type']]['value'];
@@ -155,6 +161,12 @@ class CustomMenuController extends WController
                     {
                         $arr[$this->menuTypes[$button['type']]['meta']] = $button['content'];
                     }
+                    else if($button['type'] == 'miniprogram')
+                    {
+                        $arr['appid'] = $button['appid'];
+                        $arr['pagepath'] = $button['pagepath'];
+                        $arr['url'] = $button['url'];
+                    }
                     else
                     {
                         $arr[$this->menuTypes[$button['type']]['meta']] = $this->menuTypes[$button['type']]['value'];
@@ -164,16 +176,22 @@ class CustomMenuController extends WController
                 $buttons[] = $arr;
             }
 
+
             $model->data = serialize($postInfo['list']);
             $model->menu_data = serialize($buttons);
 
             if($model->save())
             {
                 $menu = $this->_app->menu;
-                $menu->create($buttons);
-
-                $result->code = 200;
-                $result->message = "修改成功!";
+                if (($menuResult = $menu->create($buttons)) && $menuResult['errcode'] != 0)
+                {
+                    $result->message = $menuResult['errmsg'];
+                }
+                else
+                {
+                    $result->code = 200;
+                    $result->message = "修改成功!";
+                }
             }
             else
             {
@@ -283,6 +301,12 @@ class CustomMenuController extends WController
                         {
                             $sub_button['content'] = $sub['url'];
                         }
+                        else if($sub['type'] == 'miniprogram')
+                        {
+                            $sub_button['appid'] = $sub['appid'];
+                            $sub_button['pagepath'] = $sub['pagepath'];
+                            $sub_button['url'] = $sub['url'];
+                        }
                         else
                         {
                             $sub_button['content'] = $sub['key'];
@@ -297,6 +321,12 @@ class CustomMenuController extends WController
                     if($button['type'] == 'view')
                     {
                         $arr['content'] = $button['url'];
+                    }
+                    else if($button['type'] == 'miniprogram')
+                    {
+                        $arr['appid'] = $button['appid'];
+                        $arr['pagepath'] = $button['pagepath'];
+                        $arr['url'] = $button['url'];
                     }
                     else
                     {

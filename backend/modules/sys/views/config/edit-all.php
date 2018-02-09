@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                                     <?= Html::input('text','config[' . $row['name'] . ']',$row['value'],['class' => 'form-control','id' => $row['id']]);?>
                                                                     <span class="input-group-btn">
                                                                             <span class="btn btn-white" onclick="createKey(<?= $row['extra']?>,<?= $row['id']?>)">生成新的</span>
-                                                                        </span>
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         <?php }elseif($row['type'] == 'textarea'){ ?>

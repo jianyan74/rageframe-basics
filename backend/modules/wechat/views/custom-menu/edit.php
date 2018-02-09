@@ -8,10 +8,10 @@ $this->params['breadcrumbs'][] = ['label' => '自定义菜单', 'url' => ['index
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?=Html::cssFile('/resource/backend/css/common.css')?>
-<?=Html::jsFile('/resource/backend/js/vue.min.js')?>
-<?=Html::jsFile('/resource/backend/js/Sortable.min.js')?>
-<?=Html::jsFile('/resource/backend/js/vuedraggable.min.js')?>
+<?= Html::cssFile('/resource/backend/css/common.css')?>
+<?= Html::jsFile('/resource/backend/js/vue.min.js')?>
+<?= Html::jsFile('/resource/backend/js/Sortable.min.js')?>
+<?= Html::jsFile('/resource/backend/js/vuedraggable.min.js')?>
 
 <style>
 	.menuView{
@@ -154,6 +154,31 @@ $this->params['breadcrumbs'][] = $this->title;
                             <hr>
                             <input class="form-control" name="value" value="" aria-required="true" type="text" v-model="crtItem.content">
                         </div>
+                        <!-- 小程序 -->
+                        <div class="form-group" v-show="!hasSubItem(crtItem) && needMiniprogram(crtItem)">
+                            <hr>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">APPID</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" name="value" placeholder="请确保小程序与公众号已关联，填写小程序的APPID" value="" aria-required="true" type="text" v-model="crtItem.appid">
+                                    <span class="help-block"><a href="http://weixiao.qq.com/notice/view?mid=0&cid=2&id=274" target="_blank">如何获取?</a></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">页面</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" name="value" placeholder="请填写跳转页面的小程序访问路径" value="" aria-required="true" type="text" v-model="crtItem.pagepath">
+                                    <span class="help-block"><a href="http://weixiao.qq.com/notice/view?mid=0&cid=2&id=275" target="_blank">填写指引</a></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">备用网页</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" name="value" placeholder="写入要跳转的链接" value="" aria-required="true" type="text" v-model="crtItem.url">
+                                    <span class="help-block">旧版微信客户端不支持小程序，用户点击菜单时会打开该网页</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>　
                 </div>
             </div>
@@ -184,7 +209,7 @@ $this->params['breadcrumbs'][] = $this->title;
             if(!item.sub)item.sub = [];
         }
 
-        console.log(list);
+        // console.log(list);
         var vueArea = new Vue({
             data:{
                 list: list ? list : [],
@@ -249,6 +274,29 @@ $this->params['breadcrumbs'][] = $this->title;
 			            	self.crtItem = item;
 			            	return false;
 			    		}
+			    		// 小程序判断
+			    		if(item.type == 'miniprogram')
+			    		{
+			    		    if(!item.appid)
+			    		    {
+                                rfAffirm('请填写appid');
+                                self.crtItem = item;
+                                return false;
+                            }
+                            if(!item.pagepath)
+                            {
+                                rfAffirm('请填写页面');
+                                self.crtItem = item;
+                                return false;
+                            }
+                            if(!item.url)
+                            {
+                                rfAffirm('请填写备用网页');
+                                self.crtItem = item;
+                                return false;
+                            }
+                        }
+
                         return true;
                     }
                     for(var i = 0; i < this.list.length; i++) {
@@ -303,7 +351,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 needContent: function(item){
                     var dic = {click: '触发关键字', view: '跳转链接'}
                     return dic[item.type];
-                }
+                },
+                needMiniprogram: function(item){
+                    var dic = {miniprogram: '关联小程序'}
+                    return dic[item.type];
+                },
             }
         }).$mount('#vueArea');
     })
