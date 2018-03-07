@@ -58,6 +58,73 @@ class Attachment extends \yii\db\ActiveRecord
     public $description;
 
     /**
+     * 微信上传配置
+     *
+     * @var array
+     */
+    protected $limit = [
+        // 临时素材
+        'temp' => [
+            'image' => [
+                'ext'  => ['jpg', 'logo'],
+                'size' => 1048576,// 1024 * 1024
+                'errmsg' => '临时图片只支持jpg/logo格式,大小不超过为1M',
+            ],
+            'voice' => [
+                'ext'  => ['amr', 'mp3'],
+                'size' => 2097152,// 2048 * 1024
+                'errmsg' => '临时语音只支持amr/mp3格式,大小不超过为2M',
+            ],
+            'video' => [
+                'ext'  => ['mp4'],
+                'size' => 10485760,// 10240 * 1024
+                'errmsg' => '临时视频只支持mp4格式,大小不超过为10M',
+            ],
+            'thumb' => [
+                'ext'  => ['jpg', 'logo'],
+                'size' => 65536,// 64 * 1024
+                'errmsg' => '临时缩略图只支持jpg/logo格式,大小不超过为64K',
+            ],
+        ],
+        // 永久素材
+        'perm' => [
+            'image' => [
+                'ext'   => ['bmp', 'png', 'jpeg', 'jpg', 'gif'],
+                'size'  => 2097152,// 2048 * 1024
+                'max'   => 5000,
+                'errmsg' => '永久图片只支持bmp/png/jpeg/jpg/gif格式,大小不超过为2M',
+            ],
+            'voice' => [
+                'ext'  => ['amr', 'mp3', 'wma', 'wav', 'amr'],
+                'size' => 5242880,// 5120 * 1024
+                'max'  => 1000,
+                'errmsg' => '永久语音只支持mp3/wma/wav/amr格式,大小不超过为5M,长度不超过60秒',
+            ],
+            'video' => [
+                'ext'  => ['rm', 'rmvb', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4'],
+                'size' => 20971520,// 10240 * 1024 * 2
+                'max'  => 1000,
+                'errmsg' => '永久视频只支持rm/rmvb/wmv/avi/mpg/mpeg/mp4格式,大小不超过为20M',
+            ],
+            'thumb' => [
+                'ext'  => ['bmp', 'png', 'jpeg', 'jpg', 'gif'],
+                'size' => 2097152,// 2048 * 1024
+                'max'  => 5000,
+                'errmsg' => '永久缩略图只支持bmp/png/jpeg/jpg/gif格式,大小不超过为2M',
+            ],
+        ],
+        // 卡卷封面
+        'file_upload' => [
+            'image' => [
+                'ext'   => ['jpg'],
+                'size'  => 1048576,// 1024 * 1024
+                'max'   => -1,
+                'errmsg' => '图片只支持jpg格式,大小不超过为1M',
+            ],
+        ]
+    ];
+
+    /**
      * @inheritdoc
      */
     public static function tableName()

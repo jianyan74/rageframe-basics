@@ -38,6 +38,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                             <?= extension_loaded('redis')
                                 ? '<span class="label label-primary">redis支持</span>'
                                 : '<span class="label label-default">redis不支持</span>'; ?>
+                            <?= extension_loaded('opcache')
+                                ? '<span class="label label-primary">opcache支持</span>'
+                                : '<span class="label label-default">opcache不支持</span>'; ?>
                             <?= extension_loaded('swoole')
                                 ? '<span class="label label-primary">swoole支持</span>'
                                 : '<span class="label label-default">swoole不支持</span>'; ?>
@@ -55,10 +58,6 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <td><?= $_SERVER['SERVER_SOFTWARE']; ?></td>
                     </tr>
                     <tr>
-                        <td>PHP执行方式</td>
-                        <td><?= php_sapi_name(); ?></td>
-                    </tr>
-                    <tr>
                         <td>当前附件目录</td>
                         <td><?= Yii::$app->request->hostInfo . Yii::getAlias('@attachurl'); ?>/</td>
                     </tr>
@@ -73,10 +72,6 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                     <tr>
                         <td>超时时间</td>
                         <td><?= ini_get('max_execution_time'); ?>秒</td>
-                    </tr>
-                    <tr>
-                        <td>访问客户端信息</td>
-                        <td><?= $_SERVER['HTTP_USER_AGENT'] ?></td>
                     </tr>
                 </table>
             </div>
@@ -124,7 +119,35 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 </table>
             </div>
         </div>
+        访问客户端信息：<?= $_SERVER['HTTP_USER_AGENT'] ?>
     </div>
+    <div class="col-sm-12">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5><i class="fa fa-cog"></i>  PHP信息</h5>
+        </div>
+        <div class="ibox-content">
+            <table class="table">
+                <tr>
+                    <td>PHP执行方式</td>
+                    <td><?= php_sapi_name(); ?></td>
+                </tr>
+                <tr>
+                    <td>禁用的函数</td>
+                    <td ><?= $disable_functions; ?></td>
+                </tr>
+                <tr>
+                    <td>脚本内存限制</td>
+                    <td><?= ini_get('memory_limit'); ?></td>
+                </tr>
+                <tr>
+                    <td>Socket超时时间</td>
+                    <td><?= ini_get('default_socket_timeout'); ?> 秒</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
 </div>
 
 

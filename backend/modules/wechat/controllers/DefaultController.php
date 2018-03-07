@@ -78,7 +78,7 @@ class DefaultController extends WController
             // 激活公众号
             case 'GET':
 
-                if(Account::verifyToken($request->get('signature'),$request->get('timestamp'),$request->get('nonce')))
+                if(Account::verifyToken($request->get('signature'), $request->get('timestamp'), $request->get('nonce')))
                 {
                     // 进行账号激活
                     // 暂时未设置
@@ -104,8 +104,8 @@ class DefaultController extends WController
                     $this->_msgHistory = [
                         'openid' => $openid,
                         'type' => $message['MsgType'],
-                        'rule_id' => MsgHistory::DEFAULT_RULE,
-                        'keyword_id' => MsgHistory::DEFAULT_KWYWORD,
+                        'rule_id' => MsgHistory::DEFAULT_RULE, // 规则id
+                        'keyword_id' => MsgHistory::DEFAULT_KWYWORD, // 关键字id
                     ];
 
                     switch ($message['MsgType'])

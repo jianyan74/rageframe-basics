@@ -105,12 +105,12 @@ class AddonsController extends MController
                 $model->type = $addons->type ? $addons->type : 'other';
                 $model->setting = $addons->setting ? StatusEnum::ENABLED : StatusEnum::DISABLED;
                 $model->hook = $addons->hook ? StatusEnum::ENABLED : StatusEnum::DISABLED;
-                $model->is_rule = $addons->is_rule ? StatusEnum::ENABLED : StatusEnum::DISABLED;
+                $model->is_rule = $addons->isRule ? StatusEnum::ENABLED : StatusEnum::DISABLED;
                 $model->wxapp_support = $addons->wxappSupport ? StatusEnum::ENABLED : StatusEnum::DISABLED;
                 $model->wechat_message = isset($addons->wechatMessage) ? serialize($addons->wechatMessage) : '' ;
 
                 // 首先字母转大写拼音
-                if($chinese = StringHelper::strToChineseCharacters($model->title))
+                if(($chinese = StringHelper::strToChineseCharacters($model->title)) && !empty($chinese[0]))
                 {
                     $title_initial = mb_substr($chinese[0][0],0,1,'utf-8');
                     $pinyin = new Pinyin();
@@ -475,7 +475,7 @@ class {$model->name}Addon
      * [true,false] 开启|关闭
      * @var bool
      */
-    public \$is_rule = {$is_rule};
+    public \$isRule = {$is_rule};
     
     /**
      * 配置信息
@@ -847,16 +847,16 @@ HTML;
             }
 
             // 写入文件
-            $model['install'] && file_put_contents("{$addon_dir}/{$model['install']}", '<?php');
-            $model['uninstall'] && file_put_contents("{$addon_dir}/{$model['uninstall']}", '<?php');
-            $model['upgrade'] && file_put_contents("{$addon_dir}/{$model['upgrade']}", '<?php');
+            $model['install'] && file_put_contents("{$addon_dir}/{$model['install']}", "<?php" . "\n" . "?>");
+            $model['uninstall'] && file_put_contents("{$addon_dir}/{$model['uninstall']}", "<?php" . "\n" . "?>");
+            $model['upgrade'] && file_put_contents("{$addon_dir}/{$model['upgrade']}", "<?php" . "\n" . "?>");
             $model->wechat_message && file_put_contents($addon_dir.'WechatMessage.php', $WechatInfo);
             $model->wxapp_support && file_put_contents("{$addon_dir}api/controllers/PagesController.php", $wxapp_support_str);
 
             // 移动图标
             if($model->cover)
             {
-                copy(Yii::getAlias('@rootPath').'\web'.$model->cover,$addon_dir.'icon.jpg'); // 拷贝到新目录
+                copy(Yii::getAlias('@rootPath') . '\web' . $model->cover, $addon_dir . 'icon.jpg'); // 拷贝到新目录
             }
 
             return $this->message('生成模块成功',$this->redirect(['install']));
@@ -984,7 +984,7 @@ HTML;
             throw new NotFoundHttpException('插件不存在');
         }
 
-        /**插件信息加入公共配置**/
+        /** 插件信息加入公共配置 **/
         Yii::$app->params['addon']['info'] = $model;
         Yii::$app->params['addon']['binding'] = AddonsBinding::getList($model['name']);
 
@@ -1053,18 +1053,18 @@ HTML;
         $class = $through['class'];
         $actionName = $through['actionName'];
 
-        if(!($model = Addons::getAddon($through['addon'])))
+        if (!($model = Addons::getAddon($through['addon'])))
         {
             throw new NotFoundHttpException('插件不存在');
         }
 
-        if(!class_exists($class))
+        if (!class_exists($class))
         {
             throw new NotFoundHttpException($class . '未找到');
         }
 
-        $list = new $class($through['controller'],Yii::$app->module);
-        if(!method_exists($list,$actionName))
+        $list = new $class($through['controller'], Yii::$app->module);
+        if (!method_exists($list,$actionName))
         {
             throw new NotFoundHttpException($through['controllerName'] . '/' . $actionName . '方法未找到');
         }

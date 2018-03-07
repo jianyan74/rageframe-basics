@@ -2,6 +2,17 @@
 
 $config = [
     'components' => [
+        /** ------ 资源替换 ------ **/
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'sourcePath' => null,
+                    'js' => [
+                        '/resource/backend/js/jquery-2.1.4.min.min.js',
+                    ]
+                ],
+            ],
+        ],
         /** ------ 后台操作日志 ------ **/
         'actionlog' => [
             'class' => 'jianyan\basics\common\models\sys\ActionLog',

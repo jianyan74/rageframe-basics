@@ -38,7 +38,7 @@ class BaseController extends Controller
     public function analysisError($errors)
     {
         $errors = array_values($errors)[0];
-        return $errors ? $errors : '操作失败';
+        return $errors ?? '操作失败';
     }
 
     /**

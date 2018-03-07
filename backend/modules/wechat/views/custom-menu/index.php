@@ -1,8 +1,9 @@
 <?php
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
+use jianyan\basics\common\models\wechat\CustomMenu;
 
-$this->title = '自定义菜单';
+$this->title = CustomMenu::$typeExplain[$type];
 $this->params['breadcrumbs'][] = ['label' =>  $this->title];
 ?>
 
@@ -11,7 +12,9 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         <div class="col-sm-12">
             <div class="tabs-container">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="<?= Url::to(['/wechat/custom-menu/index'])?>"> 自定义菜单</a></li>
+                    <?php foreach ($types as $key => $value){ ?>
+                        <li <?php if($key == $type){ ?>class="active"<?php } ?>><a href="<?= Url::to(['/wechat/custom-menu/index','type' => $key])?>"> <?= $value ?></a></li>
+                    <?php } ?>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active">
@@ -21,8 +24,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                     <a class="btn btn-primary btn-xs" id="getNewMenu">
                                         <i class="fa fa-cloud-download"></i>  同步菜单
                                     </a>
-                                    <a class="btn btn-primary btn-xs" href="<?php echo Url::to(['edit','type'=>1])?>">
-                                        <i class="fa fa-plus"></i>  创建默认菜单
+                                    <a class="btn btn-primary btn-xs" href="<?php echo Url::to(['edit','type'=> $type])?>">
+                                        <i class="fa fa-plus"></i>  创建菜单
                                     </a>
                                 </div>
                                 <div class="ibox-content">
@@ -31,7 +34,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                         <tr>
                                             <th>#</th>
                                             <th>标题</th>
-                                            <th>匹配规则</th>
+                                            <th>显示对象</th>
                                             <th>是否在微信生效</th>
                                             <th>创建时间</th>
                                             <th>操作</th>
@@ -42,7 +45,17 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                             <tr>
                                                 <td><?php echo $model->id?></td>
                                                 <td><?php echo $model->title?></td>
-                                                <td>全部粉丝</td>
+                                                <td>
+                                                    <?php if($model->type == 1){ ?>
+                                                        全部粉丝
+                                                    <?php }else{ ?>
+                                                        性别: <?= Yii::$app->params['individuationMenuSex'][$model->sex];?>;
+                                                        手机系统: <?= Yii::$app->params['individuationMenuClientPlatformType'][$model->client_platform_type];?>;
+                                                        语言: <?= Yii::$app->params['individuationMenuLanguage'][$model->language];?>;
+                                                        标签: <?= empty($model->tag_id) ? '全部粉丝' : \jianyan\basics\common\models\wechat\FansTags::getTag($model->tag_id)['name'];?>;
+                                                        地区: <?= empty($model->province . $model->city) ? '不限' : $model->province . $model->city;?>;
+                                                    <?php } ?>
+                                                </td>
                                                 <td>
                                                     <?php if($model->status == 1){ ?>
                                                         <font color="green">菜单生效中</font>
@@ -52,9 +65,10 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                                 </td>
                                                 <td><?php echo Yii::$app->formatter->asDatetime($model->append)?></td>
                                                 <td>
-                                                    <a href="<?php echo Url::to(['edit','id'=>$model->id])?>"><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
-                                                    <?php if($model->status == -1){ ?>
-                                                        <a href="<?php echo Url::to(['delete','id'=>$model->id])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
+
+                                                    <a href="<?php echo Url::to(['edit','id'=>$model->id,'type' => $model->type])?>"><span class="btn btn-info btn-sm"><?php echo $model->type == 2 ? '查看': '编辑';?></span></a>&nbsp
+                                                    <?php if($model->status == -1 || $model->type == 2){ ?>
+                                                        <a href="<?php echo Url::to(['delete','id'=>$model->id,'type' => $model->type])?>" onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                                     <?php } ?>
                                                 </td>
                                             </tr>
@@ -90,7 +104,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         sync();
     });
 
-    // 同步粉丝资料
+    // 同步菜单
     function sync(offset = 0,count = 20){
         $.ajax({
             type:"get",

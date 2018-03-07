@@ -20,53 +20,6 @@ class CurdController extends \backend\controllers\MController
     public $modelClass;
 
     /**
-     * 是否启用curl视图
-     *
-     * 启用将直接使用curl的视图显示数据
-     * @var bool
-     */
-    public $curdView = false;
-
-    /**
-     * 通过ajax的方式加载编辑视图
-     *
-     * @var bool
-     */
-    public $ajaxShowView = false;
-
-    /**
-     * 首页查询字段
-     *
-     * @var array
-     */
-    public $indexSearch = [];
-
-    /**
-     * 首页显示字段
-     *
-     * @var
-     */
-    public $indexColumns = [];
-
-    /**
-     * 首页按钮
-     *
-     * @var array
-     */
-    public $indexButtons = [
-        'edit',
-        'status',
-        'delete'
-    ];
-
-    /**
-     * 编辑显示字段
-     *
-     * @var
-     */
-    public $editColumns;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -77,35 +30,83 @@ class CurdController extends \backend\controllers\MController
             throw new InvalidConfigException('"modelClass" 属性必须设置');
         }
     }
+    
+    /**
+     * 首页
+     */
+    public function actionIndex()
+    {
+        $data = $this->modelClass::find();
+        $pages = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
+        $models = $data->offset($pages->offset)
+            ->orderBy('id desc')
+            ->limit($pages->limit)
+            ->all();
+
+        return $this->render('index',[
+            'models' => $models,
+            'pages' => $pages,
+        ]);
+    }
 
     /**
-     * @inheritdoc
+     * 编辑/新增
+     *
+     * @return string|\yii\web\Response
      */
-    public function actions()
+    public function actionEdit()
     {
-        return [
-            'index' => [
-                'class' => 'jianyan\basics\backend\actions\IndexAction',
-                'modelClass' => $this->modelClass,
-                'curdView' => $this->curdView,
-                'ajaxShowView' => $this->ajaxShowView,
-                'search' => $this->indexSearch,
-                'columns' => $this->indexColumns,
-                'buttons' => $this->indexButtons,
-            ],
-            'edit' => [
-                'class' => 'jianyan\basics\backend\actions\EditAction',
-                'modelClass' => $this->modelClass,
-                'columns' => $this->editColumns,
-            ],
-            'ajax-update' => [
-                'class' => 'jianyan\basics\backend\actions\AjaxUpdateAction',
-                'modelClass' => $this->modelClass,
-            ],
-            'delete' => [
-                'class' => 'jianyan\basics\backend\actions\DeleteAction',
-                'modelClass' => $this->modelClass,
-            ],
-        ];
+        $request = Yii::$app->request;
+        $id = $request->get('id');
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('edit', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * 删除
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        if ($this->findModel($id)->delete())
+        {
+            return $this->message("删除成功", $this->redirect(['index']));
+        }
+        else
+        {
+            return $this->message("删除失败", $this->redirect(['index']), 'error');
+        }
+    }
+
+    /**
+     * 返回模型
+     *
+     * @param $id
+     * @return $this|$this->modelClass|static
+     */
+    protected function findModel($id)
+    {
+        if (empty($id))
+        {
+            $model = new $this->modelClass;
+            return $model->loadDefaultValues();
+        }
+
+        if (empty(($model = $this->modelClass::findOne($id))))
+        {
+            return new $this->modelClass;
+        }
+
+        return $model;
     }
 }

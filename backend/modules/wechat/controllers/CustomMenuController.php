@@ -4,7 +4,9 @@ namespace jianyan\basics\backend\modules\wechat\controllers;
 use yii;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
+use common\helpers\ResultDataHelper;
 use jianyan\basics\common\models\wechat\CustomMenu;
+use jianyan\basics\common\models\wechat\FansTags;
 
 /**
  * 自定义菜单
@@ -75,6 +77,7 @@ class CustomMenuController extends WController
 
     /**
      * 自定义菜单首页
+     *
      * @return string
      */
     public function actionIndex()
@@ -89,8 +92,8 @@ class CustomMenuController extends WController
             throw new NotFoundHttpException($e->getMessage());
         }
 
-        // 关联角色查询
-        $data   = CustomMenu::find();
+        $type   = Yii::$app->request->get('type', CustomMenu::TYPE_CUSTOM);
+        $data   = CustomMenu::find()->where(['type' => $type]);
         $pages  = new Pagination(['totalCount' =>$data->count(), 'pageSize' =>$this->_pageSize]);
         $models = $data->offset($pages->offset)
             ->orderBy('status desc,id desc')
@@ -100,6 +103,8 @@ class CustomMenuController extends WController
         return $this->render('index',[
             'pages'   => $pages,
             'models'  => $models,
+            'type'  => $type,
+            'types'  => CustomMenu::$typeExplain,
         ]);
     }
 
@@ -110,16 +115,14 @@ class CustomMenuController extends WController
     {
         $request  = Yii::$app->request;
         $id       = $request->get('id');
+        $type     = $request->get('type');
         $model    = $this->findModel($id);
 
         if (Yii::$app->request->isPost)
         {
-            $result = $this->setResult();
-            $result->message = "修改失败!";
-
             $postInfo = Yii::$app->request->post();
-            $model    = $this->findModel($postInfo['id']);
-            $model->title = $postInfo['title'];
+            $model = $this->findModel($postInfo['id']);
+            $model->attributes = $postInfo;
 
             $buttons = [];
             foreach ($postInfo['list'] as &$button)
@@ -176,67 +179,78 @@ class CustomMenuController extends WController
                 $buttons[] = $arr;
             }
 
-
             $model->data = serialize($postInfo['list']);
             $model->menu_data = serialize($buttons);
 
-            if($model->save())
+            // 判断写入是否成功
+            if (!$model->save())
             {
-                $menu = $this->_app->menu;
-                if (($menuResult = $menu->create($buttons)) && $menuResult['errcode'] != 0)
+                return ResultDataHelper::result(422, $this->analysisError($model->getFirstErrors()));
+            }
+
+            $menu = $this->_app->menu;
+            // 个性化菜单
+            if($model->type == CustomMenu::TYPE_INDIVIDUATION)
+            {
+                $matchRule = [
+                    "tag_id" => $model->tag_id,
+                    "sex" => $model->sex,
+                    "country" => "中国",
+                    "province" => $model->province,
+                    "city" => $model->city,
+                    "client_platform_type" => $model->client_platform_type,
+                    "language" => $model->language,
+                ];
+
+                if (($menuResult = $menu->create($buttons, $matchRule)) && isset($menuResult['errcode'])) // 自定义菜单
                 {
-                    $result->message = $menuResult['errmsg'];
+                    return ResultDataHelper::result(422, $menuResult['errmsg']);
                 }
                 else
                 {
-                    $result->code = 200;
-                    $result->message = "修改成功!";
+                    $model->menu_id = $menuResult['menuid'];
+                    $model->save();
                 }
             }
             else
             {
-                $result->message = $this->analysisError($model->getFirstErrors());
+                if (($menuResult = $menu->create($buttons)) && $menuResult['errcode'] != 0) // 自定义菜单
+                {
+                    return ResultDataHelper::result(422, $menuResult['errmsg']);
+                }
             }
 
-            return $this->getResult();
+            return ResultDataHelper::result(200, "修改成功");
         }
 
         return $this->render('edit', [
             'model' => $model,
             'menuTypes' => $this->menuTypes,
+            'type' => $type,
+            'fansTags' => FansTags::getTags($this->_app)
         ]);
     }
 
     /**
-     * 个性化菜单
-     */
-    public function actionIndividuation()
-    {
-
-    }
-
-    /**
-     * 个性化菜单编辑
-     */
-    public function actionIndividuationEdit()
-    {
-
-    }
-
-    /**
-     * 删除自定义菜单
+     * 删除菜单
+     *
      * @param $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDelete($id, $type)
     {
-        if($this->findModel($id)->delete())
+        $model = $this->findModel($id);
+
+        // 个性化菜单删除
+        !empty($model['menu_id']) && $this->_app->menu->delete($model['menu_id']);
+
+        if ($model->delete())
         {
-            return $this->message("删除成功",$this->redirect(['index']));
+            return $this->message("删除成功",$this->redirect(['index','type' => $type]));
         }
         else
         {
-            return $this->message("删除失败",$this->redirect(['index']),'error');
+            return $this->message("删除失败",$this->redirect(['index','type' => $type]),'error');
         }
     }
 
@@ -248,13 +262,13 @@ class CustomMenuController extends WController
      */
     public function actionSave($id)
     {
-        if($id)
+        if ($id)
         {
             $model = $this->findModel($id);
             $model->save();
 
             $menu = $this->_app->menu;
-            $menu->add(unserialize($model->menu_data));
+            $menu->create(unserialize($model->menu_data));
         }
 
         return $this->redirect(['index']);
@@ -265,99 +279,22 @@ class CustomMenuController extends WController
      */
     public function actionSync()
     {
-        $result = $this->setResult();
-
         $menu = $this->_app->menu;
-        $current = $menu->current();
+        // 获取菜单列表
+        $list = $menu->list();
 
-        if($current['is_menu_open'] == true)
+        // 开始获取同步
+        $default_menu = [];
+        !empty($list['menu']) && $default_menu[] = $list['menu'];
+        CustomMenu::Sync($default_menu, 'menu');
+
+        // 个性化菜单
+        if (!empty($list['conditionalmenu']))
         {
-            $buttons = $current['selfmenu_info']['button'];
-            $model = new CustomMenu;
-            $model = $model->loadDefaultValues();
-            $model->title = "默认菜单";
-
-            $data = [];
-            foreach ($buttons as &$button)
-            {
-                $arr = [];
-                $arr['name'] = $button['name'];
-                $arr['type'] = 'click';
-                $arr['content'] = '';
-
-                // 判断是否有子菜单
-                if(isset($button['sub_button']))
-                {
-                    $button['sub_button'] = $button['sub_button']['list'];
-                    unset($button['sub_button']['list']);
-
-                    foreach ($button['sub_button'] as $sub)
-                    {
-                        $sub_button = [];
-                        $sub_button['name'] = $sub['name'];
-                        $sub_button['type'] = $sub['type'];
-
-                        if($sub['type'] == 'view')
-                        {
-                            $sub_button['content'] = $sub['url'];
-                        }
-                        else if($sub['type'] == 'miniprogram')
-                        {
-                            $sub_button['appid'] = $sub['appid'];
-                            $sub_button['pagepath'] = $sub['pagepath'];
-                            $sub_button['url'] = $sub['url'];
-                        }
-                        else
-                        {
-                            $sub_button['content'] = $sub['key'];
-                        }
-
-                        $arr['sub'][] = $sub_button;
-                    }
-                }
-                else
-                {
-                    $arr['type'] = $button['type'];
-                    if($button['type'] == 'view')
-                    {
-                        $arr['content'] = $button['url'];
-                    }
-                    else if($button['type'] == 'miniprogram')
-                    {
-                        $arr['appid'] = $button['appid'];
-                        $arr['pagepath'] = $button['pagepath'];
-                        $arr['url'] = $button['url'];
-                    }
-                    else
-                    {
-                        $arr['content'] = $button['key'];
-                    }
-                }
-
-                $data[] = $arr;
-            }
-
-            $model->menu_data = serialize($buttons);
-            $model->data = serialize($data);
-
-            if($menu = CustomMenu::find()->where(['menu_data' => $model->menu_data,'data' => $model->data])->one())
-            {
-                $menu->save();
-            }
-            else
-            {
-                $model->save();
-            }
-
-            $result->code = 200;
-            $result->message = "同步成功";
-        }
-        else
-        {
-            $result->message = "当前没有菜单消息";
+            CustomMenu::Sync($list['conditionalmenu'], 'conditionalmenu');
         }
 
-        return $this->getResult();
+        return ResultDataHelper::result(200, '同步菜单成功');
     }
 
     /**

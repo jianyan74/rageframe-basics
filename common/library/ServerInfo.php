@@ -35,15 +35,16 @@ class ServerInfo
      * @var array|string|void
      */
     public $sysInfo = [
-        'memTotal' => '目前只支持Linux系统',// 物理内存总量
-        'memFree' => '目前只支持Linux系统',// 物理空闲
-        'memUsed' => '目前只支持Linux系统', // 物理内存使用
+        'memTotal' => '0',// 物理内存总量
+        'memFree' => '0',// 物理空闲
+        'memUsed' => '0', // 物理内存使用
         'memPercent' => 0,// 物理内存使用百分比
-        'memBuffers' => '目前只支持Linux系统',// buffers
-        'memCached' => '目前只支持Linux系统',// 缓存内存
+        'memBuffers' => '0',// buffers
+        'memCached' => '0',// 缓存内存
         'memCachedPercent' => 0,// 缓存内存使用百分比
-        'memRealUsed' => '目前只支持Linux系统',// 真实内存使用
-        'memRealFree' => '目前只支持Linux系统',// 真实内存空闲
+        'memCachedReal' => 0,// 缓存内存真实使用
+        'memRealUsed' => '0',// 真实内存使用
+        'memRealFree' => '0',// 真实内存空闲
         'memRealPercent' => 0,// 真实内存使用百分比
         'swapTotal' => '目前只支持Linux系统',
         'swapFree' => '目前只支持Linux系统',
@@ -202,12 +203,17 @@ class ServerInfo
             $resmem['memFree'] = round($buf[2][0] / 1024, 2);
             $resmem['memBuffers'] = round($buffers[1][0] / 1024, 2);
             $resmem['memCached'] = round($buf[3][0] / 1024, 2);
-            $resmem['memUsed'] = $resmem['memTotal'] - $resmem['memFree'];
+            $resmem['memUsed'] = round($resmem['memTotal'] - $resmem['memFree'], 2);
             $resmem['memPercent'] = (floatval($resmem['memTotal']) != 0) ? round($resmem['memUsed'] / $resmem['memTotal'] * 100, 2) : 0;
-            $resmem['memRealUsed'] = $resmem['memTotal'] - $resmem['memFree'] - $resmem['memCached'] - $resmem['memBuffers'];
+            $resmem['memRealUsed'] = round($resmem['memTotal'] - $resmem['memFree'] - $resmem['memCached'] - $resmem['memBuffers'], 2);
             $resmem['memRealFree'] = $resmem['memTotal'] - $resmem['memRealUsed'];
             $resmem['memRealPercent'] = (floatval($resmem['memTotal']) != 0 ) ? round($resmem['memRealUsed'] / $resmem['memTotal'] * 100,2) : 0 ;
             $resmem['memCachedPercent'] = (floatval($resmem['memCached']) != 0) ? round($resmem['memCached'] / $resmem['memTotal'] * 100,2) : 0;
+            $resmem['memCachedReal'] = $resmem['memCached'] * $resmem['memCachedPercent'];
+            if(!empty($resmem['memCachedReal']))
+            {
+                $resmem['memCachedReal'] = round($resmem['memCachedReal'] / 100, 2);
+            }
             $resmem['swapTotal'] = round($buf[4][0] / 1024, 2);
             $resmem['swapFree'] = round($buf[5][0] / 1024, 2);
             $resmem['swapUsed'] = round($resmem['swapTotal'] - $resmem['swapFree'], 2);
@@ -246,7 +252,7 @@ class ServerInfo
         {
             if(!in_array($key, $array))
             {
-                $item = $item .' M';
+                //$item = $item .' M';
             }
         }
 
@@ -332,7 +338,6 @@ class ServerInfo
         $d['f'] = round(@disk_free_space(".") / (1024*1024*1024),3);
         $d['u'] = $d['t'] - $d['f'];
         $d['PCT'] = (floatval($d['t']) != 0) ? round($d['u'] / $d['t'] * 100, 2) : 0;
-
         $d['PCT'] = round($d['PCT'], 2);
         $d['u'] = round($d['u'], 2);
 

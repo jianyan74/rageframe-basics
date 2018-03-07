@@ -216,6 +216,7 @@ class Addons extends ActiveRecord
 
     /**
      * 获取模块数据
+     *
      * @param $message
      * @param $addon
      * @return string
@@ -231,7 +232,7 @@ class Addons extends ActiveRecord
             }
 
             $class = new $class;
-            if(!method_exists($class, 'run'))
+            if (!method_exists($class, 'run'))
             {
                 throw new NotFoundHttpException($class . '/actionRun 方法未找到');
             }

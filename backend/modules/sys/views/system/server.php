@@ -53,88 +53,34 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
         <div class="ibox-title">
             <h5><i class="fa fa-cog"></i>  服务器硬件数据</h5>
         </div>
-        <div class="ibox-content" id="sys-hardware">
-            <table class="table">
-                <tr>
-                    <td>CPU</td>
-                    <td><?= $info['sysInfo']['cpu']['num'] ?></td>
-                    <td>CPU型号</td>
-                    <td><?= $info['sysInfo']['cpu']['model'] ?></td>
-                </tr>
-                <tr>
-                    <td>CPU使用情况</td>
-                    <td colspan="3">
-                        <?= $info['cpuUse'] ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>硬盘使用情况</td>
-                    <td colspan="3">
-                        总空间：<?= $info['hd']['t'] ?>G　
-                        已使用：<?= $info['hd']['u'] ?>G　
-                        使用率：<?= $info['hd']['PCT'] ?>%
-                        <div class="progress progress-striped active">
-                            <div style="width: <?= $info['hd']['PCT'] ?>%" class="progress-bar progress-bar-danger"></div>
-                            <div style="width: <?= 100 - $info['hd']['PCT'] ?>%" class="progress-bar progress-bar-success"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>内存使用情况</td>
-                    <td colspan="3">
-                        物理内存共：<?= $info['sysInfo']['memTotal'] ?>　
-                        已使用：<?= $info['sysInfo']['memUsed'] ?>　
-                        空闲：<?= $info['sysInfo']['memFree'] ?>　
-                        使用率：<?= $info['sysInfo']['memPercent'] ?>%
-                        <div class="progress progress-striped active">
-                            <div style="width: <?= $info['sysInfo']['memPercent'] ?>%" class="progress-bar progress-bar-danger"></div>
-                            <div style="width: <?= 100 - $info['sysInfo']['memPercent'] ?>%" class="progress-bar progress-bar-success"></div>
-                        </div>
-                        <br>
-                        Cache化内存为：<?= $info['sysInfo']['memCached'] ?>　
-                        使用率：<?= $info['sysInfo']['memCachedPercent'] ?>%　
-                        |　Buffers缓冲为：<?= $info['sysInfo']['memBuffers'] ?>　
-                        <div class="progress progress-striped active">
-                            <div style="width: <?= $info['sysInfo']['memCachedPercent'] ?>%" class="progress-bar progress-bar-danger"></div>
-                            <div style="width: <?= 100 - $info['sysInfo']['memCachedPercent'] ?>%" class="progress-bar progress-bar-success"></div>
-                        </div>
-                        <br>
-                        真实内存使用：<?= $info['sysInfo']['memRealUsed'] ?>　
-                        真实内存空闲：<?= $info['sysInfo']['memRealFree'] ?>　
-                        使用率：<?= $info['sysInfo']['memRealPercent'] ?>%
-                        <div class="progress progress-striped active">
-                            <div style="width: <?= $info['sysInfo']['memRealPercent'] ?>%" class="progress-bar progress-bar-danger"></div>
-                            <div style="width: <?= 100 - $info['sysInfo']['memRealPercent'] ?>%" class="progress-bar progress-bar-success"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>系统平均负载</td>
-                    <td colspan="2"><?= $info['sysInfo']['loadAvg'] ?></td>
-                    <td>负载说明：一分钟、五分钟、以及十五分钟的系统负载均值</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="ibox float-e-margins">
-        <div class="ibox-title">
-            <h5><i class="fa fa-cog"></i>  PHP信息</h5>
-        </div>
         <div class="ibox-content">
-            <table class="table">
-                <tr>
-                    <td>禁用的函数</td>
-                    <td ><?= $disable_functions; ?></td>
-                </tr>
-                <tr>
-                    <td>脚本内存限制</td>
-                    <td><?= ini_get('memory_limit'); ?></td>
-                </tr>
-                <tr>
-                    <td>Socket超时时间</td>
-                    <td><?= ini_get('default_socket_timeout'); ?> 秒</td>
-                </tr>
-            </table>
+            <div id="schedule" style="width: 100%;height:150px;"></div>
+            <div class="col-sm-12 text-center" id="memData">
+                <div class="col-sm-3 "><?= $info['hd']['u']?>/<?= $info['hd']['t']?> (G)</div>
+                <div class="col-sm-3"><?= $info['sysInfo']['memRealUsed']?>/<?= $info['sysInfo']['memTotal']?> (M)</div>
+                <div class="col-sm-3"><?= $info['sysInfo']['memUsed']?>/<?= $info['sysInfo']['memTotal']?> (M)</div>
+                <div class="col-sm-3"><?= $info['sysInfo']['memCachedReal']?>/<?= $info['sysInfo']['memCached']?> (M)<br>Buffers缓冲为 <?= $info['sysInfo']['memBuffers']?> M</div>
+            </div>
+            <div id="sys-hardware">
+                <table class="table">
+                    <tr>
+                        <td>CPU</td>
+                        <td><?= $info['sysInfo']['cpu']['num'] ?></td>
+                        <td>CPU型号</td>
+                        <td><?= $info['sysInfo']['cpu']['model'] ?></td>
+                    </tr>
+                    <tr>
+                        <td>CPU使用情况</td>
+                        <td colspan="3">
+                            <?= $info['cpuUse'] ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>系统平均负载(1分钟、5分钟、以及15分钟的负载均值)</td>
+                        <td colspan="3"><?= $info['sysInfo']['loadAvg'] ?></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div class="ibox float-e-margins">
@@ -180,54 +126,127 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
             </td>
         </tr>
         <tr>
-            <td>硬盘使用情况</td>
-            <td colspan="3">
-                总空间：{{hd.t}}G　
-                已使用：{{hd.u}}G　
-                使用率：{{hd.PCT}}%
-                <div class="progress progress-striped active">
-                    <div style="width: {{hd.PCT}}%" class="progress-bar progress-bar-danger"></div>
-                    <div style="width: {{100 - hd.PCT}}%" class="progress-bar progress-bar-success"></div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>内存使用情况</td>
-            <td colspan="3">
-                物理内存共：{{sysInfo.memTotal}}　
-                已使用：{{sysInfo.memUsed}}　
-                空闲：{{sysInfo.memFree}}　
-                使用率：{{sysInfo.memPercent}}%
-                <div class="progress progress-striped active">
-                    <div style="width: {{sysInfo.memPercent}}%" class="progress-bar progress-bar-danger"></div>
-                    <div style="width: {{100 - sysInfo.memPercent}}%" class="progress-bar progress-bar-success"></div>
-                </div>
-                <br>
-                Cache化内存为：{{sysInfo.memCached}}　
-                使用率：{{sysInfo.memCachedPercent}}%　
-                |　Buffers缓冲为：{{sysInfo.memBuffers}}　
-                <div class="progress progress-striped active">
-                    <div style="width: {{sysInfo.memCachedPercent}}%" class="progress-bar progress-bar-danger"></div>
-                    <div style="width: {{100 - sysInfo.memCachedPercent}}%" class="progress-bar progress-bar-success"></div>
-                </div>
-                <br>
-                真实内存使用：{{sysInfo.memRealUsed}}　
-                真实内存空闲：{{sysInfo.memRealFree}}　
-                使用率：{{sysInfo.memRealPercent}}%
-                <div class="progress progress-striped active">
-                    <div style="width: {{sysInfo.memRealPercent}}%" class="progress-bar progress-bar-danger"></div>
-                    <div style="width: {{100 - sysInfo.memRealPercent}}%" class="progress-bar progress-bar-success"></div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>系统平均负载</td>
-            <td colspan="2">{{sysInfo.loadAvg}}</td>
-            <td>负载说明：一分钟、五分钟、以及十五分钟的系统负载均值</td>
+            <td>系统平均负载(1分钟、5分钟、以及15分钟的负载均值)</td>
+            <td colspan="3">{{sysInfo.loadAvg}}</td>
         </tr>
     </table>
 </script>
 
+<script type="text/html" id="mem">
+    <div class="col-sm-3 ">{{hd.u}}/{{hd.t}} (G)</div>
+    <div class="col-sm-3">{{sysInfo.memRealUsed}}/{{sysInfo.memTotal}} (M)</div>
+    <div class="col-sm-3">{{sysInfo.memUsed}}/{{sysInfo.memTotal}} (M)</div>
+    <div class="col-sm-3">{{sysInfo.memCachedReal}}/{{sysInfo.memCached}} (M)<br>Buffers缓冲为 {{sysInfo.memBuffers}} M</div>
+</script>
+
+<script>
+    var schedule = echarts.init(document.getElementById('schedule'));
+
+    var hdSpeed = [100, 0];
+    var memTotal = [100, 0];
+    var memCached = [100, 0];
+    var memRealUsed = [100, 0];
+
+    function scheduleOption() {
+        var labelTop = {
+            normal : {
+                label : {
+                    show : true,
+                    position : 'center',
+                    formatter : '{b}',
+                    textStyle: {
+                        baseline : 'bottom'
+                    },
+                },
+                labelLine : {
+                    show : false
+                }
+            }
+        };
+
+        var labelFromatter = {
+            normal : {
+                label : {
+                    formatter : function (a,b,c){
+                        return 100 - c + '%'
+                    },
+                    textStyle: {
+                        baseline : 'top'
+                    }
+                }
+            },
+        }
+
+        var labelBottom = {
+            normal : {
+                color: '#ccc',
+                label : {
+                    show : true,
+                    position : 'center'
+                },
+                labelLine : {
+                    show : false
+                }
+            },
+            emphasis: {
+                color: 'rgba(0,0,0,0)'
+            }
+        };
+        var radius = [55, 65];
+        var optionData = {
+            series : [
+                {
+                    type : 'pie',
+                    center : ['13%', '50%'],
+                    radius : radius,
+                    x: '0%', // for funnel
+                    itemStyle : labelFromatter,
+                    data : [
+                        {name:'other', value: hdSpeed[0], itemStyle : labelBottom},
+                        {name:'硬盘使用率', value:hdSpeed[1],itemStyle : labelTop}
+                    ]
+                },
+                {
+                    type : 'pie',
+                    center : ['38%', '50%'],
+                    radius : radius,
+                    x:'60%', // for funnel
+                    itemStyle : labelFromatter,
+                    data : [
+                        {name:'other', value:memRealUsed[0], itemStyle : labelBottom},
+                        {name:'真实内存使用率', value:memRealUsed[1],itemStyle : labelTop}
+                    ]
+                },
+                {
+                    type : 'pie',
+                    center : ['62%', '50%'],
+                    radius : radius,
+                    x:'20%', // for funnel
+                    itemStyle : labelFromatter,
+                    data : [
+                        {name:'other', value:memTotal[0], itemStyle : labelBottom},
+                        {name:'物理内存使用率', value:memTotal[1],itemStyle : labelTop}
+                    ]
+                },
+                {
+                    type : 'pie',
+                    center : ['87%', '50%'],
+                    radius : radius,
+                    x:'40%', // for funnel
+                    itemStyle : labelFromatter,
+                    data : [
+                        {name:'other', value:memCached[0], itemStyle : labelBottom},
+                        {name:'Cache化内存使用率', value:memCached[1],itemStyle : labelTop}
+                    ]
+                }
+            ]
+        };
+
+        return optionData;
+    }
+
+    schedule.setOption(scheduleOption()); // 加载图表
+</script>
 <script type="text/javascript">
     var myChart = echarts.init(document.getElementById('main'));
     var currentOutSpeed = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -319,6 +338,8 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                 if(data.code == 200) {
                     var html = template('model',data.data);
                     $('#sys-hardware').html(html);
+                    var html2 = template('mem',data.data);
+                    $('#memData').html(html2);
 
                     var netWork = data.data.netWork;
                     $('#netWork_allOutSpeed').text(netWork.allOutSpeed);
@@ -332,6 +353,24 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                     currentInputSpeed.push(netWork.currentInputSpeed);
                     chartTime = data.data.chartTime;
                     myChart.setOption(chartOption()); // 加载图表
+
+                    //内存
+                    var sysInfo = data.data.sysInfo;
+                    var PCT = data.data.hd.PCT;
+                    var memPercent = sysInfo.memPercent;
+                    var memCachedPercent = sysInfo.memCachedPercent;
+                    var memRealPercent = sysInfo.memRealPercent;
+
+                    PCT = PCT.toFixed(0);
+                    memPercent = memPercent.toFixed(0);
+                    memCachedPercent = memCachedPercent.toFixed(0);
+                    memRealPercent = memRealPercent.toFixed(0);
+                    //console.log(sysInfo);
+                    hdSpeed = [100 - PCT, PCT];
+                    memTotal = [100 - memPercent, memPercent];
+                    memCached = [100 - memCachedPercent, memCachedPercent];
+                    memRealUsed = [100 - memRealPercent, memRealPercent];
+                    schedule.setOption(scheduleOption()); // 加载图表
                 }else{
                     alert(data.msg);
                 }

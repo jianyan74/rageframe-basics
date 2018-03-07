@@ -4,7 +4,7 @@ return [
 
     'exploitEmail'             => '751393839@qq.com',
     'exploitName'              => '简言',
-    'exploitVersions'          => '1.4.19',
+    'exploitVersions'          => '1.4.26',
     'exploitSysName'           => 'RageFrame应用开发引擎',
     'exploitOfficialWebsite'   => '<a href="http://www.rageframe.com" target="_blank">www.rageframe.com</a>',
     'exploitGitHub'            => '<a href="https://github.com/jianyan74/rageframe.git" target="_blank">github.com/jianyan74/rageframe.git</a>',
@@ -83,42 +83,43 @@ return [
 
     // 性别
     'individuationMenuSex' => [
-        '' => '全部',
+        '' => '性别不限',
         1 => '男',
         2 => '女',
     ],
 
     // 客户端版本
     'individuationMenuClientPlatformType' => [
-        '' => '全部',
-        1 => 'IOS',
-        2 => 'Android',
-        3 => 'Others',
+        '' => '手机系统不限',
+        1 => 'IOS(苹果)',
+        2 => 'Android(安卓)',
+        3 => 'Others(其他)',
     ],
 
     // 语言
     'individuationMenuLanguage' => [
-        '简体中文' => 'zh_CN',
-        '繁体中文TW' => 'zh_TW',
-        '繁体中文HK' => 'zh_HK',
-        '英文' => 'en',
-        '印尼' => 'id',
-        '马来' => 'ms',
-        '西班牙' => 'es',
-        '韩国' => 'ko',
-        '意大利' => 'it',
-        '日本' => 'ja',
-        '波兰' => 'pl',
-        '葡萄牙' => 'pt',
-        '俄国' => 'ru',
-        '泰文' => 'th',
-        '越南' => 'vi',
-        '阿拉伯语' => 'ar',
-        '北印度' => 'hi',
-        '希伯来' => 'he',
-        '土耳其' => 'tr',
-        '德语' => 'de',
-        '法语' => 'fr',
+        '' => '语言不限',
+        'zh_CN' => '简体中文',
+        'zh_TW' => '繁体中文TW',
+        'zh_HK' => '繁体中文HK',
+        'en' => '英文',
+        'id' => '印尼',
+        'ms' => '马来',
+        'es' => '西班牙',
+        'ko' => '韩国',
+        'it' => '意大利',
+        'ja' => '日本',
+        'pl' => '波兰',
+        'pt' => '葡萄牙',
+        'ru' => '俄国',
+        'th' => '泰文',
+        'vi' => '越南',
+        'ar' => '阿拉伯语',
+        'hi' => '北印度',
+        'he' => '希伯来',
+        'tr' => '土耳其',
+        'de' => '德语',
+        'fr' => '法语',
     ],
 
     /** ------ 无须验证的权限 ------ **/
@@ -138,6 +139,7 @@ return [
         'sys/provinces/index',// 省市区联动
         'wechat/default/index',// 微信api
         'wechat/we-code/image',// 微信防盗链获取图片
+        'wechat/custom-menu-area/index',// 微信个性化菜单省市
     ],
     // 不需要验证的方法
     'basicsNoAuthAction' => [

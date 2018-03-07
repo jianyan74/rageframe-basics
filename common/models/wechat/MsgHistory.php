@@ -71,11 +71,12 @@ class MsgHistory extends ActiveRecord
 
     /**
      * 插入历史消息
+     *
      * @param $message
      * @param $msg_history
      * @param $reply
      */
-    public static function add($message,$msg_history,$reply)
+    public static function add($message, $msg_history, $reply)
     {
         $add = $reply ? ArrayHelper::merge($msg_history, $reply) : $msg_history;
 
@@ -84,15 +85,7 @@ class MsgHistory extends ActiveRecord
         if($setting['is_msg_history']['status'] != StatusEnum::DELETE)
         {
             $msgHistory = new MsgHistory();
-            if($msg_history['type'] == 'text')
-            {
-                $add['message'] = $message['Content'];
-            }
-            else
-            {
-                $add['message'] = self::filtrate($message);
-            }
-
+            $add['message'] = $msg_history['type'] == 'text' ? $message['Content'] : self::filtrate($message);
             $msgHistory->attributes = $add;
             $msgHistory->save();
         }
@@ -109,6 +102,7 @@ class MsgHistory extends ActiveRecord
 
     /**
      * 过滤消息信息
+     *
      * @param $message
      * @return string
      */
@@ -118,7 +112,7 @@ class MsgHistory extends ActiveRecord
         $filtrate = ['ToUserName','FromUserName','MsgId','CreateTime','MsgType'];
         foreach ($message as $key => $value)
         {
-            if(!in_array($key,$filtrate))
+            if(!in_array($key, $filtrate))
             {
                 $arr[$key] = $value;
             }
@@ -129,6 +123,7 @@ class MsgHistory extends ActiveRecord
 
     /**
      * 解析微信发过来的消息内容
+     *
      * @param $type
      * @param $messgae
      * @return mixed|string

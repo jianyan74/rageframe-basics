@@ -83,6 +83,7 @@ class FansTagsController extends WController
                     $this->_app->user_tag->create($value);
                 }
             }
+
             FansTags::updateTagsList($this->_app);
             return $this->redirect(['list']);
         }

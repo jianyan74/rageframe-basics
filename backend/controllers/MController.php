@@ -5,6 +5,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\web\UnauthorizedHttpException;
+use common\helpers\ResultDataHelper;
 
 /**
  * 后台基类控制器
@@ -15,18 +16,18 @@ use yii\web\UnauthorizedHttpException;
 class MController extends \common\controllers\BaseController
 {
     /**
-     * EasyWechat SDK
-     *
-     * @var
-     */
-    protected $_app;
-
-    /**
      * EasyWechat Debug 模式，bool 值：true/false
      *
      * 当值为 false 时，所有的日志都不会记录
      */
     protected $_debug = true;
+
+    /**
+     * EasyWechat SDK
+     *
+     * @var
+     */
+    protected $_app;
 
     /**
      * csrf验证
@@ -75,6 +76,8 @@ class MController extends \common\controllers\BaseController
 
     /**
      * 行为控制
+     *
+     * @return array
      */
     public function behaviors()
     {
@@ -93,8 +96,11 @@ class MController extends \common\controllers\BaseController
 
     /**
      * RBAC验证
-     * @param \yii\base\Action $action
+     *
+     * @param $action
      * @return bool
+     * @throws UnauthorizedHttpException
+     * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
@@ -110,11 +116,11 @@ class MController extends \common\controllers\BaseController
         }
 
         // 控制器+方法
-        $permissionName = Yii::$app->controller->id.'/'.Yii::$app->controller->action->id;
+        $permissionName = Yii::$app->controller->id . '/' . Yii::$app->controller->action->id;
         // 加入模块验证
         if(Yii::$app->controller->module->id != "app-backend")
         {
-            $permissionName = Yii::$app->controller->module->id.'/'.$permissionName;
+            $permissionName = Yii::$app->controller->module->id . '/' . $permissionName;
         }
 
         // 不需要RBAC判断的路由全称
@@ -185,13 +191,15 @@ class MController extends \common\controllers\BaseController
     }
 
     /**
-     * @param $msg
-     * @param $closeTime
+     * 提示消息
+     *
+     * @param string $msg 消息提示
+     * @param integer $closeTime 关闭时间
      * @return string
      */
     public function hintText($msg, $closeTime)
     {
-        $text = $msg." <span class='closeTimeYl'>".$closeTime."</span>秒后自动关闭...";
+        $text = $msg . " <span class='closeTimeYl'>" . $closeTime . "</span>秒后自动关闭...";
         return $text;
     }
 
@@ -208,21 +216,14 @@ class MController extends \common\controllers\BaseController
         isset($data['status']) && $insert_data['status'] = $data['status'];
         isset($data['sort']) && $insert_data['sort'] = $data['sort'];
 
-        $result = $this->setResult();
         $model = $this->findModel($id);
         $model->attributes = $insert_data;
 
         if(!$model->save())
         {
-            $result->code = 422;
-            $result->message = $this->analysisError($model->getFirstErrors());
-        }
-        else
-        {
-            $result->code = 200;
-            $result->message = '修改成功';
+            return ResultDataHelper::result(422, $this->analysisError($model->getFirstErrors()));
         }
 
-        return $this->getResult();
+        return ResultDataHelper::result(200, '修改成功');
     }
 }

@@ -69,19 +69,20 @@ class Provinces extends \yii\db\ActiveRecord
 
     /**
      * 根据父级ID返回信息
+     *
      * @param int $parentid
      * @return array
      */
     public static function getCityList($parentid = 0)
     {
         // 获取缓存信息
-        $key = "_provinces_".$parentid;
+        $key = "sys:provinces:" . $parentid;
         $model = Yii::$app->cache->get($key);
         if(!$model)
         {
-            $model = Provinces::findAll(['parentid'=>$parentid]);
+            $model = Provinces::findAll(['parentid' => $parentid]);
             // 设置缓存
-            Yii::$app->cache->set($key,$model);
+            Yii::$app->cache->set($key, $model);
         }
 
         return ArrayHelper::map($model,'id','areaname');

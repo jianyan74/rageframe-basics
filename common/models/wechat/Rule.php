@@ -90,6 +90,7 @@ class Rule extends ActiveRecord
 
     /**
      * 删除规则
+     *
      * @param $module
      * @return false|int
      */
@@ -177,6 +178,7 @@ class Rule extends ActiveRecord
 
     /**
      * 查询规则标题
+     *
      * @param $rule_id
      * @return string
      */
@@ -196,6 +198,7 @@ class Rule extends ActiveRecord
 
     /**
      * 行为插入时间戳
+     *
      * @return array
      */
     public function behaviors()

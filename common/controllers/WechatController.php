@@ -88,7 +88,7 @@ class WechatController extends \common\controllers\BaseController
             'notify_url' => $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify'])
         ];
 
-            // 实例化EasyWechat SDK
+        // 实例化EasyWechat SDK
         $this->_app = Yii::$app->wechat->getApp();
 
         /** 检测到微信进入自动获取用户信息 **/
@@ -158,7 +158,7 @@ class WechatController extends \common\controllers\BaseController
         {
             throw new BadRequestHttpException($result['return_msg']);
         }
-        
+
         return $codeUrl;
     }
 }

@@ -93,8 +93,9 @@ class Account extends \yii\db\ActiveRecord
     const TYPE_WIFI_CONNECTED = "WifiConnected";
 
     /**
-     * @var array
      * 特殊消息类型
+     *
+     * @var array
      */
     public static $mtype = [
         self::TYPE_IMAGE => "图片消息",
@@ -112,6 +113,7 @@ class Account extends \yii\db\ActiveRecord
 
     /**
      * 验证token是否一致
+     *
      * @param string $signature 微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数
      * @param $timestamp 时间戳
      * @param $nonce 随机数
@@ -120,7 +122,7 @@ class Account extends \yii\db\ActiveRecord
     public static function verifyToken($signature, $timestamp, $nonce)
     {
         $token = Yii::$app->config->info('WECHAT_TOKEN');
-        $tmpArr = [$token,$timestamp,$nonce];
+        $tmpArr = [$token, $timestamp, $nonce];
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode($tmpArr);
         $tmpStr = sha1($tmpStr);

@@ -43,12 +43,17 @@ class SystemController extends MController
             $mysql_size += $model['data_length'];
         }
 
+        // 禁用函数
+        $disable_functions = ini_get('disable_functions');
+        $disable_functions = !empty($disable_functions) ? $disable_functions : '未禁用';
+
         // 附件大小
         $attachment_size = FileHelper::getDirSize(Yii::getAlias('@attachment'));
         return $this->render('info', [
             'models' => Menu::getMenus(Menu::TYPE_SYS, StatusEnum::ENABLED),
             'mysql_size' => $mysql_size,
             'attachment_size' => !empty($attachment_size) ? $attachment_size : 0,
+            'disable_functions' => $disable_functions,
         ]);
     }
 
@@ -86,18 +91,8 @@ class SystemController extends MController
             return $this->getResult();
         }
 
-        // 扩展安装情况
-        $extensions = get_loaded_extensions();
-        $extensions = implode('，',$extensions);
-
-        // 禁用函数
-        $disable_functions = ini_get('disable_functions');
-        $disable_functions = !empty($disable_functions) ? $disable_functions : '未禁用';
-
         return $this->render('server', [
             'info' => $info,
-            'extensions' => $extensions,
-            'disable_functions' => $disable_functions,
         ]);
     }
 }
