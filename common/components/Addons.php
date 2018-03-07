@@ -100,7 +100,7 @@ class Addons extends WechatController
     public function renderAjaxAddon($view, $params = [])
     {
         $viewPath = $this->renderBase($view);
-        return $this->renderAjax($viewPath,$params);
+        return $this->renderAjax($viewPath, $params);
     }
 
     /**
@@ -113,7 +113,7 @@ class Addons extends WechatController
     public function renderPartialAddon($view, $params = [])
     {
         $viewPath = $this->renderBase($view);
-        return $this->renderPartial($viewPath,$params);
+        return $this->renderPartial($viewPath, $params);
     }
 
     /**
@@ -146,7 +146,7 @@ class Addons extends WechatController
      */
     public function redirectAddon($url, $statusCode = 302)
     {
-        return $this->redirect(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE),$statusCode);
+        return $this->redirect(AddonsHelp::regroupUrl($url, AddonsHelp::THROUNGH_ADDONS_EXECUTE), $statusCode);
     }
 
     /**
