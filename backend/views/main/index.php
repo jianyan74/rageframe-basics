@@ -24,7 +24,6 @@ AppAsset::register($this);
     <?= Html::cssFile('/resource/backend/css/font-awesome.min.css?v=4.4.0'); ?>
     <?= Html::cssFile('/resource/backend/css/animate.min.css'); ?>
     <?= Html::cssFile('/resource/backend/css/style.css?v=4.0.0'); ?>
-    <?= Html::jsFile('/resource/backend/js/jquery-2.0.3.min.js'); ?>
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
