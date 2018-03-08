@@ -101,9 +101,9 @@ class CateController extends MController
      * @param $cate_id
      * @return mixed
      */
-    public function actionDelete($cate_id)
+    public function actionDelete($id)
     {
-        if($this->findModel($cate_id)->delete())
+        if($this->findModel($id)->delete())
         {
             return $this->message("删除成功",$this->redirect(['index']));
         }
