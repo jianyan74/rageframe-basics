@@ -93,11 +93,9 @@ AppAsset::register($this);
     // status => 1:启用;-1禁用;
     function rfStatus(obj){
         var id = $(obj).parent().parent().attr('id');
-        var status; self = $(obj);
+        var status = 0; self = $(obj);
         if(self.hasClass("btn-primary")){
             status = 1;
-        } else {
-            status = -1;
         }
 
         $.ajax({

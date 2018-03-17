@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                                 <td class="col-md-1"><input type="text" class="form-control" value="<?= $model['sort']?>" onblur="rfSort(this)"></td>
                                 <td>
                                     <a href="<?= Url::to(['edit','id'=>$model['id']])?>"><span class="btn btn-info btn-sm">编辑</span></a>&nbsp
-                                    <?php echo $model['status'] == -1 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>' ;?>
+                                    <?php echo $model['status'] == 0 ? '<span class="btn btn-primary btn-sm" onclick="rfStatus(this)">启用</span>': '<span class="btn btn-default btn-sm"  onclick="rfStatus(this)">禁用</span>' ;?>
                                     <a href="<?= Url::to(['delete','id'=>$model['id']])?>"  onclick="rfDelete(this);return false;"><span class="btn btn-warning btn-sm">删除</span></a>&nbsp
                                 </td>
                             </tr>
