@@ -39,7 +39,7 @@
         "linslin/yii2-curl": "*",
         "overtrue/wechat": "~4.0",
         "overtrue/pinyin": "~3.0",
-        "crazyfd/yii2-qiniu": "dev-master",
+        "crazyfd/yii2-qiniu": "*",
         "denisogr/yii2-cronjobs": "dev-master",
         "e282486518/yii2-console-migration": "*",
         "xj/yii2-oauth": "~2.0.0",
