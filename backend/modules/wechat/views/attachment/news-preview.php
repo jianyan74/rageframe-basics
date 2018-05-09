@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
-            <div class="ibox-content">
+            <div class="ibox-content-ajax">
                 <div class="col-sm-12">
                     <?= $form->field($model, 'type')->radioList(['1' => '微信号','2' => '粉丝标识(openid)']) ?>
                     <?= $form->field($model, 'content')->textInput() ?>

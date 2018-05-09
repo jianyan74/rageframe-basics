@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = ['label' =>  $this->title];
                         <div class="col-sm-12 text-center">
                             <span class="btn btn-white" onclick="history.go(-1)">返回</span>
                         </div>
-                    </div>　
+                    </div>
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-content">
+                <div class="ibox-content-ajax">
                     <div class="col-sm-12">
                         <?= $form->field($model, 'attachment')->widget('backend\widgets\webuploader\Image', [
                             'boxId' => 'attachment',

@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="form-group">
                         <div class="col-sm-12">
                             <?php foreach($auth as $item){ ?>
-                                <div class="checkbox i-checks page-header">
+                                <div class="checkbox i-checks page-header" style="margin-bottom: 0px;">
                                     <label class="checkbox-inline i-checks">
                                         <div class="icheckbox_square-green" style="position: relative;">
                                             <input type="checkbox" value="<?= $item['name']?>" name="auth[]" <?php if(!empty($item['authItemChildren0'])){ ?>checked="checked"<?php } ?>>
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <button type="submit" class="btn btn-primary">保存内容</button>
                             <span class="btn btn-white" onclick="history.go(-1)">返回</span>
                         </div>
-                    </div>　
+                    </div>
                 <?php ActiveForm::end(); ?>
             </div>
         </div>

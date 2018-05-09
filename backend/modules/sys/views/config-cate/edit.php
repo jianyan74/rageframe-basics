@@ -15,11 +15,11 @@ use yii\helpers\Url;
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
-            <div class="ibox-content">
+            <div class="ibox-content-ajax">
                 <div class="col-sm-12">
                     <?= $form->field($model, 'title')->textInput() ?>
                     <?= $form->field($model, 'sort')->textInput() ?>
-                    <?= $form->field($model, 'status')->radioList(['1'=>'启用','-1'=>'禁用']) ?>
+                    <?= $form->field($model, 'status')->radioList(['1' => '启用','0' => '禁用']) ?>
                 </div>
             </div>
         </div>

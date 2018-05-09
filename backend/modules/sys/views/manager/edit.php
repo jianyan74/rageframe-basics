@@ -16,7 +16,7 @@ use yii\helpers\Url;
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
-            <div class="ibox-content">
+            <div class="ibox-content-ajax">
                 <div class="col-sm-12">
                     <?= $form->field($model, 'username')->textInput() ?>
                     <?= $form->field($model, 'password_hash')->passwordInput() ?>

@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="col-sm-12 text-center">
                             <button class="btn btn-primary" type="submit">保存内容</button>
                             <span class="btn btn-white" onclick="history.go(-1)">返回</span>
-                        </div>　
+                        </div>
                     </div>
                 </div>
             </div>

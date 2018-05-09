@@ -139,7 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <div class="col-sm-12 text-center">
                                             <button class="btn btn-primary" type="submit">保存内容</button>
                                         </div>
-                                    </div>　
+                                    </div>
                                     <?php ActiveForm::end(); ?>
                                 </div>
                             </div>

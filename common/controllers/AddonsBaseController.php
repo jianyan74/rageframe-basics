@@ -26,6 +26,7 @@ class AddonsBaseController extends BaseController
      * @param string $route 路由
      * @param string $addon 模块名
      * @return bool
+     * @throws \yii\web\NotFoundHttpException
      */
     public function actionExecute($route, $addon)
     {
@@ -39,8 +40,8 @@ class AddonsBaseController extends BaseController
      * 转接
      *
      * @param $through
-     * @return bool
-     * @throws \yii\web\UnauthorizedHttpException
+     * @return mixed
+     * @throws NotFoundHttpException
      */
     public function skip($through)
     {
@@ -60,8 +61,8 @@ class AddonsBaseController extends BaseController
         }
 
         // 检测方法是否存在
-        $list = new $class($through['controller'],Yii::$app->module);
-        if(!method_exists($list,$actionName))
+        $list = new $class($through['controller'], Yii::$app->module);
+        if(!method_exists($list, $actionName))
         {
             throw new NotFoundHttpException('方法不存在');
         }

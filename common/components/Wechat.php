@@ -157,8 +157,9 @@ class Wechat extends Component
     }
 
     /**
-	 * @return yii\web\Response
-	 */
+     * @return $this|Yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
 	public function authorizeRequired()
 	{
 		if(Yii::$app->request->get('code'))
@@ -267,7 +268,7 @@ class Wechat extends Component
 			return new WechatUser();
 		}
 
-		if (! self::$_user instanceof WechatUser)
+		if (!self::$_user instanceof WechatUser)
 		{
 			$userInfo = Yii::$app->session->get($this->sessionParam);
 			$config = $userInfo ? json_decode($userInfo, true) : [];

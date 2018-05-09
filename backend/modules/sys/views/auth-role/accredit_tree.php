@@ -1,6 +1,6 @@
-<div class="checkbox checkbox-inline" style="padding-left: 25px">
+<div class="checkbox checkbox-inline" style="padding-left: 25px;padding-top: 0px;margin-top: 0px;">
     <?php foreach($models as $key => $item){ ?>
-        <?php if(!empty($item['-']) && empty($models[abs($key - 1)]['-'])){ ?><br><?php } ?>
+        <br>
         <label class="checkbox-inline i-checks">
             <div class="icheckbox_square-green" style="position: relative;">
                 <input type="checkbox" value="<?= $item['name']?>" name="auth[]" <?php if(!empty($item['authItemChildren0'])){?>checked="checked"<?php } ?>>

@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-content">
+                <div class="ibox-content-ajax">
                     <div class="col-sm-12">
                         <?= $form->field($model, 'file_name')->textInput()->label('标题'); ?>
                         <?= $form->field($model, 'description')->textarea()->label('描述'); ?>

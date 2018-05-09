@@ -2,7 +2,6 @@
 namespace jianyan\basics\common\payment;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use Omnipay\Omnipay;
 
 /**
@@ -11,23 +10,16 @@ use Omnipay\Omnipay;
  * Class UnionPay
  * @package jianyan\basics\common\payment
  */
-class UnionPay extends BasePay
+class UnionPay
 {
-    protected $_returnUrl;
-
-    protected $_notifyUrl;
+    protected $_config;
 
     /**
      * UnionPay constructor.
-     * @param null $returnUrl 同步通知
-     * @param null $notifyUrl 异步通知
      */
-    public function __construct($returnUrl = null, $notifyUrl = null)
+    public function __construct($config)
     {
-        $this->_order = $returnUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
-        $this->_order = $notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
-
-        parent::__construct();
+        $this->_config = $config;
     }
 
     /**
@@ -39,12 +31,12 @@ class UnionPay extends BasePay
     private function create($type)
     {
         $gateway = Omnipay::create($type);
-        $gateway->setMerId($this->_rfConfig['UNION_MER_ID']);
-        $gateway->setCertId($this->_rfConfig['UNION_CERT_ID']);
-        $gateway->setPrivateKey($this->_rfConfig['UNION_PRIVATE_KEY']); // path or content
-        $gateway->setPublicKey($this->_rfConfig['UNION_PUBLIC_KEY']); // path or content
-        $gateway->setReturnUrl($this->_returnUrl);
-        $gateway->setNotifyUrl($this->_notifyUrl);
+        $gateway->setMerId($this->_config['mch_id']);
+        $gateway->setCertId($this->_config['cert_id']);
+        $gateway->setPrivateKey($this->_config['private_key']); // path or content
+        $gateway->setPublicKey($this->_config['public_key']); // path or content
+        $gateway->setReturnUrl($this->_config['return_url']);
+        $gateway->setNotifyUrl($this->_config['notify_url']);
 
         return $gateway;
     }
@@ -57,7 +49,7 @@ class UnionPay extends BasePay
     public function notify()
     {
         $gateway = $this->create('Union_Express');
-        return $gateway->completePurchase(['request_params'=>$_REQUEST])->send();
+        return $gateway->completePurchase(['request_params' => $_REQUEST])->send();
     }
 
 
@@ -96,9 +88,9 @@ class UnionPay extends BasePay
      * @param $type WechatPay_App, WechatPay_Native, WechatPay_Js, WechatPay_Pos, WechatPay_Mweb
      * @param $out_trade_no
      */
-    public function close($type, $out_trade_no)
+    public function close($out_trade_no)
     {
-        $gateway = $this->create($type);
+        $gateway = $this->create('UnionPay_Express');
         $response = $gateway->close([
             'out_trade_no' => $out_trade_no, //The merchant trade no
         ])->send();

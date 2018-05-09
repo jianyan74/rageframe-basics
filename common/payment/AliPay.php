@@ -10,29 +10,25 @@ use Omnipay\Omnipay;
  * Class AliPay
  * @package jianyan\basics\common\payment
  */
-class AliPay extends BasePay
+class AliPay
 {
-    /**
-     * @var null|string
-     */
-    protected $_returnUrl;
+    protected $_config;
 
     /**
-     * @var null|string
+     * 类型
+     *
+     * @var array
      */
-    protected $_notifyUrl;
+    protected $_type = [
+        'pc' => 'Alipay_AopPage',
+        'app' => 'Alipay_AopApp',
+        'f2f' => 'Alipay_AopF2F',
+        'wap' => 'Alipay_AopWap',
+    ];
 
-    /**
-     * UnionPay constructor.
-     * @param null $returnUrl 同步通知
-     * @param null $notifyUrl 异步通知
-     */
-    public function __construct($returnUrl = null, $notifyUrl = null)
+    public function __construct($config)
     {
-        $this->_returnUrl = $returnUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
-        $this->_notifyUrl = $notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
-
-        parent::__construct();
+        $this->_config = $config;
     }
 
     /**
@@ -41,15 +37,14 @@ class AliPay extends BasePay
      * @param $type
      * @return mixed
      */
-    private function create($type)
+    private function _create($type)
     {
         $gateway = Omnipay::create($type);
         $gateway->setSignType('RSA2'); // RSA/RSA2/MD5
-        $gateway->setAppId($this->_rfConfig['ALIPAY_APPID']);
-        $gateway->setPrivateKey($this->_rfConfig['ALIPAY_PRIVATE_KEY']);
-        $gateway->setAlipayPublicKey($this->_rfConfig['ALIPAY_PUBLIC_KEY']);
-        $gateway->setReturnUrl($this->_returnUrl);
-        $gateway->setNotifyUrl($this->_notifyUrl);
+        $gateway->setAppId($this->_config['app_id']);
+        $gateway->setAlipayPublicKey($this->_config['ali_public_key']);
+        $gateway->setPrivateKey($this->_config['private_key']);
+        $gateway->setNotifyUrl($this->_config['notify_url']);
 
         return $gateway;
     }
@@ -68,9 +63,9 @@ class AliPay extends BasePay
      */
     public function pc($order)
     {
-        $gateway = $this->create('Alipay_AopPage');
         $order['product_code'] = 'FAST_INSTANT_TRADE_PAY';
 
+        $gateway = $this->_create('Alipay_AopPage');
         $request = $gateway->purchase();
         $request->setBizContent($order);
 
@@ -78,8 +73,13 @@ class AliPay extends BasePay
          * @var AopTradeAppPayResponse $response
          */
         $response = $request->send();
-        // $redirectUrl = $response->getRedirectUrl();
-        return $response->redirect();
+        $redirectUrl = $response->getRedirectUrl();
+
+        /**
+         * 直接跳转
+         * return $response->redirect();
+         */
+        return $redirectUrl;
     }
 
     /**
@@ -106,11 +106,11 @@ class AliPay extends BasePay
      */
     public function app($order)
     {
-        $gateway = $this->create('Alipay_AopApp');
         $order['product_code'] = 'QUICK_MSECURITY_PAY';
 
+        $gateway = $this->_create('Alipay_AopApp');
         $request = $gateway->purchase();
-        $request->setBizContent($config);
+        $request->setBizContent($order);
 
         /**
          * @var AopTradeAppPayResponse $response
@@ -127,7 +127,7 @@ class AliPay extends BasePay
      */
     public function f2f($order)
     {
-        $gateway = $this->create('Alipay_AopF2F');
+        $gateway = $this->_create('Alipay_AopF2F');
         $request = $gateway->purchase();
         $request->setBizContent($order);
 
@@ -147,9 +147,9 @@ class AliPay extends BasePay
      */
     public function wap($order)
     {
-        $gateway = $this->create('Alipay_AopWap');
         $order['product_code'] = 'QUICK_WAP_PAY';
 
+        $gateway = $this->_create('Alipay_AopWap');
         $request = $gateway->purchase();
         $request->setBizContent($order);
 
@@ -157,15 +157,12 @@ class AliPay extends BasePay
          * @var AopTradeAppPayResponse $response
          */
         $response = $request->send();
-        return $response->redirect();
-    }
 
-    /**
-     * @param $order
-     */
-    public function js($order)
-    {
-
+        /**
+         * 直接跳转
+         * return $response->redirect();
+         */
+        return $response->getRedirectUrl();
     }
 
     /**
@@ -178,9 +175,9 @@ class AliPay extends BasePay
      *     'out_request_no' => date('YmdHis') . mt_rand(1000, 9999)
      *  ]
      */
-    public function refund($type, array $info)
+    public function refund(array $info)
     {
-        $gateway = $this->create($type);
+        $gateway = $this->_create('Alipay_AopF2F');
         $request = $gateway->refund();
         $response = $request->setBizContent($info);
 

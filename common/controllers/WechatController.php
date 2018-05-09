@@ -60,6 +60,9 @@ class WechatController extends \common\controllers\BaseController
      */
     protected $_openGetWechatUser = true;
 
+    /**
+     * @throws yii\base\InvalidConfigException
+     */
     public function init()
     {
         // 微信参数配置
@@ -117,7 +120,8 @@ class WechatController extends \common\controllers\BaseController
      * 创建微信支付订单
      *
      * @param array $attributes
-     * @return array
+     * @return mixed
+     * @throws BadRequestHttpException
      */
     protected function wechatPay(array $attributes)
     {
@@ -129,21 +133,20 @@ class WechatController extends \common\controllers\BaseController
         {
             $prepayId = $result['prepay_id'];
             $config = $payment->jssdk->sdkConfig($prepayId);
-        }
-        else
-        {
-            throw new BadRequestHttpException($result['return_msg']);
+            return $config;
         }
 
-        return $config;
+        throw new BadRequestHttpException($result['return_msg']);
     }
 
     /**
      * 二维码支付
      *
      * @param $attributes
+     * @return mixed
+     * @throws BadRequestHttpException
      */
-    protected function wechatQrPay($attributes)
+    protected function wechatQrPay(array $attributes)
     {
         $attributes['trade_type'] = 'NATIVE';
         $payment = Yii::$app->wechat->getPayApp();
@@ -151,14 +154,10 @@ class WechatController extends \common\controllers\BaseController
 
         if ($result['return_code'] == 'SUCCESS')
         {
-            $prepayId = $result['prepay_id'];
-            $codeUrl = $result['code_url'];
-        }
-        else
-        {
-            throw new BadRequestHttpException($result['return_msg']);
+            // $prepayId = $result['prepay_id'];
+            return $result['code_url'];
         }
 
-        return $codeUrl;
+        throw new BadRequestHttpException($result['return_msg']);
     }
 }

@@ -15,13 +15,13 @@ use yii\helpers\Url;
 <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
-            <div class="ibox-content">
+            <div class="ibox-content-ajax">
                 <div class="col-sm-12">
                     <?= $form->field($model, 'title')->textInput() ?>
                     <?= $form->field($model, 'url')->textInput()->hint("例如：index/index") ?>
                     <?= $form->field($model, 'menu_css')->textInput()->hint('详情请参考：<a href="http://fontawesome.dashgame.com" target="_blank">http://fontawesome.dashgame.com</a>')?>
                     <?= $form->field($model, 'sort')->textInput() ?>
-                    <?= $form->field($model, 'status')->radioList(['1'=>'启用','-1'=>'禁用']) ?>
+                    <?= $form->field($model, 'status')->radioList(['1' => '启用','0' => '禁用']) ?>
                 </div>
             </div>
         </div>

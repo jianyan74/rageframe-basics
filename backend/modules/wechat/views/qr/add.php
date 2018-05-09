@@ -16,7 +16,7 @@ use yii\helpers\Url;
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div>
-                    <div class="ibox-content">
+                    <div class="ibox-content-ajax">
                         <div class="col-md-12">
                             <?= $form->field($model, 'name')->textInput() ?>
                             <div class="row">

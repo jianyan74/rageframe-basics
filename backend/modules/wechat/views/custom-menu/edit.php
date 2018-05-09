@@ -124,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="ibox-content clearfix">
                     <div class="col-sm-12">
                         <?= $form->field($model, 'title')->textInput()->hint('给菜单起个名字吧！以便查找')->label(false) ?>
-                    </div>　
+                    </div>
                 </div>
             </div>
         </div>
@@ -216,7 +216,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             </div>
                         </div>
-                    </div>　
+                    </div>
                 </div>
             </div>
         </div>

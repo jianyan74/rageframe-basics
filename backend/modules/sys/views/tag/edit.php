@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php $form = ActiveForm::begin([]); ?>
                         <?= $form->field($model, 'title')->textInput() ?>
                         <?= $form->field($model, 'sort')->textInput()?>
-                        <?= $form->field($model, 'status')->radioList(['1'=>'启用','-1'=>'禁用']) ?>
+                        <?= $form->field($model, 'status')->radioList(['1' => '启用','0' => '禁用']) ?>
                         <div class="hr-line-dashed"></div>
                     </div>
                     <div class="form-group">
@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <button class="btn btn-primary" type="submit">保存内容</button>
                             <span class="btn btn-white" onclick="history.go(-1)">返回</span>
                         </div>
-                    </div>　
+                    </div>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>

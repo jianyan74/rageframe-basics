@@ -794,7 +794,7 @@ use yii\widgets\ActiveForm;
                 <div class="ibox-content">
                     <div class="col-sm-12">
                         <?= \$form->field(\$model, 'site_title')->textInput() ?>
-                    </div>　
+                    </div>
                 </div>
             </div>
         </div>
@@ -820,7 +820,7 @@ use yii\widgets\ActiveForm;
                         <div class="col-sm-12 col-sm-offset-2">
                             <button class="btn btn-primary" type="submit">保存内容</button>
                         </div>
-                    </div>　
+                    </div>
                 </div>
             </div>
         </div>

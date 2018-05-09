@@ -11,14 +11,16 @@ use Omnipay\Omnipay;
  * Class WechatPay
  * @package jianyan\basics\common\payment
  */
-class WechatPay extends BasePay
+class WechatPay
 {
     protected $_order;
+
+    protected $_config;
 
     /**
      * WechatPay constructor.
      */
-    public function __construct()
+    public function __construct($config)
     {
         $this->_order = [
             'spbill_create_ip' => Yii::$app->request->userIP,
@@ -26,7 +28,7 @@ class WechatPay extends BasePay
             'notify_url' => Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']),
         ];
 
-        parent::__construct();
+        $this->_config = $config;
     }
 
     /**
@@ -37,12 +39,14 @@ class WechatPay extends BasePay
      */
     private function create($type)
     {
+        $rfConfig = Yii::$app->config->infoAll();
+
         $gateway = Omnipay::create($type);
-        $gateway->setAppId($this->_rfConfig['WECHAT_APPID']);
-        $gateway->setMchId($this->_rfConfig['WECHAT_MCHID']);
-        $gateway->setApiKey($this->_rfConfig['WECHAT_API_KEY']);
-        $gateway->setCertPath($this->_rfConfig['WECHAT_APICLIENT_CERT']);
-        $gateway->setKeyPath($this->_rfConfig['WECHAT_APICLIENT_KEY']);
+        $gateway->setAppId($this->_config['WECHAT_APP_ID']);
+        $gateway->setMchId($this->_config['WECHAT_MCHID']);
+        $gateway->setApiKey($this->_config['WECHAT_API_KEY']);
+        $gateway->setCertPath($this->_config['WECHAT_APICLIENT_CERT']);
+        $gateway->setKeyPath($this->_config['WECHAT_APICLIENT_KEY']);
 
         return $gateway;
     }
@@ -169,13 +173,11 @@ class WechatPay extends BasePay
     /**
      * 关闭订单
      *
-     * 订单类型
-     * @param $type WechatPay_App, WechatPay_Native, WechatPay_Js, WechatPay_Pos, WechatPay_Mweb
      * @param $out_trade_no
      */
-    public function close($type, $out_trade_no)
+    public function close($out_trade_no)
     {
-        $gateway = $this->create($type);
+        $gateway = $this->create('WechatPay');
         $response = $gateway->close([
             'out_trade_no' => $out_trade_no, //The merchant trade no
         ])->send();
@@ -186,13 +188,11 @@ class WechatPay extends BasePay
     /**
      * 查询订单
      *
-     * 订单类型
-     * @param $type WechatPay_App, WechatPay_Native, WechatPay_Js, WechatPay_Pos, WechatPay_Mweb
      * @param $transaction_id
      */
-    public function query($type, $transaction_id)
+    public function query($transaction_id)
     {
-        $gateway = $this->create($type);
+        $gateway = $this->create('WechatPay');
         $response = $gateway->query([
             'transaction_id' => $transaction_id, //The wechat trade no
         ])->send();
@@ -204,7 +204,6 @@ class WechatPay extends BasePay
      * 退款
      *
      * 订单类型
-     * @param $type WechatPay_App, WechatPay_Native, WechatPay_Js, WechatPay_Pos, WechatPay_Mweb
      *
      * @param $info
      * [
@@ -214,9 +213,9 @@ class WechatPay extends BasePay
      *      'refund_fee'    => 1, //=0.01
      * ]
      */
-    public function refund($type, $info)
+    public function refund($info)
     {
-        $gateway = $this->create($type);
+        $gateway = $this->create('WechatPay');
         $response = $gateway->refund($info)->send();
 
         return $response->getData();

@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = ['label' => '修改密码'];
                         <div class="col-sm-12 text-center">
                             <button class="btn btn-primary" type="submit">立即修改</button>
                         </div>
-                    </div>　
+                    </div>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>

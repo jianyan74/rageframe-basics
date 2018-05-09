@@ -140,6 +140,7 @@ return [
         'wechat/default/index',// 微信api
         'wechat/we-code/image',// 微信防盗链获取图片
         'wechat/custom-menu-area/index',// 微信个性化菜单省市
+        'wechat/qr/qr',// 微信二维码渲染
     ],
     // 不需要验证的方法
     'basicsNoAuthAction' => [

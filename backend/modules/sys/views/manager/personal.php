@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title];
                                 <span class="btn btn-white" onclick="history.go(-1)">返回</span>
                             <?php } ?>
                         </div>
-                    </div>　
+                    </div>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>

@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
             <div>
-                <div class="ibox-content">
+                <div class="ibox-content-ajax">
                     <div class="col-md-12">
                         <?= Html::checkboxList('tag_id', $fansTags, ArrayHelper::map($tags,'id', 'name')); ?>
                         <div class="hr-line-dashed"></div>

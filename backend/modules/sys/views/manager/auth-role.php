@@ -16,7 +16,7 @@ use yii\helpers\Url;
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-content">
+                <div class="ibox-content-ajax">
                     <div class="col-sm-12">
                         <?= $form->field($model, 'item_name')->dropDownList(ArrayHelper::map($role,'name','name')) ?>
                         <?= $form->field($model, 'user_id')->hiddenInput()->label(false) ?>
