@@ -95,7 +95,7 @@ class BaseController extends Controller
             ]
         ], Yii::$app->params['wechatConfig']);
 
-        Yii::$app->params['wechatPayConfig'] = ArrayHelper::merge([
+        Yii::$app->params['wechatPaymentConfig'] = ArrayHelper::merge([
             'app_id'             => $rfConfig['WECHAT_APPID'],
             'mch_id'             => $rfConfig['WECHAT_MCHID'],
             'key'                => $rfConfig['WECHAT_API_KEY'],            // API 密钥
@@ -105,7 +105,7 @@ class BaseController extends Controller
             // 支付回调地址
             'notify_url'         => Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']),
             'sandbox'            => false, // 设置为 false 或注释则关闭沙箱模式
-        ], Yii::$app->params['wechatPayConfig']);
+        ], Yii::$app->params['wechatPaymentConfig']);
 
         parent::init();
     }

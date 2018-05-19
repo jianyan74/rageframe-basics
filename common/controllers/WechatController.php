@@ -84,10 +84,10 @@ class WechatController extends \common\controllers\BaseController
         ];
 
         // 微信支付参数配置
-        Yii::$app->params['wechatPayConfig']['notify_url'] = $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
+        Yii::$app->params['wechatPaymentConfig']['notify_url'] = $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
 
         // 实例化EasyWechat SDK
-        $this->_app = Yii::$app->wechat->getApp();
+        $this->_app = Yii::$app->wechat->app;
 
         /** 检测到微信进入自动获取用户信息 **/
         $this->_openGetWechatUser && $this->getWechatUser();
@@ -121,7 +121,7 @@ class WechatController extends \common\controllers\BaseController
     protected function wechatPay(array $attributes)
     {
         $attributes['trade_type'] = 'JSAPI';
-        $payment = Yii::$app->wechat->getPayApp();
+        $payment = Yii::$app->wechat->payment;
         $result = $payment->order->unify($attributes);
 
         if ($result['return_code'] == 'SUCCESS')
@@ -144,7 +144,7 @@ class WechatController extends \common\controllers\BaseController
     protected function wechatQrPay(array $attributes)
     {
         $attributes['trade_type'] = 'NATIVE';
-        $payment = Yii::$app->wechat->getPayApp();
+        $payment = Yii::$app->wechat->payment;
         $result = $payment->order->unify($attributes);
 
         if ($result['return_code'] == 'SUCCESS')
