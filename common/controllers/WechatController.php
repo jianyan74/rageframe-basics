@@ -65,31 +65,26 @@ class WechatController extends \common\controllers\BaseController
      */
     public function init()
     {
-        // 微信参数配置
-        Yii::$app->params['wechatConfig'] = [
-            /**
-             * Debug 模式，bool 值：true/false
-             *
-             * 当值为 false 时，所有的日志都不会记录
-             */
-            'debug'  => $this->_debug,
-
-            /**
-             * OAuth 配置
-             *
-             * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
-             * callback：OAuth授权完成后的回调页地址
-             */
-            'oauth' => [
-                'scopes'   => $this->_scopes,
-                'callback' => Yii::$app->request->getUrl(),
-            ],
+        /**
+         * 微信参数配置
+         * Debug 模式，bool 值：true/false
+         *
+         * 当值为 false 时，所有的日志都不会记录
+         */
+        Yii::$app->params['wechatConfig']['debug'] = $this->_debug;
+        /**
+         * OAuth 配置
+         *
+         * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
+         * callback：OAuth授权完成后的回调页地址
+         */
+        Yii::$app->params['wechatConfig']['oauth'] = [
+            'scopes'   => $this->_scopes,
+            'callback' => Yii::$app->request->getUrl(),
         ];
 
         // 微信支付参数配置
-        Yii::$app->params['wechatPayConfig'] = [
-            'notify_url' => $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify'])
-        ];
+        Yii::$app->params['wechatPayConfig']['notify_url'] = $this->_notifyUrl ?? Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['we-notify/notify']);
 
         // 实例化EasyWechat SDK
         $this->_app = Yii::$app->wechat->getApp();

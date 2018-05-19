@@ -49,6 +49,8 @@ class MController extends \common\controllers\BaseController
      */
     public function init()
     {
+        parent::init();
+
         Yii::$app->params['wechatConfig']['debug'] = $this->_debug;
 
         // 实例化EasyWechat SDK
@@ -56,8 +58,6 @@ class MController extends \common\controllers\BaseController
 
         // 分页
         Yii::$app->config->info('SYS_PAGE') && $this->_pageSize = Yii::$app->config->info('SYS_PAGE');
-
-        parent::init();
     }
 
     /**
