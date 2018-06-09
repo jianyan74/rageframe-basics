@@ -39,14 +39,12 @@ class WechatPay
      */
     private function create($type)
     {
-        $rfConfig = Yii::$app->config->infoAll();
-
         $gateway = Omnipay::create($type);
-        $gateway->setAppId($this->_config['WECHAT_APP_ID']);
-        $gateway->setMchId($this->_config['WECHAT_MCHID']);
-        $gateway->setApiKey($this->_config['WECHAT_API_KEY']);
-        $gateway->setCertPath($this->_config['WECHAT_APICLIENT_CERT']);
-        $gateway->setKeyPath($this->_config['WECHAT_APICLIENT_KEY']);
+        $gateway->setAppId($this->_config['app_id']);
+        $gateway->setMchId($this->_config['mch_id']);
+        $gateway->setApiKey($this->_config['key']);
+        $gateway->setCertPath($this->_config['cert_client']);
+        $gateway->setKeyPath($this->_config['cert_key']);
 
         return $gateway;
     }

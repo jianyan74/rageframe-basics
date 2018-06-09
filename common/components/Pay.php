@@ -61,7 +61,6 @@ class Pay extends Component
             'app_id' => $this->_rfConfig['WECHAT_APPID'], // 公众号 APPID
             'mch_id' => $this->_rfConfig['WECHAT_MCHID'],
             'key' => $this->_rfConfig['WECHAT_API_KEY'],
-            'notify_url' => Yii::$app->request->hostInfo . Yii::$app->urlManager->createUrl(['notify/index']),
             'cert_client' => $this->_rfConfig['WECHAT_APICLIENT_CERT'], // optional，退款等情况时用到
             'cert_key' => $this->_rfConfig['WECHAT_APICLIENT_KEY'],// optional，退款等情况时用到
         ], $config);
