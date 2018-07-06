@@ -65,6 +65,8 @@ class WechatController extends \common\controllers\BaseController
      */
     public function init()
     {
+        parent::init();
+        
         /**
          * 微信参数配置
          * Debug 模式，bool 值：true/false

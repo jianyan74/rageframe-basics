@@ -97,17 +97,6 @@ class ActionLog extends \yii\db\ActiveRecord
         $logModel->record_id = $record_id;
         $logModel->log_url = Yii::$app->request->getUrl();
         $logModel->remark = $remark;
-
-        // IP地址信息来源
-        $ipInfo = \common\helpers\ApiHelper::ipInfoSina(Yii::$app->request->userIP);
-        if($ipInfo)
-        {
-            $logModel->country = $ipInfo['country'];
-            $logModel->province = $ipInfo['province'];
-            $logModel->city = $ipInfo['city'];
-            $logModel->district = $ipInfo['district'];
-        }
-
         $logModel->save();
     }
 
