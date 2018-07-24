@@ -159,7 +159,7 @@ class RuleKeyword extends \yii\db\ActiveRecord
                                 'image' => $vo['thumb_url'],
                             ]);
 
-                            $count_news == 1 ? $news_list = $new_news : $news_list[] = $new_news;
+                            $news_list[] = $new_news;
                         }
                     }
 
