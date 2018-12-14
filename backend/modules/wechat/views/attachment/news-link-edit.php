@@ -114,15 +114,16 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <!-- 上传组件不需要显示出来，我只需要使用它的功能即可 -->
         <div hidden>
-            <?= \backend\widgets\wechatuploader\Image::widget([
+            <?= \backend\widgets\webuploader\Image::widget([
                 'boxId' => 'thumb_url',
                 'name'  =>"thumb_url",
                 'value' =>  '',
                 'options' => [
                     'multiple'   => false,
+                    'vueMaterial' => true,
                 ],
                 'pluginOptions' => [
-                    'uploadMaxSize' => 1024,
+                    'uploadMaxSize' => 1024 * 1024,
                 ]
             ])?>
         </div>
